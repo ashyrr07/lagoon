@@ -7,4 +7,9 @@
     <string name="enhanced_service_label">Lagoon Enhanced mode</string>
     <string name="enhanced_service_summary">Draws the island above the status bar and lock screen; screenshot, lock and recents tiles.</string>
     <string name="enhanced_service_description">Enhanced mode lets Lagoon draw its island above the status bar and on the lock screen, so the whole pill responds to taps, and lets the island\'s tiles take a screenshot, lock the screen or open recent apps when you tap them. It only receives the name of the app in front, so the island can follow your per-app settings. It never reads, records or acts on anything shown on your screen, it cannot perform gestures for you, and nothing leaves your phone: Lagoon has no internet permission. You can switch it off here at any time.</string>
+    <string name="keep_alive_channel">Keep-alive</string>
+    <string name="keep_alive_channel_description">Silent notification that keeps Lagoon running on phones that stop background apps.</string>
+    <string name="keep_alive_notification_title">Lagoon is active</string>
+    <string name="keep_alive_notification_text">Turn this off on the Health screen.</string>
+    <string name="github_url">https://github.com/lagoon-android/lagoon</string>
 </resources>

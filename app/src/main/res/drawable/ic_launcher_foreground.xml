@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- A pill with a lagoon-blue "lagoon" inside: the island around the camera. -->
+<!-- The island: a black pill wrapping a lagoon-coloured camera. Everything sits inside the 66dp safe zone. -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="108dp"
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
+    <!-- Pill: 56 x 26, fully rounded. -->
     <path
-        android:fillColor="#FF000000"
-        android:pathData="M34,42 H74 A12,12 0 0 1 74,66 H34 A12,12 0 0 1 34,42 Z" />
+        android:fillColor="#FF050A0D"
+        android:pathData="M39,41 H69 A13,13 0 0 1 69,67 H39 A13,13 0 0 1 39,41 Z" />
+    <!-- Camera: the water inside the ring. -->
     <path
-        android:fillColor="#FF4FD1C5"
-        android:pathData="M54,47 A7,7 0 1 1 53.99,47 Z" />
+        android:fillColor="#FF5FE3D0"
+        android:pathData="M54,54 m-6.5,0 a6.5,6.5 0 1,1 13,0 a6.5,6.5 0 1,1 -13,0" />
 </vector>

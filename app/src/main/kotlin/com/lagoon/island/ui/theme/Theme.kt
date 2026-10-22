@@ -1,31 +1,19 @@
 package com.lagoon.island.ui.theme
 
-import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
-import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalInspectionMode
 
-/** Lagoon's brand accent: the water inside the ring. */
-val LagoonTeal = Color(0xFF4FD1C5)
-val LagoonInk = Color(0xFF0B0F14)
-
-private val DarkScheme = darkColorScheme(
-    primary = LagoonTeal,
-    onPrimary = LagoonInk,
-    background = LagoonInk,
-    surface = LagoonInk,
-)
-
-private val LightScheme = lightColorScheme(
-    primary = Color(0xFF00897B),
-)
-
+/**
+ * Dark-first. Dynamic colour follows the wallpaper on Android 12+; the brand palette is the
+ * fallback and what previews render with.
+ */
 @Composable
 fun LagoonTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
@@ -33,11 +21,26 @@ fun LagoonTheme(
     content: @Composable () -> Unit,
 ) {
     val context = LocalContext.current
-    val scheme = when {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S ->
+    val inPreview = LocalInspectionMode.current
+    // minSdk 31: dynamic colour is always available on device.
+    val scheme: ColorScheme = when {
+        dynamicColor && !inPreview ->
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-        darkTheme -> DarkScheme
-        else -> LightScheme
+        darkTheme -> LagoonDarkScheme
+        else -> LagoonLightScheme
     }
-    MaterialTheme(colorScheme = scheme, content = content)
+    MaterialTheme(
+        colorScheme = scheme,
+        typography = LagoonTypography,
+        shapes = LagoonShapes,
+        content = content,
+    )
+}
+
+/** Preview wrapper: always the brand palette, dark unless asked otherwise. */
+@Composable
+fun LagoonPreviewTheme(darkTheme: Boolean = true, content: @Composable () -> Unit) {
+    LagoonTheme(darkTheme = darkTheme, dynamicColor = false) {
+        Surface(color = MaterialTheme.colorScheme.background, content = content)
+    }
 }
