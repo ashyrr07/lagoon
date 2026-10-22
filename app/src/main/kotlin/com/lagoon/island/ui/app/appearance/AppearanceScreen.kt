@@ -1,5 +1,6 @@
 package com.lagoon.island.ui.app.appearance
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -20,10 +21,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.lagoon.island.R
 import com.lagoon.island.data.Appearance
 import com.lagoon.island.data.IdleMode
 import com.lagoon.island.data.IslandSettings
@@ -59,25 +62,31 @@ private fun AppearanceContent(
     set: ((Appearance) -> Appearance) -> Unit,
 ) {
     val a = settings.appearance
+    val percent = stringResource(R.string.screens_unit_percent)
+    val seconds = stringResource(R.string.screens_unit_seconds)
+    val tintLabels = Tint.entries.associateWith { stringResource(it.labelRes()) }
+    val idleLabels = IdleMode.entries.associateWith { stringResource(it.labelRes()) }
     ScreenScaffold(
-        title = "Appearance",
+        title = stringResource(R.string.screens_appearance_title),
         onBack = onBack,
         pinned = { IslandPreview(settings) },
     ) {
-        SettingGroup("Colour") {
+        SettingGroup(stringResource(R.string.screens_appearance_group_colour)) {
             row {
                 ChoiceRow(
-                    "Tint",
+                    stringResource(R.string.screens_appearance_tint),
                     options = Tint.entries,
                     selected = a.tint,
-                    label = { it.label() },
+                    label = { tintLabels.getValue(it) },
                     onSelect = { set { s -> s.copy(tint = it) } },
-                    subtitle = when (a.tint) {
-                        Tint.Black -> "Pure black, like the hardware around the camera"
-                        Tint.MaterialYou -> "Follows your wallpaper colours"
-                        Tint.AlbumArt -> "Takes the colour of what is playing"
-                        Tint.Custom -> "Pick any colour"
-                    },
+                    subtitle = stringResource(
+                        when (a.tint) {
+                            Tint.Black -> R.string.screens_appearance_tint_black_detail
+                            Tint.MaterialYou -> R.string.screens_appearance_tint_you_detail
+                            Tint.AlbumArt -> R.string.screens_appearance_tint_art_detail
+                            Tint.Custom -> R.string.screens_appearance_tint_custom_detail
+                        },
+                    ),
                 )
             }
             if (a.tint == Tint.Custom) {
@@ -90,81 +99,83 @@ private fun AppearanceContent(
                 }
             }
         }
-        SettingGroup("Shape") {
+        SettingGroup(stringResource(R.string.screens_appearance_group_shape)) {
             row {
                 SliderRow(
-                    "Size",
+                    stringResource(R.string.screens_appearance_size),
                     a.scale,
                     0.8f..1.3f,
                     { set { s -> s.copy(scale = (it * 20).roundToInt() / 20f) } },
-                    format = { "${(it * 100).roundToInt()} %" },
+                    format = { percent.format((it * 100).roundToInt()) },
                 )
             }
             row {
                 SliderRow(
-                    "Corner smoothing",
+                    stringResource(R.string.screens_appearance_corner_smoothing),
                     a.cornerSmoothing,
                     0f..1f,
                     { set { s -> s.copy(cornerSmoothing = (it * 20).roundToInt() / 20f) } },
-                    subtitle = "0 is a plain round corner, 1 is the iPhone-style continuous curve",
-                    format = { "${(it * 100).roundToInt()} %" },
+                    subtitle = stringResource(R.string.screens_appearance_corner_smoothing_detail),
+                    format = { percent.format((it * 100).roundToInt()) },
                 )
             }
         }
-        SettingGroup("Behaviour") {
+        SettingGroup(stringResource(R.string.screens_appearance_group_behaviour)) {
             row {
                 ChoiceRow(
-                    "Idle pill",
+                    stringResource(R.string.screens_appearance_idle_pill),
                     options = IdleMode.entries,
                     selected = a.idleMode,
-                    label = { it.label() },
+                    label = { idleLabels.getValue(it) },
                     onSelect = { set { s -> s.copy(idleMode = it) } },
-                    subtitle = "When nothing is happening",
+                    subtitle = stringResource(R.string.screens_appearance_idle_pill_detail),
                 )
             }
             row {
                 SliderRow(
-                    "Expanded stays open",
+                    stringResource(R.string.screens_appearance_expanded_timeout),
                     a.expandedTimeoutSec.toFloat(),
                     2f..15f,
                     { set { s -> s.copy(expandedTimeoutSec = it.roundToInt()) } },
                     steps = 12,
-                    format = { "${it.roundToInt()} s" },
+                    format = { seconds.format(it.roundToInt()) },
                 )
             }
         }
-        SettingGroup("Motion") {
+        SettingGroup(stringResource(R.string.screens_appearance_group_motion)) {
             row {
                 SwitchRow(
-                    "Reduce motion",
+                    stringResource(R.string.screens_appearance_reduce_motion),
                     checked = a.reduceMotion,
                     onCheckedChange = { set { s -> s.copy(reduceMotion = it) } },
-                    subtitle = "Crossfades instead of springs. Also follows the system animation scale.",
+                    subtitle = stringResource(R.string.screens_appearance_reduce_motion_detail),
                 )
             }
             row {
                 SwitchRow(
-                    "Haptics",
+                    stringResource(R.string.screens_appearance_haptics),
                     checked = a.haptics,
                     onCheckedChange = { set { s -> s.copy(haptics = it) } },
-                    subtitle = "A light tick when the island opens or a tile toggles",
+                    subtitle = stringResource(R.string.screens_appearance_haptics_detail),
                 )
             }
         }
     }
 }
 
-private fun Tint.label() = when (this) {
-    Tint.Black -> "Black"
-    Tint.MaterialYou -> "You"
-    Tint.AlbumArt -> "Art"
-    Tint.Custom -> "Custom"
+@StringRes
+private fun Tint.labelRes(): Int = when (this) {
+    Tint.Black -> R.string.screens_tint_black
+    Tint.MaterialYou -> R.string.screens_tint_material_you
+    Tint.AlbumArt -> R.string.screens_tint_album_art
+    Tint.Custom -> R.string.screens_tint_custom
 }
 
-private fun IdleMode.label() = when (this) {
-    IdleMode.Always -> "Always"
-    IdleMode.OnlyWithActivity -> "With activity"
-    IdleMode.Never -> "Never"
+@StringRes
+private fun IdleMode.labelRes(): Int = when (this) {
+    IdleMode.Always -> R.string.screens_idle_always
+    IdleMode.OnlyWithActivity -> R.string.screens_idle_with_activity
+    IdleMode.Never -> R.string.screens_idle_never
 }
 
 private val Swatches = listOf(
@@ -179,6 +190,7 @@ fun ColorPicker(color: Long, onChange: (Long) -> Unit, modifier: Modifier = Modi
     fun emit(h: Float = hsv[0], s: Float = hsv[1], v: Float = hsv[2]) {
         onChange(android.graphics.Color.HSVToColor(floatArrayOf(h, s, v)).toLong() and 0xFFFFFFFFL)
     }
+    val percent = stringResource(R.string.screens_unit_percent)
     Column(modifier, verticalArrangement = Arrangement.spacedBy(12.dp)) {
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             Swatches.take(6).forEach { Swatch(it, it == color, Modifier.weight(1f)) { onChange(it) } }
@@ -186,9 +198,9 @@ fun ColorPicker(color: Long, onChange: (Long) -> Unit, modifier: Modifier = Modi
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             Swatches.drop(6).forEach { Swatch(it, it == color, Modifier.weight(1f)) { onChange(it) } }
         }
-        HsvSlider("Hue", hsv[0], 0f..360f, { "${it.roundToInt()}°" }) { emit(h = it) }
-        HsvSlider("Saturation", hsv[1], 0f..1f, { "${(it * 100).roundToInt()} %" }) { emit(s = it) }
-        HsvSlider("Brightness", hsv[2], 0f..1f, { "${(it * 100).roundToInt()} %" }) { emit(v = it) }
+        HsvSlider(stringResource(R.string.screens_color_hue), hsv[0], 0f..360f, { "${it.roundToInt()}°" }) { emit(h = it) }
+        HsvSlider(stringResource(R.string.screens_color_saturation), hsv[1], 0f..1f, { percent.format((it * 100).roundToInt()) }) { emit(s = it) }
+        HsvSlider(stringResource(R.string.screens_color_brightness), hsv[2], 0f..1f, { percent.format((it * 100).roundToInt()) }) { emit(v = it) }
     }
 }
 

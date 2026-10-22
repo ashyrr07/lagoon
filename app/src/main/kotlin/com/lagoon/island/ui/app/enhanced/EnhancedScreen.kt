@@ -30,11 +30,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.lagoon.island.R
 
 /**
  * Prominent disclosure for Enhanced mode (the optional accessibility service). Play policy: say
@@ -58,10 +60,10 @@ fun EnhancedScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Enhanced mode") },
+                title = { Text(stringResource(R.string.screens_enhanced_title)) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.screens_back))
                     }
                 },
             )
@@ -76,9 +78,7 @@ fun EnhancedScreen(
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             Text(
-                "Optional. Lagoon works fully without it. Enhanced mode uses an accessibility service " +
-                    "for one reason: an accessibility window is the only kind Android draws above the " +
-                    "status bar and the lock screen.",
+                stringResource(R.string.screens_enhanced_intro),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
@@ -90,28 +90,27 @@ fun EnhancedScreen(
             }
 
             Section(
-                title = "What it unlocks",
+                title = stringResource(R.string.screens_enhanced_unlocks_title),
                 items = listOf(
-                    "Taps anywhere on the pill, including the part inside the status bar, so the island can hug the camera and still be tappable.",
-                    "The island on the lock screen (you can turn this off below).",
-                    "Screenshot, lock screen and recent apps tiles in the control deck.",
-                    "Exact detection of the app in front, for per-app hiding and app-aware activities.",
+                    stringResource(R.string.screens_enhanced_unlocks_taps),
+                    stringResource(R.string.screens_enhanced_unlocks_lock_screen),
+                    stringResource(R.string.screens_enhanced_unlocks_tiles),
+                    stringResource(R.string.screens_enhanced_unlocks_app_detection),
                 ),
             )
 
             Section(
-                title = "What it never does",
+                title = stringResource(R.string.screens_enhanced_never_title),
                 items = listOf(
-                    "It never reads what is on your screen: the service is declared without access to window content and without the ability to inspect other apps' windows.",
-                    "It never performs gestures or taps for you.",
-                    "It only receives the name of the app that came to the front, nothing from inside the app.",
-                    "No data leaves your phone. Lagoon has no internet permission at all.",
+                    stringResource(R.string.screens_enhanced_never_reads),
+                    stringResource(R.string.screens_enhanced_never_gestures),
+                    stringResource(R.string.screens_enhanced_never_app_name),
+                    stringResource(R.string.screens_enhanced_never_data),
                 ),
             )
 
             Text(
-                "Android will warn that the service can \"view and control your screen\". That is the generic " +
-                    "accessibility warning; Lagoon's service is configured so that it cannot do either.",
+                stringResource(R.string.screens_enhanced_warning),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
@@ -127,18 +126,25 @@ fun EnhancedScreen(
                         RestrictedSettingsCard(onOpenAppInfo = viewModel::openAppInfo)
                     }
                     Button(onClick = viewModel::openAccessibilitySettings, modifier = Modifier.fillMaxWidth()) {
-                        Text(if (status.enabledInSettings) "Open Accessibility settings" else "Turn on in Accessibility settings")
+                        Text(
+                            stringResource(
+                                if (status.enabledInSettings) R.string.screens_enhanced_open_settings else R.string.screens_enhanced_turn_on,
+                            ),
+                        )
                     }
                     Text(
-                        "In the list, choose \"Lagoon Enhanced mode\" and switch it on. Come back here to check the status.",
+                        stringResource(
+                            R.string.screens_enhanced_choose_in_list,
+                            stringResource(R.string.enhanced_service_label),
+                        ),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
 
                 ToggleRow(
-                    title = "Show on lock screen",
-                    body = "Keep the island visible while the phone is locked. Only possible in Enhanced mode.",
+                    title = stringResource(R.string.screens_enhanced_lock_screen),
+                    body = stringResource(R.string.screens_enhanced_lock_screen_detail),
                     checked = settings.showOnLockScreen,
                     enabled = settings.consented,
                     onCheckedChange = viewModel::setShowOnLockScreen,
@@ -150,12 +156,13 @@ fun EnhancedScreen(
 
 @Composable
 private fun StatusCard(status: EnhancedStatus) {
-    val (title, body) = when {
-        status.connected -> "On and connected" to "The island is drawn above the status bar."
-        status.enabledInSettings -> "On, waiting to connect" to
-            "Switched on in Accessibility settings. If this stays here, toggle it off and on again there."
-        else -> "Off" to "The island uses the standard overlay window."
+    val (titleRes, bodyRes) = when {
+        status.connected -> R.string.screens_enhanced_status_connected to R.string.screens_enhanced_status_connected_detail
+        status.enabledInSettings -> R.string.screens_enhanced_status_waiting to R.string.screens_enhanced_status_waiting_detail
+        else -> R.string.screens_enhanced_status_off to R.string.screens_enhanced_status_off_detail
     }
+    val title = stringResource(titleRes)
+    val body = stringResource(bodyRes)
     Card(Modifier.fillMaxWidth()) {
         Column(Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
             Text(
@@ -172,17 +179,14 @@ private fun StatusCard(status: EnhancedStatus) {
 private fun NotAvailableCard() {
     Card(Modifier.fillMaxWidth()) {
         Column(Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            Text("Not in this build yet", style = MaterialTheme.typography.titleMedium)
+            Text(stringResource(R.string.screens_enhanced_unavailable_title), style = MaterialTheme.typography.titleMedium)
             Text(
-                "Google Play reviews every app that offers an accessibility service. Enhanced mode will " +
-                    "arrive in the Play build once that review is complete.",
+                stringResource(R.string.screens_enhanced_unavailable_review),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
             Text(
-                "Want it now? Install the FOSS build from the Lagoon GitHub releases page or from F-Droid. " +
-                    "It is the same app, open source, with Enhanced mode included. Uninstall this copy first; " +
-                    "the two builds are signed differently and cannot be installed over each other.",
+                stringResource(R.string.screens_enhanced_unavailable_foss),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
@@ -197,21 +201,22 @@ private fun RestrictedSettingsCard(onOpenAppInfo: () -> Unit) {
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer),
     ) {
         Column(Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            Text("One extra step for this install", style = MaterialTheme.typography.titleMedium)
+            Text(stringResource(R.string.screens_enhanced_restricted_title), style = MaterialTheme.typography.titleMedium)
             Text(
-                "This copy of Lagoon was not installed from an app store, so Android 13 and later hide the " +
-                    "switch behind \"Restricted setting\" until you allow it:",
+                stringResource(R.string.screens_enhanced_restricted_body),
                 style = MaterialTheme.typography.bodyMedium,
             )
-            Bullet("1. Open Lagoon's App info page (button below).")
-            Bullet("2. Tap the ⋮ menu in the top-right corner.")
-            Bullet("3. Choose \"Allow restricted settings\" and confirm.")
+            Bullet(stringResource(R.string.screens_enhanced_restricted_step1))
+            Bullet(stringResource(R.string.screens_enhanced_restricted_step2))
+            Bullet(stringResource(R.string.screens_enhanced_restricted_step3))
             Text(
-                "If the menu item is missing, first open Accessibility settings, tap Lagoon Enhanced mode once " +
-                    "(Android shows the restricted-setting notice), then come back and try again.",
+                stringResource(
+                    R.string.screens_enhanced_restricted_missing,
+                    stringResource(R.string.enhanced_service_label),
+                ),
                 style = MaterialTheme.typography.bodySmall,
             )
-            OutlinedButton(onClick = onOpenAppInfo, modifier = Modifier.fillMaxWidth()) { Text("Open App info") }
+            OutlinedButton(onClick = onOpenAppInfo, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.screens_enhanced_open_app_info)) }
         }
     }
 }
@@ -229,8 +234,7 @@ private fun ConsentRow(checked: Boolean, onCheckedChange: (Boolean) -> Unit) {
             Checkbox(checked = checked, onCheckedChange = null)
             Spacer(Modifier.width(8.dp))
             Text(
-                "I understand what Enhanced mode does and does not do, and I consent to Lagoon using an " +
-                    "accessibility service for it.",
+                stringResource(R.string.screens_enhanced_consent),
                 style = MaterialTheme.typography.bodyMedium,
             )
         }
