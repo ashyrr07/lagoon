@@ -22,6 +22,8 @@
     <!-- Ringing / off-hook / idle state only; caller identity comes from the dialer's own notification. -->
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.VIBRATE" />
+    <!-- Built-in timer: exact when the user allows it (Android 14+ asks), near-exact otherwise. -->
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
     <!-- Brightness / rotation tiles in the control deck (granted through the system screen). -->
     <uses-permission android:name="android.permission.WRITE_SETTINGS" tools:ignore="ProtectedPermissions" />
     <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />

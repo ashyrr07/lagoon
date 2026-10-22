@@ -25,7 +25,7 @@ import kotlinx.coroutines.flow.asStateFlow
 /**
  * The deck's own countdown. State lives in [snapshot]; every transition also
  *  - (re)schedules an exact alarm clock to [TimerDoneReceiver] so the chime fires with the
- *    process asleep (setAlarmClock needs no special permission), and
+ *    process asleep (exact when SCHEDULE_EXACT_ALARM is granted, near-exact otherwise), and
  *  - posts/updates the `timer:lagoon` activity so the island shows the countdown.
  *
  * All calls on the main thread.
@@ -141,8 +141,16 @@ class LagoonTimer @Inject constructor(
             Intent(context, MainActivity::class.java),
             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
         )
-        runCatching { am.setAlarmClock(AlarmManager.AlarmClockInfo(endAt, show), firePendingIntent()) }
-            .onFailure { Log.w(TAG, "setAlarmClock failed", it) }
+        // Android 14+ no longer pre-grants SCHEDULE_EXACT_ALARM; fall back to a near-exact alarm
+        // rather than failing, and let the island's own countdown stay precise either way.
+        val exact = am.canScheduleExactAlarms()
+        runCatching {
+            if (exact) {
+                am.setAlarmClock(AlarmManager.AlarmClockInfo(endAt, show), firePendingIntent())
+            } else {
+                am.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, endAt, firePendingIntent())
+            }
+        }.onFailure { Log.w(TAG, "Timer alarm scheduling failed (exact=$exact)", it) }
     }
 
     private fun cancelAlarm() {
