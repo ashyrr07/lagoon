@@ -2,42 +2,35 @@ package com.lagoon.island.ui.app.position
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SegmentedButton
-import androidx.compose.material3.SegmentedButtonDefaults
-import androidx.compose.material3.SingleChoiceSegmentedButtonRow
-import androidx.compose.material3.Slider
-import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.lagoon.island.cutout.CutoutInfo
+import com.lagoon.island.cutout.CutoutShape
 import com.lagoon.island.cutout.IslandGeometryDefaults
 import com.lagoon.island.data.Calibration
+import com.lagoon.island.data.IslandSettings
 import com.lagoon.island.data.Placement
 import com.lagoon.island.ui.app.SettingsViewModel
+import com.lagoon.island.ui.app.components.ChoiceRow
+import com.lagoon.island.ui.app.components.IslandPreview
+import com.lagoon.island.ui.app.components.Note
+import com.lagoon.island.ui.app.components.ScreenScaffold
+import com.lagoon.island.ui.app.components.SettingGroup
+import com.lagoon.island.ui.app.components.SliderRow
+import com.lagoon.island.ui.app.components.SwitchRow
+import com.lagoon.island.ui.theme.LagoonPreviewTheme
 import kotlin.math.roundToInt
 
-/** Live calibration: every slider moves the real island as you drag. */
-@OptIn(ExperimentalMaterial3Api::class)
+/** Live calibration: every slider moves the real island as you drag, and the preview with it. */
 @Composable
 fun PositionScreen(
     onBack: () -> Unit,
@@ -45,96 +38,110 @@ fun PositionScreen(
 ) {
     val settings by viewModel.settings.collectAsStateWithLifecycle()
     val island by viewModel.islandState.collectAsStateWithLifecycle()
-    val cal = settings.calibration
     fun set(transform: (Calibration) -> Calibration) =
         viewModel.update { it.copy(calibration = transform(it.calibration)) }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Position and size") },
-                navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
-                    }
-                },
-                actions = { TextButton(onClick = { set { Calibration() } }) { Text("Reset") } },
-            )
-        },
-    ) { padding ->
-        Column(
-            Modifier
-                .fillMaxSize()
-                .padding(padding)
-                .verticalScroll(rememberScrollState())
-                .padding(horizontal = 20.dp, vertical = 8.dp),
-            verticalArrangement = Arrangement.spacedBy(20.dp),
-        ) {
-            Text(
-                "Look at the top of the screen while you adjust. The pill should wrap the camera with an even ring.",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
+    ScreenScaffold(
+        title = "Position",
+        subtitle = "Wrap the camera with an even ring",
+        onBack = onBack,
+        actions = { TextButton(onClick = { set { Calibration() } }) { Text("Reset") } },
+        pinned = { IslandPreview(settings) },
+    ) {
+        PositionControls(settings, island.cutout, ::set)
+    }
+}
 
-            LabeledSlider("Horizontal offset", cal.offsetX, -60f..60f, " dp") { set { c -> c.copy(offsetX = it) } }
-            LabeledSlider("Vertical offset", cal.offsetY, -30f..30f, " dp") { set { c -> c.copy(offsetY = it) } }
-            LabeledSlider(
-                "Width",
-                cal.idleWidth ?: IslandGeometryDefaults.IDLE_MIN_WIDTH_DP,
-                40f..220f,
-                " dp",
-            ) { set { c -> c.copy(idleWidth = it) } }
-            LabeledSlider(
-                "Ring thickness",
-                cal.padY ?: IslandGeometryDefaults.PAD_Y_DP,
-                0f..24f,
-                " dp",
-            ) { set { c -> c.copy(padY = it, padX = it) } }
-
-            Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                Column(Modifier.weight(1f)) {
-                    Text("Touch band", style = MaterialTheme.typography.titleMedium)
-                    Text(
-                        "Extends the idle pill a little below the status bar so you can tap it in Standard mode. " +
-                            "Not needed with Enhanced mode.",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+/** The calibration controls alone, shared with onboarding. */
+@Composable
+fun PositionControls(
+    settings: IslandSettings,
+    cutout: CutoutInfo?,
+    set: ((Calibration) -> Calibration) -> Unit,
+) {
+    val cal = settings.calibration
+    Column(verticalArrangement = Arrangement.spacedBy(24.dp)) {
+        Note(
+            "Look at the top of your screen while you drag. The pill should hug the camera with the same " +
+                "gap all around.",
+        )
+        SettingGroup("Placement") {
+            row {
+                SliderRow("Horizontal", cal.offsetX, -60f..60f, { set { c -> c.copy(offsetX = it.roundToInt().toFloat()) } }, format = ::dp)
+            }
+            row {
+                SliderRow("Vertical", cal.offsetY, -30f..30f, { set { c -> c.copy(offsetY = it.roundToInt().toFloat()) } }, format = ::dp)
+            }
+        }
+        SettingGroup("Shape") {
+            row {
+                SliderRow(
+                    "Width",
+                    cal.idleWidth ?: IslandGeometryDefaults.IDLE_MIN_WIDTH_DP,
+                    40f..220f,
+                    { set { c -> c.copy(idleWidth = it.roundToInt().toFloat()) } },
+                    format = ::dp,
+                )
+            }
+            row {
+                SliderRow(
+                    "Ring thickness",
+                    cal.padY ?: IslandGeometryDefaults.PAD_Y_DP,
+                    0f..24f,
+                    { set { c -> c.copy(padY = it.roundToInt().toFloat(), padX = it.roundToInt().toFloat()) } },
+                    format = ::dp,
+                )
+            }
+            row {
+                SwitchRow(
+                    "Touch band",
+                    checked = cal.touchBand,
+                    onCheckedChange = { set { c -> c.copy(touchBand = it) } },
+                    subtitle = "Extends the pill a little below the status bar so it can be tapped. " +
+                        "Not needed with Enhanced mode.",
+                )
+            }
+        }
+        if (cutout?.cutout == null) {
+            SettingGroup("No camera cutout reported") {
+                row {
+                    ChoiceRow(
+                        "Where should the island sit?",
+                        options = Placement.entries,
+                        selected = cal.placement,
+                        label = { it.name },
+                        onSelect = { set { c -> c.copy(placement = it) } },
                     )
                 }
-                Switch(checked = cal.touchBand, onCheckedChange = { set { c -> c.copy(touchBand = it) } })
             }
-
-            if (island.cutout?.cutout == null) {
-                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    Text("No camera cutout reported. Where should the island sit?", style = MaterialTheme.typography.titleMedium)
-                    SingleChoiceSegmentedButtonRow(Modifier.fillMaxWidth()) {
-                        Placement.entries.forEachIndexed { index, placement ->
-                            SegmentedButton(
-                                selected = cal.placement == placement,
-                                onClick = { set { c -> c.copy(placement = placement) } },
-                                shape = SegmentedButtonDefaults.itemShape(index, Placement.entries.size),
-                            ) { Text(placement.name) }
-                        }
-                    }
-                }
-            }
+        }
+        cutout?.let {
+            Note(
+                "Detected: ${it.shape.describe()}, status bar ${(it.statusBarHeight / it.density).roundToInt()} dp, " +
+                    "${it.screenWidth} × ${it.screenHeight} px.",
+                Modifier.padding(bottom = 8.dp),
+            )
         }
     }
 }
 
+private fun dp(v: Float) = "${v.roundToInt()} dp"
+
+private fun CutoutShape.describe() = when (this) {
+    CutoutShape.Hole -> "round camera hole"
+    CutoutShape.Pill -> "pill cutout"
+    CutoutShape.Notch -> "notch"
+    CutoutShape.None -> "no cutout"
+}
+
+@Preview(showBackground = true, heightDp = 900)
 @Composable
-private fun LabeledSlider(
-    label: String,
-    value: Float,
-    range: ClosedFloatingPointRange<Float>,
-    unit: String,
-    onChange: (Float) -> Unit,
-) {
-    Column {
-        Row(Modifier.fillMaxWidth()) {
-            Text(label, style = MaterialTheme.typography.titleMedium, modifier = Modifier.weight(1f))
-            Text("${value.roundToInt()}$unit", style = MaterialTheme.typography.labelLarge)
+private fun PositionControlsPreview() {
+    LagoonPreviewTheme {
+        Column(Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(20.dp)) {
+            IslandPreview(IslandSettings())
+            PositionControls(IslandSettings(), null) {}
+            Text("Live", style = MaterialTheme.typography.labelSmall)
         }
-        Slider(value = value, onValueChange = { onChange(it.roundToInt().toFloat()) }, valueRange = range)
     }
 }

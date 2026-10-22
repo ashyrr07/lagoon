@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- In-app brand mark, 512-ready: a rounded square of deep water with the island in the middle. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="128dp"
+    android:height="128dp"
+    android:viewportWidth="512"
+    android:viewportHeight="512">
+    <path android:pathData="M116,0 H396 A116,116 0 0 1 512,116 V396 A116,116 0 0 1 396,512 H116 A116,116 0 0 1 0,396 V116 A116,116 0 0 1 116,0 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:type="linear"
+                android:startX="256"
+                android:startY="0"
+                android:endX="256"
+                android:endY="512">
+                <item android:offset="0" android:color="#FF14565F" />
+                <item android:offset="0.55" android:color="#FF0B2F3B" />
+                <item android:offset="1" android:color="#FF061A24" />
+            </gradient>
+        </aapt:attr>
+    </path>
+    <path android:pathData="M256,256m-170,0a170,170 0 1,1 340,0a170,170 0 1,1 -340,0">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:type="radial"
+                android:centerX="256"
+                android:centerY="256"
+                android:gradientRadius="170">
+                <item android:offset="0" android:color="#4D5FE3D0" />
+                <item android:offset="1" android:color="#005FE3D0" />
+            </gradient>
+        </aapt:attr>
+    </path>
+    <path
+        android:fillColor="#FF050A0D"
+        android:pathData="M181,192 H331 A64,64 0 0 1 331,320 H181 A64,64 0 0 1 181,192 Z" />
+    <path
+        android:fillColor="#FF5FE3D0"
+        android:pathData="M256,256 m-32,0 a32,32 0 1,1 64,0 a32,32 0 1,1 -64,0" />
+</vector>
