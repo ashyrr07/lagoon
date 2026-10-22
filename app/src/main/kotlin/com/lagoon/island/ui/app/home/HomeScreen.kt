@@ -37,6 +37,7 @@ import com.lagoon.island.ui.app.SettingsViewModel
 @Composable
 fun HomeScreen(
     onOpenPosition: () -> Unit,
+    onOpenApps: () -> Unit = {},
     viewModel: SettingsViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
@@ -109,6 +110,9 @@ fun HomeScreen(
 
             OutlinedButton(onClick = onOpenPosition, modifier = Modifier.fillMaxWidth()) {
                 Text("Position and size")
+            }
+            OutlinedButton(onClick = onOpenApps, modifier = Modifier.fillMaxWidth()) {
+                Text("Apps")
             }
 
             island.cutout?.let { cutout ->

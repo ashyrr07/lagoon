@@ -7,12 +7,14 @@ import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
+import com.lagoon.island.ui.app.apps.AppsScreen
 import com.lagoon.island.ui.app.home.HomeScreen
 import com.lagoon.island.ui.app.position.PositionScreen
 import kotlinx.serialization.Serializable
 
 @Serializable data object HomeKey : NavKey
 @Serializable data object PositionKey : NavKey
+@Serializable data object AppsKey : NavKey
 
 @Composable
 fun LagoonNavigation() {
@@ -25,8 +27,14 @@ fun LagoonNavigation() {
             rememberViewModelStoreNavEntryDecorator(),
         ),
         entryProvider = entryProvider {
-            entry<HomeKey> { HomeScreen(onOpenPosition = { backStack.add(PositionKey) }) }
+            entry<HomeKey> {
+                HomeScreen(
+                    onOpenPosition = { backStack.add(PositionKey) },
+                    onOpenApps = { backStack.add(AppsKey) },
+                )
+            }
             entry<PositionKey> { PositionScreen(onBack = { backStack.removeLastOrNull() }) }
+            entry<AppsKey> { AppsScreen(onBack = { backStack.removeLastOrNull() }) }
         },
     )
 }
