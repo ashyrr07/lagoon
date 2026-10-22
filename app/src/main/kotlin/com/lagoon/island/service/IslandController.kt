@@ -20,6 +20,7 @@ import com.lagoon.island.overlay.OverlayHost
 import com.lagoon.island.sources.SourceManager
 import com.lagoon.island.sources.media.MediaSource
 import com.lagoon.island.controls.ControlsRegistry
+import com.lagoon.island.sources.system.ScreenStateSource
 import com.lagoon.island.ui.app.MainActivity
 import com.lagoon.island.ui.island.IslandRoot
 import com.lagoon.island.ui.island.IslandUiState
@@ -52,6 +53,7 @@ class IslandController @Inject constructor(
     private val sourceManager: SourceManager,
     private val mediaSource: MediaSource,
     private val controlsRegistry: ControlsRegistry,
+    private val screenState: ScreenStateSource,
     private val enhanced: EnhancedModeManager, // Enhanced mode: accessibility host + keyguard state
 ) {
     private var scope: CoroutineScope? = null
@@ -131,6 +133,9 @@ class IslandController @Inject constructor(
         enhanced.startKeyguardWatch(context)
         s.launch { enhanced.host.collect { refresh() } }
         s.launch { enhanced.keyguardLocked.collect { refresh() } }
+        // Screen off hides the island; a blacklisted foreground app (Enhanced mode knows it) too.
+        s.launch { screenState.state.collect { refresh() } }
+        s.launch { enhanced.foregroundPackage.collect { refresh() } }
     }
 
     private fun stop() {
@@ -171,7 +176,9 @@ class IslandController @Inject constructor(
         // sits above it, so there the user decides with showOnLockScreen.
         val hiddenByKeyguard = enhanced.keyguardLocked.value &&
             (host.kind == OverlayHost.Kind.App || !settings.enhanced.showOnLockScreen)
-        if (!settings.islandEnabled || needsOverlayPermission || hiddenByKeyguard) {
+        val screenOff = !screenState.state.value.screenOn
+        val hiddenByApp = enhanced.foregroundPackage.value?.let { it in settings.visibility.hiddenInApps } == true
+        if (!settings.islandEnabled || needsOverlayPermission || hiddenByKeyguard || screenOff || hiddenByApp) {
             engine.setVisible(false)
             window?.hide()
             _state.value = _state.value.copy(showing = false)
