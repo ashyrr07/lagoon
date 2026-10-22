@@ -14,11 +14,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.lagoon.island.R
 import com.lagoon.island.data.IslandSettings
 import com.lagoon.island.data.KeepAliveSettings
 import com.lagoon.island.service.IslandController
@@ -72,11 +75,11 @@ private fun HealthContent(
     val keepAlive = settings.keepAlive
 
     ScreenScaffold(
-        title = "Health",
-        subtitle = "Everything Lagoon needs to stay on screen, and what to do when a phone fights it.",
+        title = stringResource(R.string.setup_health_title),
+        subtitle = stringResource(R.string.setup_health_subtitle),
         onBack = onBack,
     ) {
-        SettingGroup("Setup") {
+        SettingGroup(stringResource(R.string.setup_health_group_setup)) {
             checks.forEach { check ->
                 row {
                     StatusRow(
@@ -90,21 +93,24 @@ private fun HealthContent(
             }
         }
 
-        SettingGroup("Keep Lagoon running") {
+        SettingGroup(stringResource(R.string.setup_keep_lagoon_running)) {
             if (keepAlive.disconnectCount > 0) {
                 row {
                     ContentRow {
-                        Text("Android stopped the service", style = MaterialTheme.typography.titleMedium)
+                        Text(stringResource(R.string.setup_health_stopped_title), style = MaterialTheme.typography.titleMedium)
                         Text(
-                            "${keepAlive.disconnectCount} ${if (keepAlive.disconnectCount == 1) "time" else "times"}, " +
-                                "last on ${DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(Date(keepAlive.lastDisconnectAt))}. " +
-                                "Excluding Lagoon from battery optimisation tells Android to leave it alone.",
+                            pluralStringResource(
+                                R.plurals.setup_health_stopped_detail,
+                                keepAlive.disconnectCount,
+                                keepAlive.disconnectCount,
+                                DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(Date(keepAlive.lastDisconnectAt)),
+                            ),
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                         if (!permissions.ignoringBatteryOptimizations) {
                             FilledTonalButton(onClick = { requestBatteryExemption(context) }) {
-                                Text("Request battery exemption")
+                                Text(stringResource(R.string.setup_health_request_exemption))
                             }
                         }
                     }
@@ -112,15 +118,15 @@ private fun HealthContent(
             }
             row {
                 ContentRow {
-                    Text("Battery optimisation", style = MaterialTheme.typography.titleMedium)
+                    Text(stringResource(R.string.setup_battery_optimisation), style = MaterialTheme.typography.titleMedium)
                     Text(
-                        "If the island disappears after a while, let Lagoon run without battery limits.",
+                        stringResource(R.string.setup_health_battery_detail),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                     if (!permissions.ignoringBatteryOptimizations) {
                         FilledTonalButton(onClick = { requestBatteryExemption(context) }) {
-                            Text("Open battery setting")
+                            Text(stringResource(R.string.setup_health_open_battery))
                         }
                     }
                 }
@@ -130,11 +136,7 @@ private fun HealthContent(
         Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
             OemGuideGroup(OemInfo.guide(permissions.oem))
             if (permissions.oem != Oem.Other) {
-                Note(
-                    "Why this is needed: some brands ship their own battery managers on top of Android's, and " +
-                        "they close background apps, including notification listeners, without asking. " +
-                        "dontkillmyapp.com keeps a longer list per brand.",
-                )
+                Note(stringResource(R.string.setup_health_oem_note))
             }
         }
     }

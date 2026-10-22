@@ -59,6 +59,7 @@ import com.lagoon.island.ui.app.components.IslandPreview
 import com.lagoon.island.ui.app.components.NavRow
 import com.lagoon.island.ui.app.language.currentLanguageTag
 import com.lagoon.island.ui.app.language.SupportedLanguages
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.material.icons.rounded.Translate
 import androidx.compose.material.icons.rounded.TouchApp
@@ -139,8 +140,8 @@ private fun HomeContent(
                 SettingGroup(null) {
                     row {
                         NavRow(
-                            "Tap right at the camera",
-                            "Turn on Enhanced mode so the whole island responds, including the part over the status bar.",
+                            stringResource(R.string.setup_home_enhanced_hint_title),
+                            stringResource(R.string.setup_home_enhanced_hint_detail),
                             Icons.Rounded.TouchApp,
                             MaterialTheme.colorScheme.tertiary,
                         ) { onNavigate(HomeDestination.Enhanced) }
@@ -163,26 +164,31 @@ private fun HomeContent(
             val look = MaterialTheme.colorScheme.primary
             val content = MaterialTheme.colorScheme.secondary
             val more = MaterialTheme.colorScheme.tertiary
-            SettingGroup("Look") {
-                row { NavRow("Position", "Offset, width, ring", Icons.Rounded.CenterFocusStrong, look) { onNavigate(HomeDestination.Position) } }
-                row { NavRow("Appearance", "Tint, size, motion", Icons.Rounded.Palette, look) { onNavigate(HomeDestination.Appearance) } }
-                row { NavRow("Gestures", "Tap, hold and swipe", Icons.Rounded.Gesture, look) { onNavigate(HomeDestination.Gestures) } }
+            SettingGroup(stringResource(R.string.setup_home_group_look)) {
+                row { NavRow(stringResource(R.string.setup_position_title), stringResource(R.string.setup_home_position_detail), Icons.Rounded.CenterFocusStrong, look) { onNavigate(HomeDestination.Position) } }
+                row { NavRow(stringResource(R.string.setup_home_appearance), stringResource(R.string.setup_home_appearance_detail), Icons.Rounded.Palette, look) { onNavigate(HomeDestination.Appearance) } }
+                row { NavRow(stringResource(R.string.setup_home_gestures), stringResource(R.string.setup_home_gestures_detail), Icons.Rounded.Gesture, look) { onNavigate(HomeDestination.Gestures) } }
             }
-            SettingGroup("Content") {
-                row { NavRow("Features", "Music, calls, timers, charging", Icons.Rounded.Layers, content) { onNavigate(HomeDestination.Features) } }
-                row { NavRow("Apps", "Which notifications show", Icons.Rounded.Apps, content) { onNavigate(HomeDestination.Apps) } }
-                row { NavRow("Controls", "Tiles, sliders and widgets", Icons.Rounded.Tune, content) { onNavigate(HomeDestination.Controls) } }
+            SettingGroup(stringResource(R.string.setup_home_group_content)) {
+                row { NavRow(stringResource(R.string.setup_home_features), stringResource(R.string.setup_home_features_detail), Icons.Rounded.Layers, content) { onNavigate(HomeDestination.Features) } }
+                row { NavRow(stringResource(R.string.setup_home_apps), stringResource(R.string.setup_home_apps_detail), Icons.Rounded.Apps, content) { onNavigate(HomeDestination.Apps) } }
+                row { NavRow(stringResource(R.string.setup_home_controls), stringResource(R.string.setup_home_controls_detail), Icons.Rounded.Tune, content) { onNavigate(HomeDestination.Controls) } }
             }
-            SettingGroup("More") {
+            SettingGroup(stringResource(R.string.setup_home_group_more)) {
                 if (enhancedAvailable) {
                     row {
-                        NavRow("Enhanced mode", "Lock screen and full-pill taps", Icons.Rounded.AccessibilityNew, more) {
+                        NavRow(
+                            stringResource(R.string.setup_enhanced_mode),
+                            stringResource(R.string.setup_home_enhanced_detail),
+                            Icons.Rounded.AccessibilityNew,
+                            more,
+                        ) {
                             onNavigate(HomeDestination.Enhanced)
                         }
                     }
                 }
-                row { NavRow("Try it", "Fire sample activities", Icons.Rounded.AutoAwesome, more) { onNavigate(HomeDestination.Demo) } }
-                row { NavRow("Health", "Keep Lagoon running", Icons.Rounded.MonitorHeart, more) { onNavigate(HomeDestination.Health) } }
+                row { NavRow(stringResource(R.string.setup_home_demo), stringResource(R.string.setup_home_demo_detail), Icons.Rounded.AutoAwesome, more) { onNavigate(HomeDestination.Demo) } }
+                row { NavRow(stringResource(R.string.setup_health_title), stringResource(R.string.setup_keep_lagoon_running), Icons.Rounded.MonitorHeart, more) { onNavigate(HomeDestination.Health) } }
                 row {
                     NavRow(
                         stringResource(R.string.language_title),
@@ -192,7 +198,7 @@ private fun HomeContent(
                         more,
                     ) { onNavigate(HomeDestination.Language) }
                 }
-                row { NavRow("About", "Version, licence, backup", Icons.Rounded.Info, more) { onNavigate(HomeDestination.About) } }
+                row { NavRow(stringResource(R.string.setup_about_title), stringResource(R.string.setup_home_about_detail), Icons.Rounded.Info, more) { onNavigate(HomeDestination.About) } }
             }
             Spacer(Modifier.height(WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding() + 8.dp))
         }
@@ -213,7 +219,7 @@ private fun Header(onAbout: () -> Unit) {
         )
         Text("Lagoon", style = MaterialTheme.typography.headlineMedium, modifier = Modifier.weight(1f))
         IconButton(onClick = onAbout) {
-            Icon(Icons.Rounded.Info, contentDescription = "About", tint = MaterialTheme.colorScheme.onSurfaceVariant)
+            Icon(Icons.Rounded.Info, contentDescription = stringResource(R.string.setup_about_title), tint = MaterialTheme.colorScheme.onSurfaceVariant)
         }
     }
 }
@@ -228,11 +234,11 @@ private fun Hero(
 ) {
     val enabled = permissions.allGranted
     val status = when {
-        !permissions.allGranted -> "Finish the setup below to turn it on"
-        !settings.islandEnabled -> "Off"
-        island.showing -> "Showing around your camera"
-        island.listenerBound -> "Hidden for now (landscape or full-screen)"
-        else -> "Waiting for Android to connect the service"
+        !permissions.allGranted -> stringResource(R.string.setup_home_status_finish_setup)
+        !settings.islandEnabled -> stringResource(R.string.setup_home_status_off)
+        island.showing -> stringResource(R.string.setup_home_status_showing)
+        island.listenerBound -> stringResource(R.string.setup_home_status_hidden)
+        else -> stringResource(R.string.setup_home_status_waiting)
     }
     Column(
         Modifier
@@ -254,7 +260,7 @@ private fun Hero(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                Text("Island", style = MaterialTheme.typography.titleLarge)
+                Text(stringResource(R.string.setup_home_island), style = MaterialTheme.typography.titleLarge)
                 Text(status, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
             Spacer(Modifier.width(12.dp))
@@ -268,16 +274,16 @@ private fun SetupHealthGroup(checks: List<SetupCheck>, attention: Int, onCheck: 
     Column {
         Row(Modifier.fillMaxWidth().padding(start = 20.dp, end = 20.dp, bottom = 8.dp), verticalAlignment = Alignment.CenterVertically) {
             Text(
-                "Setup health",
+                stringResource(R.string.setup_health_checklist),
                 style = MaterialTheme.typography.titleSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.weight(1f),
             )
             Text(
-                when (attention) {
-                    0 -> "All good"
-                    1 -> "1 thing to check"
-                    else -> "$attention things to check"
+                if (attention == 0) {
+                    stringResource(R.string.setup_home_all_good)
+                } else {
+                    pluralStringResource(R.plurals.setup_home_things_to_check, attention, attention)
                 },
                 style = MaterialTheme.typography.labelMedium,
                 color = if (attention == 0) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.tertiary,

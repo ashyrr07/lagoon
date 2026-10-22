@@ -13,8 +13,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.lagoon.island.R
 import com.lagoon.island.ui.app.components.Note
 import com.lagoon.island.ui.app.components.SettingGroup
 import com.lagoon.island.ui.theme.LagoonPreviewTheme
@@ -55,7 +57,7 @@ fun OemGuideGroup(guide: OemGuide, modifier: Modifier = Modifier) {
                             )
                         }
                         if (intent != null) {
-                            TextButton(onClick = { runCatching { context.startActivity(intent) } }) { Text("Open") }
+                            TextButton(onClick = { runCatching { context.startActivity(intent) } }) { Text(stringResource(R.string.setup_action_open)) }
                         }
                     }
                 }

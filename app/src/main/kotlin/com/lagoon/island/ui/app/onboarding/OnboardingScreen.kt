@@ -42,6 +42,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -115,16 +116,17 @@ private fun OnboardingContent(
     BackHandler(enabled = index > 0) { index-- }
 
     val primary: Pair<String, () -> Unit> = when (step) {
-        Step.Welcome -> "Set it up" to ::next
+        Step.Welcome -> stringResource(R.string.setup_action_set_it_up) to ::next
         Step.Overlay ->
-            if (permissions.overlay) "Continue" to ::next
-            else "Allow display over other apps" to { openSystemScreen(context, CheckId.Overlay) }
+            if (permissions.overlay) stringResource(R.string.setup_action_continue) to ::next
+            else stringResource(R.string.setup_action_allow_overlay) to { openSystemScreen(context, CheckId.Overlay) }
         Step.Notifications ->
-            if (permissions.notificationAccess) "Continue" to ::next
-            else "Open notification access" to { openSystemScreen(context, CheckId.NotificationAccess) }
-        Step.KeepAlive -> "Continue" to ::next
-        Step.Calibrate -> "Looks right" to ::next
-        Step.Done -> "Open Lagoon" to onFinish
+            if (permissions.notificationAccess) stringResource(R.string.setup_action_continue) to ::next
+            else stringResource(R.string.setup_action_open_notification_access) to
+                { openSystemScreen(context, CheckId.NotificationAccess) }
+        Step.KeepAlive -> stringResource(R.string.setup_action_continue) to ::next
+        Step.Calibrate -> stringResource(R.string.setup_action_looks_right) to ::next
+        Step.Done -> stringResource(R.string.setup_action_open_lagoon) to onFinish
     }
 
     Column(
@@ -139,7 +141,7 @@ private fun OnboardingContent(
         ) {
             Progress(count = steps.size, current = index, modifier = Modifier.weight(1f))
             if (step != Step.Done) {
-                TextButton(onClick = onFinish) { Text("Skip") }
+                TextButton(onClick = onFinish) { Text(stringResource(R.string.setup_action_skip)) }
             } else {
                 Spacer(Modifier.height(48.dp))
             }
@@ -224,19 +226,30 @@ private fun ColumnScope.WelcomeStep() {
         modifier = Modifier.padding(top = 24.dp).size(96.dp).clip(RoundedCornerShape(26.dp)),
     )
     Title(
-        "A Dynamic Island for your Android",
-        "A pill around your camera that shows music, calls, timers, charging, earbuds and the notifications you " +
-            "choose. Tap it for more, hold it for quick controls.",
+        stringResource(R.string.setup_welcome_title),
+        stringResource(R.string.setup_welcome_body),
     )
     SettingGroup(null) {
         row {
-            StatusRow("Free, for good", "No ads, no subscriptions, no accounts", Health.Ok)
+            StatusRow(
+                stringResource(R.string.setup_welcome_free_title),
+                stringResource(R.string.setup_welcome_free_detail),
+                Health.Ok,
+            )
         }
         row {
-            StatusRow("Open source", "GPL-3.0, on GitHub", Health.Ok)
+            StatusRow(
+                stringResource(R.string.setup_open_source),
+                stringResource(R.string.setup_welcome_open_source_detail),
+                Health.Ok,
+            )
         }
         row {
-            StatusRow("No internet", "Lagoon has no network permission. Nothing can leave your phone.", Health.Ok)
+            StatusRow(
+                stringResource(R.string.setup_welcome_no_internet_title),
+                stringResource(R.string.setup_welcome_no_internet_detail),
+                Health.Ok,
+            )
         }
     }
 }
@@ -245,15 +258,18 @@ private fun ColumnScope.WelcomeStep() {
 private fun ColumnScope.OverlayStep(settings: IslandSettings, permissions: Permissions) {
     IslandPreview(settings, inhaleOnAppear = true)
     Title(
-        "Let it float over other apps",
-        "The island is a small window that sits above whatever you are doing. Android calls this " +
-            "\"Display over other apps\" and asks you to switch it on by hand.",
+        stringResource(R.string.setup_overlay_title),
+        stringResource(R.string.setup_overlay_body),
     )
     SettingGroup(null) {
         row {
             StatusRow(
-                "Display over other apps",
-                if (permissions.overlay) "Allowed" else "Switch it on, then come back",
+                stringResource(R.string.setup_permission_overlay),
+                if (permissions.overlay) {
+                    stringResource(R.string.setup_status_allowed)
+                } else {
+                    stringResource(R.string.setup_overlay_pending)
+                },
                 if (permissions.overlay) Health.Ok else Health.Attention,
             )
         }
@@ -263,18 +279,16 @@ private fun ColumnScope.OverlayStep(settings: IslandSettings, permissions: Permi
 @Composable
 private fun ColumnScope.NotificationsStep(permissions: Permissions) {
     Title(
-        "Notification access",
-        "This is how Lagoon knows what is playing, who is calling and what your apps want to tell you. " +
-            "Here is exactly what that means.",
+        stringResource(R.string.setup_permission_notification_access),
+        stringResource(R.string.setup_notifications_body),
     )
     // Prominent disclosure, before the system screen (Play policy and plain honesty).
-    SettingGroup("What Lagoon does with it") {
+    SettingGroup(stringResource(R.string.setup_notifications_disclosure)) {
         row {
             ContentRow {
-                Text("Reads", style = MaterialTheme.typography.titleMedium)
+                Text(stringResource(R.string.setup_notifications_reads_title), style = MaterialTheme.typography.titleMedium)
                 Text(
-                    "The title, text, icon and buttons of notifications from the apps you pick, media playback " +
-                        "state and album art, and the dialer's call notification.",
+                    stringResource(R.string.setup_notifications_reads_body),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
@@ -282,10 +296,9 @@ private fun ColumnScope.NotificationsStep(permissions: Permissions) {
         }
         row {
             ContentRow {
-                Text("Keeps", style = MaterialTheme.typography.titleMedium)
+                Text(stringResource(R.string.setup_notifications_keeps_title), style = MaterialTheme.typography.titleMedium)
                 Text(
-                    "Nothing. Content stays in memory while it is on the island and is dropped afterwards. " +
-                        "There is no log and no database of your notifications.",
+                    stringResource(R.string.setup_notifications_keeps_body),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
@@ -293,9 +306,9 @@ private fun ColumnScope.NotificationsStep(permissions: Permissions) {
         }
         row {
             ContentRow {
-                Text("Sends", style = MaterialTheme.typography.titleMedium)
+                Text(stringResource(R.string.setup_notifications_sends_title), style = MaterialTheme.typography.titleMedium)
                 Text(
-                    "Nothing. Lagoon has no internet permission, so it cannot upload anything, ever.",
+                    stringResource(R.string.setup_notifications_sends_body),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
@@ -304,18 +317,18 @@ private fun ColumnScope.NotificationsStep(permissions: Permissions) {
     }
     if (permissions.sideloaded && Build.VERSION.SDK_INT >= 33) {
         val context = LocalContext.current
-        SettingGroup("Installed from outside a store?") {
+        SettingGroup(stringResource(R.string.setup_sideload_title)) {
             row {
                 ContentRow {
                     Text(
-                        "Android 13 and newer grey out this setting for apps installed by hand until you allow it:",
+                        stringResource(R.string.setup_sideload_intro),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
-                    Text("1. Open the setting below and try to switch Lagoon on. If it says \"restricted\", come back.", style = MaterialTheme.typography.bodyMedium)
-                    Text("2. Open App info, tap the ⋮ menu, choose \"Allow restricted settings\".", style = MaterialTheme.typography.bodyMedium)
-                    Text("3. Open the setting again. It will switch on now.", style = MaterialTheme.typography.bodyMedium)
-                    TextButton(onClick = { openAppInfo(context) }) { Text("Open App info") }
+                    Text(stringResource(R.string.setup_sideload_step1), style = MaterialTheme.typography.bodyMedium)
+                    Text(stringResource(R.string.setup_sideload_step2), style = MaterialTheme.typography.bodyMedium)
+                    Text(stringResource(R.string.setup_sideload_step3), style = MaterialTheme.typography.bodyMedium)
+                    TextButton(onClick = { openAppInfo(context) }) { Text(stringResource(R.string.setup_action_open_app_info)) }
                 }
             }
         }
@@ -323,8 +336,12 @@ private fun ColumnScope.NotificationsStep(permissions: Permissions) {
     SettingGroup(null) {
         row {
             StatusRow(
-                "Notification access",
-                if (permissions.notificationAccess) "Granted" else "Grant it, then come back",
+                stringResource(R.string.setup_permission_notification_access),
+                if (permissions.notificationAccess) {
+                    stringResource(R.string.setup_status_granted)
+                } else {
+                    stringResource(R.string.setup_notifications_pending)
+                },
                 if (permissions.notificationAccess) Health.Ok else Health.Attention,
             )
         }
@@ -334,17 +351,15 @@ private fun ColumnScope.NotificationsStep(permissions: Permissions) {
 @Composable
 private fun ColumnScope.KeepAliveStep(oem: Oem) {
     Title(
-        "Keep it running",
+        stringResource(R.string.setup_keepalive_title),
         if (oem == Oem.Other) {
-            "Stock Android keeps Lagoon's service alive on its own. If the island ever disappears, the Health " +
-                "screen shows what happened and how to fix it."
+            stringResource(R.string.setup_keepalive_body_stock)
         } else {
-            "${oem.brandName} phones close background apps that are not allowed by hand, and the island goes " +
-                "with them. Two minutes now saves a lot of wondering later."
+            stringResource(R.string.setup_keepalive_body_oem, oem.brandName)
         },
     )
     OemGuideGroup(OemInfo.guide(oem))
-    Note("Lagoon does not ask to be excluded from battery optimisation here. That option appears on the Health screen only if the service is actually stopped.")
+    Note(stringResource(R.string.setup_keepalive_note))
 }
 
 @Composable
@@ -355,9 +370,8 @@ private fun ColumnScope.CalibrateStep(
 ) {
     IslandPreview(settings)
     Title(
-        "Wrap the camera",
-        "Lagoon read your screen's cutout. Fine-tune it so the ring sits evenly; the real island at the top " +
-            "of the screen moves as you drag.",
+        stringResource(R.string.setup_calibrate_title),
+        stringResource(R.string.setup_calibrate_body),
     )
     PositionControls(settings, island.cutout, set)
 }
@@ -368,14 +382,14 @@ private fun ColumnScope.DoneStep(settings: IslandSettings, permissions: Permissi
     val checks = setupChecks(permissions, island, settings)
     val ready = permissions.allGranted
     Title(
-        if (ready) "You're set" else "Almost there",
+        if (ready) stringResource(R.string.setup_done_title_ready) else stringResource(R.string.setup_done_title_almost),
         if (ready) {
-            "The island is live. Everything below can be changed later from the Home screen."
+            stringResource(R.string.setup_done_body_ready)
         } else {
-            "The island needs the two permissions above before it can show. Home keeps this checklist until it is done."
+            stringResource(R.string.setup_done_body_almost)
         },
     )
-    SettingGroup("Setup health") {
+    SettingGroup(stringResource(R.string.setup_health_checklist)) {
         checks.forEach { check ->
             row { StatusRow(check.title, check.detail, check.health) }
         }

@@ -1,5 +1,6 @@
 package com.lagoon.island.ui.app.position
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -9,10 +10,12 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.lagoon.island.R
 import com.lagoon.island.cutout.CutoutInfo
 import com.lagoon.island.cutout.CutoutShape
 import com.lagoon.island.cutout.IslandGeometryDefaults
@@ -42,10 +45,10 @@ fun PositionScreen(
         viewModel.update { it.copy(calibration = transform(it.calibration)) }
 
     ScreenScaffold(
-        title = "Position",
-        subtitle = "Wrap the camera with an even ring",
+        title = stringResource(R.string.setup_position_title),
+        subtitle = stringResource(R.string.setup_position_subtitle),
         onBack = onBack,
-        actions = { TextButton(onClick = { set { Calibration() } }) { Text("Reset") } },
+        actions = { TextButton(onClick = { set { Calibration() } }) { Text(stringResource(R.string.setup_position_reset)) } },
         pinned = { IslandPreview(settings) },
     ) {
         PositionControls(settings, island.cutout, ::set)
@@ -60,56 +63,63 @@ fun PositionControls(
     set: ((Calibration) -> Calibration) -> Unit,
 ) {
     val cal = settings.calibration
+    val dpPattern = stringResource(R.string.setup_position_dp)
+    val dp: (Float) -> String = { dpPattern.format(it.roundToInt()) }
     Column(verticalArrangement = Arrangement.spacedBy(24.dp)) {
-        Note(
-            "Look at the top of your screen while you drag. The pill should hug the camera with the same " +
-                "gap all around.",
-        )
-        SettingGroup("Placement") {
+        Note(stringResource(R.string.setup_position_note))
+        SettingGroup(stringResource(R.string.setup_position_placement)) {
             row {
-                SliderRow("Horizontal", cal.offsetX, -60f..60f, { set { c -> c.copy(offsetX = it.roundToInt().toFloat()) } }, format = ::dp)
+                SliderRow(stringResource(R.string.setup_position_horizontal), cal.offsetX, -60f..60f, { set { c -> c.copy(offsetX = it.roundToInt().toFloat()) } }, format = dp)
             }
             row {
-                SliderRow("Vertical", cal.offsetY, -30f..30f, { set { c -> c.copy(offsetY = it.roundToInt().toFloat()) } }, format = ::dp)
+                SliderRow(stringResource(R.string.setup_position_vertical), cal.offsetY, -30f..30f, { set { c -> c.copy(offsetY = it.roundToInt().toFloat()) } }, format = dp)
             }
         }
-        SettingGroup("Shape") {
+        SettingGroup(stringResource(R.string.setup_position_shape)) {
             row {
                 SliderRow(
-                    "Width",
+                    stringResource(R.string.setup_position_width),
                     cal.idleWidth ?: IslandGeometryDefaults.IDLE_MIN_WIDTH_DP,
                     40f..220f,
                     { set { c -> c.copy(idleWidth = it.roundToInt().toFloat()) } },
-                    format = ::dp,
+                    format = dp,
                 )
             }
             row {
                 SliderRow(
-                    "Ring thickness",
+                    stringResource(R.string.setup_position_ring),
                     cal.padY ?: IslandGeometryDefaults.PAD_Y_DP,
                     0f..24f,
                     { set { c -> c.copy(padY = it.roundToInt().toFloat(), padX = it.roundToInt().toFloat()) } },
-                    format = ::dp,
+                    format = dp,
                 )
             }
             row {
                 SwitchRow(
-                    "Touch band",
+                    stringResource(R.string.setup_position_touch_band),
                     checked = cal.touchBand,
                     onCheckedChange = { set { c -> c.copy(touchBand = it) } },
-                    subtitle = "Extends the pill a little below the status bar so it can be tapped. " +
-                        "Not needed with Enhanced mode.",
+                    subtitle = stringResource(R.string.setup_position_touch_band_detail),
                 )
             }
         }
         if (cutout?.cutout == null) {
-            SettingGroup("No camera cutout reported") {
+            SettingGroup(stringResource(R.string.setup_position_no_cutout)) {
                 row {
+                    val left = stringResource(R.string.setup_position_left)
+                    val center = stringResource(R.string.setup_position_center)
+                    val right = stringResource(R.string.setup_position_right)
                     ChoiceRow(
-                        "Where should the island sit?",
+                        stringResource(R.string.setup_position_where),
                         options = Placement.entries,
                         selected = cal.placement,
-                        label = { it.name },
+                        label = {
+                            when (it) {
+                                Placement.Left -> left
+                                Placement.Center -> center
+                                Placement.Right -> right
+                            }
+                        },
                         onSelect = { set { c -> c.copy(placement = it) } },
                     )
                 }
@@ -117,21 +127,25 @@ fun PositionControls(
         }
         cutout?.let {
             Note(
-                "Detected: ${it.shape.describe()}, status bar ${(it.statusBarHeight / it.density).roundToInt()} dp, " +
-                    "${it.screenWidth} × ${it.screenHeight} px.",
+                stringResource(
+                    R.string.setup_position_detected,
+                    stringResource(it.shape.describe()),
+                    (it.statusBarHeight / it.density).roundToInt(),
+                    it.screenWidth,
+                    it.screenHeight,
+                ),
                 Modifier.padding(bottom = 8.dp),
             )
         }
     }
 }
 
-private fun dp(v: Float) = "${v.roundToInt()} dp"
-
-private fun CutoutShape.describe() = when (this) {
-    CutoutShape.Hole -> "round camera hole"
-    CutoutShape.Pill -> "pill cutout"
-    CutoutShape.Notch -> "notch"
-    CutoutShape.None -> "no cutout"
+@StringRes
+private fun CutoutShape.describe(): Int = when (this) {
+    CutoutShape.Hole -> R.string.setup_position_shape_hole
+    CutoutShape.Pill -> R.string.setup_position_shape_pill
+    CutoutShape.Notch -> R.string.setup_position_shape_notch
+    CutoutShape.None -> R.string.setup_position_shape_none
 }
 
 @Preview(showBackground = true, heightDp = 900)

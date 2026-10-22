@@ -21,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -44,6 +45,7 @@ fun AboutScreen(
     viewModel: SettingsViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
+    val resources = LocalResources.current
     val scope = rememberCoroutineScope()
     fun toast(text: String) = Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
 
@@ -51,16 +53,16 @@ fun AboutScreen(
         uri ?: return@rememberLauncherForActivityResult
         scope.launch {
             viewModel.exportTo(uri)
-                .onSuccess { toast("Settings exported") }
-                .onFailure { toast("Export failed: ${it.message}") }
+                .onSuccess { toast(resources.getString(R.string.setup_about_exported)) }
+                .onFailure { toast(resources.getString(R.string.setup_about_export_failed, it.message)) }
         }
     }
     val importer = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
         uri ?: return@rememberLauncherForActivityResult
         scope.launch {
             viewModel.importFrom(uri)
-                .onSuccess { toast("Settings imported") }
-                .onFailure { toast("That file is not a Lagoon backup") }
+                .onSuccess { toast(resources.getString(R.string.setup_about_imported)) }
+                .onFailure { toast(resources.getString(R.string.setup_about_import_failed)) }
         }
     }
 
@@ -76,7 +78,7 @@ private fun AboutContent(onBack: () -> Unit, onExport: () -> Unit, onImport: () 
     val context = LocalContext.current
     val github = stringResource(R.string.github_url)
 
-    ScreenScaffold(title = "About", onBack = onBack) {
+    ScreenScaffold(title = stringResource(R.string.setup_about_title), onBack = onBack) {
         Row(
             Modifier.fillMaxWidth().padding(horizontal = 4.dp),
             verticalAlignment = Alignment.CenterVertically,
@@ -95,44 +97,43 @@ private fun AboutContent(onBack: () -> Unit, onExport: () -> Unit, onImport: () 
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
                 Text(
-                    "Version ${BuildConfig.VERSION_NAME} (${BuildConfig.FLAVOR})",
+                    stringResource(R.string.setup_about_version, BuildConfig.VERSION_NAME, BuildConfig.FLAVOR),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
         }
 
-        SettingGroup("Open source") {
+        SettingGroup(stringResource(R.string.setup_open_source)) {
             row {
+                val clipLabel = stringResource(R.string.setup_about_clip_label)
+                val copied = stringResource(R.string.setup_about_link_copied)
                 ValueRow(
-                    "Source code",
-                    "Copy link",
+                    stringResource(R.string.setup_about_source_code),
+                    stringResource(R.string.setup_about_copy_link),
                     subtitle = github.removePrefix("https://"),
                     onClick = {
                         val clipboard = context.getSystemService(ClipboardManager::class.java)
-                        clipboard.setPrimaryClip(ClipData.newPlainText("Lagoon on GitHub", github))
-                        Toast.makeText(context, "Link copied", Toast.LENGTH_SHORT).show()
+                        clipboard.setPrimaryClip(ClipData.newPlainText(clipLabel, github))
+                        Toast.makeText(context, copied, Toast.LENGTH_SHORT).show()
                     },
                 )
             }
             row {
                 ValueRow(
-                    "Licence",
+                    stringResource(R.string.setup_about_licence),
                     "GPL-3.0",
-                    subtitle = "Free to use, study, share and improve. Forks must stay open.",
+                    subtitle = stringResource(R.string.setup_about_licence_detail),
                 )
             }
         }
 
-        SettingGroup("Privacy") {
+        SettingGroup(stringResource(R.string.setup_about_privacy)) {
             row {
                 ContentRow {
-                    Text("Nothing leaves your phone", style = MaterialTheme.typography.titleMedium)
+                    Text(stringResource(R.string.setup_about_privacy_title), style = MaterialTheme.typography.titleMedium)
                     Text(
-                        "Lagoon has no internet permission, so it cannot send anything anywhere: no analytics, " +
-                            "no crash reports, no accounts. Notification access is used only to show what is " +
-                            "playing, who is calling and the notifications you choose; the text stays in memory " +
-                            "and is dropped when the island clears it.",
+                        stringResource(R.string.setup_about_privacy_body),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
@@ -140,11 +141,11 @@ private fun AboutContent(onBack: () -> Unit, onExport: () -> Unit, onImport: () 
             }
         }
 
-        SettingGroup("Backup") {
-            row { NavRow("Export settings", "Save a JSON file you can keep or move to another phone", onClick = onExport) }
-            row { NavRow("Import settings", "Replace the current settings with a saved file", onClick = onImport) }
+        SettingGroup(stringResource(R.string.setup_about_backup)) {
+            row { NavRow(stringResource(R.string.setup_about_export), stringResource(R.string.setup_about_export_detail), onClick = onExport) }
+            row { NavRow(stringResource(R.string.setup_about_import), stringResource(R.string.setup_about_import_detail), onClick = onImport) }
         }
-        Note("Made for every Android with a camera cutout. Thank you for using free software.")
+        Note(stringResource(R.string.setup_about_note))
     }
 }
 
