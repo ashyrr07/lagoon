@@ -37,6 +37,7 @@ import com.lagoon.island.ui.app.SettingsViewModel
 @Composable
 fun HomeScreen(
     onOpenPosition: () -> Unit,
+    onOpenEnhanced: () -> Unit = {}, // Enhanced mode disclosure screen
     viewModel: SettingsViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
@@ -109,6 +110,9 @@ fun HomeScreen(
 
             OutlinedButton(onClick = onOpenPosition, modifier = Modifier.fillMaxWidth()) {
                 Text("Position and size")
+            }
+            OutlinedButton(onClick = onOpenEnhanced, modifier = Modifier.fillMaxWidth()) {
+                Text("Enhanced mode (optional)")
             }
 
             island.cutout?.let { cutout ->

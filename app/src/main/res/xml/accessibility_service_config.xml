@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Enhanced mode. Deliberately minimal so the prominent disclosure stays honest:
+  - canRetrieveWindowContent=false and no flagRetrieveInteractiveWindows: never reads the screen
+  - canPerformGestures=false: never touches the screen for you
+  - accessibilityEventTypes=typeWindowStateChanged only: just the foreground package name
+  The service exists to draw the island above the status bar / lock screen and to perform
+  screenshot, lock screen and recents when you tap a tile.
+-->
+<accessibility-service xmlns:android="http://schemas.android.com/apk/res/android"
+    android:accessibilityEventTypes="typeWindowStateChanged"
+    android:accessibilityFeedbackType="feedbackGeneric"
+    android:accessibilityFlags="flagDefault"
+    android:canPerformGestures="false"
+    android:canRetrieveWindowContent="false"
+    android:description="@string/enhanced_service_description"
+    android:summary="@string/enhanced_service_summary"
+    android:notificationTimeout="100"
+    android:settingsActivity="com.lagoon.island.ui.app.MainActivity" />

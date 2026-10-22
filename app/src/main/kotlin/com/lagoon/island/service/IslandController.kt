@@ -48,10 +48,12 @@ class IslandController @Inject constructor(
     private val launcher: IntentLauncher,
     private val engine: IslandEngine,
     private val sourceManager: SourceManager,
+    private val enhanced: EnhancedModeManager, // Enhanced mode: accessibility host + keyguard state
 ) {
     private var scope: CoroutineScope? = null
     private var window: IslandWindow? = null
     private var host: OverlayHost? = null
+    private var appHost: AppOverlayHost? = null // Enhanced mode: kept for falling back
     private var detector: CutoutDetector? = null
     private var settingsJob: Job? = null
 
@@ -119,15 +121,21 @@ class IslandController @Inject constructor(
             }
         }
         context.registerComponentCallbacks(configCallbacks)
+        // Enhanced mode: re-apply when the accessibility host comes or goes, or the keyguard changes.
+        enhanced.startKeyguardWatch(context)
+        s.launch { enhanced.host.collect { refresh() } }
+        s.launch { enhanced.keyguardLocked.collect { refresh() } }
     }
 
     private fun stop() {
         sourceManager.stopAll()
         engine.stop()
         runCatching { context.unregisterComponentCallbacks(configCallbacks) }
+        enhanced.stopKeyguardWatch(context) // Enhanced mode
         window?.destroy()
         window = null
         host = null
+        appHost = null // Enhanced mode
         detector = null
         scope?.cancel()
         scope = null
@@ -144,13 +152,25 @@ class IslandController @Inject constructor(
     private fun apply(settings: IslandSettings) {
         uiState.settings = settings
         uiState.reduceMotion = settings.appearance.reduceMotion || animatorScale() == 0f
-        if (!settings.islandEnabled || !Settings.canDrawOverlays(context)) {
+        // Enhanced mode: prefer the accessibility host while its service is connected; it needs no
+        // overlay permission. Re-host the live window when the host changes (state is kept).
+        val host: OverlayHost = enhanced.host.value ?: appHost ?: AppOverlayHost(context).also { appHost = it }
+        if (this.host !== host) {
+            this.host = host
+            detector = null
+            window?.rehost(host)
+        }
+        val needsOverlayPermission = host.kind == OverlayHost.Kind.App && !Settings.canDrawOverlays(context)
+        // Enhanced mode: the app overlay draws under the keyguard anyway; the accessibility overlay
+        // sits above it, so there the user decides with showOnLockScreen.
+        val hiddenByKeyguard = enhanced.keyguardLocked.value &&
+            (host.kind == OverlayHost.Kind.App || !settings.enhanced.showOnLockScreen)
+        if (!settings.islandEnabled || needsOverlayPermission || hiddenByKeyguard) {
             engine.setVisible(false)
             window?.hide()
             _state.value = _state.value.copy(showing = false)
             return
         }
-        val host = host ?: AppOverlayHost(context).also { host = it }
         val detector = detector ?: CutoutDetector(host.windowContext).also { detector = it }
         val window = window ?: IslandWindow(host, onOutsideTouch = { uiState.onOutsideTouch() }).also {
             it.setContent { IslandRoot(uiState) }
