@@ -154,7 +154,9 @@ private fun HomeContent(
                 attention = attention,
                 onCheck = { check ->
                     when {
-                        check.id == CheckId.Oem || check.id == CheckId.Battery -> onNavigate(HomeDestination.Health)
+                        check.id == CheckId.Oem -> onNavigate(HomeDestination.Health)
+                        // Straight to the system battery dialog for Lagoon, not via the Health screen.
+                        check.id == CheckId.Battery -> openSystemScreen(context, check.id)
                         check.health == Health.Attention -> openSystemScreen(context, check.id)
                         else -> onNavigate(HomeDestination.Health)
                     }
