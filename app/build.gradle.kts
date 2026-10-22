@@ -97,6 +97,8 @@ android {
     // per-app language picker (Android 13+) from the values-* folders.
     androidResources {
         generateLocaleConfig = true
+        // Ship only the languages Lagoon is translated into (drops libraries' extra locales).
+        localeFilters += listOf("en", "ru", "de", "fr", "es")
     }
 
     buildFeatures {
