@@ -169,7 +169,7 @@ private fun fakeUiState(
     return IslandUiState().apply {
         this.settings = settings
         this.cutout = info
-        this.idle = IslandGeometry.idleFrame(info, settings.calibration)
+        this.idle = IslandGeometry.idleFrame(info, settings.calibration, settings.appearance.scale, settings.appearance.roundness)
         this.windowRect = PxRect(0, 0, widthPx, heightPx)
         this.presentation = presentation
         this.reduceMotion = settings.appearance.reduceMotion

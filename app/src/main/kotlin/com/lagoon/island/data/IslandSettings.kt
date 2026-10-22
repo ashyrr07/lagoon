@@ -65,6 +65,8 @@ data class Appearance(
     val haptics: Boolean = true,
     val idleMode: IdleMode = IdleMode.Always,
     val cornerSmoothing: Float = 0.6f,
+    /** Corner radius as a fraction of half the pill height: 1 = full pill, 0.35 = rounded rectangle. */
+    val roundness: Float = 1f,
     /** Seconds an expanded view stays open without interaction. */
     val expandedTimeoutSec: Int = 6,
 )

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="style_title">À votre style</string>
+    <string name="style_body">Choisissez un look. Vous pourrez tout affiner plus tard dans Apparence.</string>
+    <string name="style_color">Couleur</string>
+    <string name="style_color_black">Noir</string>
+    <string name="style_color_dynamic">Couleurs du fond d\'écran</string>
+    <string name="style_color_album">Pochette d\'album</string>
+    <string name="style_size">Taille</string>
+    <string name="style_size_small">Petite</string>
+    <string name="style_size_medium">Moyenne</string>
+    <string name="style_size_large">Grande</string>
+    <string name="style_shape">Forme</string>
+    <string name="style_shape_pill">Pilule</string>
+    <string name="style_shape_rounded">Arrondie</string>
+    <string name="style_idle">Quand il ne se passe rien</string>
+    <string name="style_idle_always">Toujours afficher</string>
+    <string name="style_idle_activity">Seulement en activité</string>
+    <string name="style_action">C\'est parfait</string>
+    <string name="style_roundness">Arrondi</string>
+    <string name="style_roundness_detail">Du rectangle arrondi à la pilule complète.</string>
+</resources>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="style_title">Make it yours</string>
+    <string name="style_body">Pick a look. You can fine-tune all of it later in Appearance.</string>
+    <string name="style_color">Colour</string>
+    <string name="style_color_black">Black</string>
+    <string name="style_color_dynamic">Wallpaper colours</string>
+    <string name="style_color_album">Album art</string>
+    <string name="style_size">Size</string>
+    <string name="style_size_small">Small</string>
+    <string name="style_size_medium">Medium</string>
+    <string name="style_size_large">Large</string>
+    <string name="style_shape">Shape</string>
+    <string name="style_shape_pill">Pill</string>
+    <string name="style_shape_rounded">Rounded</string>
+    <string name="style_idle">When nothing is happening</string>
+    <string name="style_idle_always">Always show</string>
+    <string name="style_idle_activity">Only with activity</string>
+    <string name="style_action">Looks good</string>
+    <string name="style_roundness">Roundness</string>
+    <string name="style_roundness_detail">From a rounded rectangle to a full pill.</string>
+</resources>

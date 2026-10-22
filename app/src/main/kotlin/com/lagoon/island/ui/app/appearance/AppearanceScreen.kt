@@ -111,11 +111,11 @@ private fun AppearanceContent(
             }
             row {
                 SliderRow(
-                    stringResource(R.string.screens_appearance_corner_smoothing),
-                    a.cornerSmoothing,
-                    0f..1f,
-                    { set { s -> s.copy(cornerSmoothing = (it * 20).roundToInt() / 20f) } },
-                    subtitle = stringResource(R.string.screens_appearance_corner_smoothing_detail),
+                    stringResource(R.string.style_roundness),
+                    a.roundness,
+                    com.lagoon.island.cutout.IslandGeometry.MIN_ROUNDNESS..1f,
+                    { set { s -> s.copy(roundness = (it * 20).roundToInt() / 20f) } },
+                    subtitle = stringResource(R.string.style_roundness_detail),
                     format = { percent.format((it * 100).roundToInt()) },
                 )
             }

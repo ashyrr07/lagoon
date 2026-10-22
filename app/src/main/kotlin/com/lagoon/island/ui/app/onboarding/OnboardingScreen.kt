@@ -71,7 +71,7 @@ import com.lagoon.island.ui.theme.LagoonPreviewTheme
 import com.lagoon.island.util.Oem
 import com.lagoon.island.util.OemInfo
 
-enum class Step { Welcome, Overlay, Notifications, KeepAlive, Calibrate, Done }
+enum class Step { Welcome, Overlay, Notifications, KeepAlive, Calibrate, Style, Done }
 
 @Composable
 fun OnboardingScreen(
@@ -92,6 +92,7 @@ fun OnboardingScreen(
         permissions = permissions,
         island = island,
         setCalibration = { transform -> viewModel.update { it.copy(calibration = transform(it.calibration)) } },
+        setAppearance = { transform -> viewModel.update { it.copy(appearance = transform(it.appearance)) } },
         onFinish = {
             viewModel.finishOnboarding()
             onDone()
@@ -106,6 +107,7 @@ private fun OnboardingContent(
     island: IslandController.State,
     setCalibration: ((Calibration) -> Calibration) -> Unit,
     onFinish: () -> Unit,
+    setAppearance: ((com.lagoon.island.data.Appearance) -> com.lagoon.island.data.Appearance) -> Unit = {},
     initialStep: Step = Step.Welcome,
 ) {
     val context = LocalContext.current
@@ -126,6 +128,7 @@ private fun OnboardingContent(
                 { openSystemScreen(context, CheckId.NotificationAccess) }
         Step.KeepAlive -> stringResource(R.string.setup_action_continue) to ::next
         Step.Calibrate -> stringResource(R.string.setup_action_looks_right) to ::next
+        Step.Style -> stringResource(R.string.style_action) to ::next
         Step.Done -> stringResource(R.string.setup_action_open_lagoon) to onFinish
     }
 
@@ -175,6 +178,7 @@ private fun OnboardingContent(
                     Step.Notifications -> NotificationsStep(permissions)
                     Step.KeepAlive -> KeepAliveStep(permissions.oem)
                     Step.Calibrate -> CalibrateStep(settings, island, setCalibration)
+                    Step.Style -> StyleStep(settings, setAppearance)
                     Step.Done -> DoneStep(settings, permissions, island)
                 }
             }

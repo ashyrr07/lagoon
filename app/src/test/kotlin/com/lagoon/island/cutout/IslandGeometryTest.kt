@@ -78,4 +78,18 @@ class IslandGeometryTest {
         assertEquals(CutoutShape.Notch, CutoutInfo.classify(PxRect(0, 0, 500, 80), 1080))
         assertEquals(CutoutShape.None, CutoutInfo.classify(null, 1080))
     }
+
+    @Test
+    fun `size scales the idle pill and roundness sets the corner radius`() {
+        val normal = IslandGeometry.idleFrame(pixel, Calibration(touchBand = false))
+        val big = IslandGeometry.idleFrame(pixel, Calibration(touchBand = false), scale = 1.25f)
+        assertTrue(big.pill.width > normal.pill.width)
+        assertTrue(big.pill.height > normal.pill.height)
+        assertEquals(big.pill.centerX, normal.pill.centerX)
+
+        val square = IslandGeometry.idleFrame(pixel, Calibration(touchBand = false), roundness = 0.5f)
+        assertEquals(square.pill.height / 4f, square.cornerRadius, 0.01f)
+        val tooSquare = IslandGeometry.idleFrame(pixel, Calibration(touchBand = false), roundness = 0f)
+        assertEquals(tooSquare.pill.height / 2f * IslandGeometry.MIN_ROUNDNESS, tooSquare.cornerRadius, 0.01f)
+    }
 }

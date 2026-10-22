@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="style_title">A tu estilo</string>
+    <string name="style_body">Elige un aspecto. Podrás ajustarlo todo más tarde en Apariencia.</string>
+    <string name="style_color">Color</string>
+    <string name="style_color_black">Negro</string>
+    <string name="style_color_dynamic">Colores del fondo</string>
+    <string name="style_color_album">Portada del álbum</string>
+    <string name="style_size">Tamaño</string>
+    <string name="style_size_small">Pequeño</string>
+    <string name="style_size_medium">Mediano</string>
+    <string name="style_size_large">Grande</string>
+    <string name="style_shape">Forma</string>
+    <string name="style_shape_pill">Píldora</string>
+    <string name="style_shape_rounded">Redondeada</string>
+    <string name="style_idle">Cuando no pasa nada</string>
+    <string name="style_idle_always">Mostrar siempre</string>
+    <string name="style_idle_activity">Solo con actividad</string>
+    <string name="style_action">Me gusta</string>
+    <string name="style_roundness">Redondez</string>
+    <string name="style_roundness_detail">De un rectángulo redondeado a una píldora completa.</string>
+</resources>

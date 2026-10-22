@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="style_title">Dein Stil</string>
+    <string name="style_body">Wähle einen Look. Feinheiten kannst du später unter „Darstellung“ anpassen.</string>
+    <string name="style_color">Farbe</string>
+    <string name="style_color_black">Schwarz</string>
+    <string name="style_color_dynamic">Hintergrundfarben</string>
+    <string name="style_color_album">Albumcover</string>
+    <string name="style_size">Größe</string>
+    <string name="style_size_small">Klein</string>
+    <string name="style_size_medium">Mittel</string>
+    <string name="style_size_large">Groß</string>
+    <string name="style_shape">Form</string>
+    <string name="style_shape_pill">Pille</string>
+    <string name="style_shape_rounded">Abgerundet</string>
+    <string name="style_idle">Wenn nichts passiert</string>
+    <string name="style_idle_always">Immer anzeigen</string>
+    <string name="style_idle_activity">Nur bei Aktivität</string>
+    <string name="style_action">Sieht gut aus</string>
+    <string name="style_roundness">Rundung</string>
+    <string name="style_roundness_detail">Vom abgerundeten Rechteck bis zur Pille.</string>
+</resources>

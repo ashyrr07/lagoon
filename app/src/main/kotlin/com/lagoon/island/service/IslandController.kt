@@ -216,7 +216,7 @@ class IslandController @Inject constructor(
         } else {
             settings.calibration
         }
-        val frame = IslandGeometry.idleFrame(cutout, calibration)
+        val frame = IslandGeometry.idleFrame(cutout, calibration, settings.appearance.scale, settings.appearance.roundness)
         uiState.idle = frame
         engine.setVisible(true)
         _state.value = _state.value.copy(cutout = cutout, frame = frame)

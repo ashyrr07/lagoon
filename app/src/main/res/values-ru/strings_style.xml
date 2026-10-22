@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="style_title">Под себя</string>
+    <string name="style_body">Выберите вид. Всё можно тонко настроить позже в разделе «Оформление».</string>
+    <string name="style_color">Цвет</string>
+    <string name="style_color_black">Чёрный</string>
+    <string name="style_color_dynamic">Цвета обоев</string>
+    <string name="style_color_album">Обложка альбома</string>
+    <string name="style_size">Размер</string>
+    <string name="style_size_small">Маленький</string>
+    <string name="style_size_medium">Средний</string>
+    <string name="style_size_large">Большой</string>
+    <string name="style_shape">Форма</string>
+    <string name="style_shape_pill">Капсула</string>
+    <string name="style_shape_rounded">Скруглённая</string>
+    <string name="style_idle">Когда ничего не происходит</string>
+    <string name="style_idle_always">Всегда показывать</string>
+    <string name="style_idle_activity">Только при событиях</string>
+    <string name="style_action">Готово</string>
+    <string name="style_roundness">Скругление</string>
+    <string name="style_roundness_detail">От скруглённого прямоугольника до капсулы.</string>
+</resources>
