@@ -1,0 +1,3 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- FOSS flavor: the Enhanced-mode accessibility service is declared here (added in M7). -->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" />
