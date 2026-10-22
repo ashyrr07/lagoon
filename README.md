@@ -29,8 +29,8 @@ Screenshots are produced from the in-app Demo screen; see
 
 ## Features
 
-Done means it builds, has tests where the plan asks for them, and passes the emulator check
-with a simulated cutout. Everything else is planned and tracked in the milestone list below.
+Done means it builds, has unit tests where the plan asks for them, and passes the emulator check
+with a simulated cutout. Real-device testing on Samsung and Pixel is the next step.
 
 | Area | State |
 |---|---|
@@ -38,17 +38,17 @@ with a simulated cutout. Everything else is planned and tracked in the milestone
 | Overlay hosted by the notification listener (no foreground service needed) | Done |
 | Activity engine: priority, split island, queue, TTL, dismiss; spring motion; gestures | Done |
 | Settings app: Home with permission status and setup health, Position screen with live calibration | Done |
-| Media: album art, title/artist, transport controls, seek bar, art tint | Planned (M3) |
-| Notifications: per-app allowlist, compact and expanded, actions, inline reply | Planned (M3) |
-| Calls: incoming / ongoing / ended from the dialer's `CallStyle` notification | Planned (M4) |
-| Timers and stopwatch from Clock apps, built-in timer, next alarm | Planned (M4) |
-| Charging alert with wattage, low / full battery | Planned (M4) |
-| Bluetooth connect / disconnect with earbud battery | Planned (M4) |
-| Navigation (Google Maps, Waze) and Android 16 Live Updates | Planned (M4) |
-| Control deck: torch, DND, rotation, brightness, volume, Wi-Fi / Bluetooth panels, camera, shortcuts, widgets | Planned (M5) |
-| Appearance, gestures, keep-alive guides, export / import, onboarding | Planned (M6) |
-| Enhanced mode (accessibility service, FOSS flavor) | Planned (M7) |
-| Release tooling: signing, R8, store metadata, privacy policy, Play declarations | Done (M8 scaffolding) |
+| Media: album art, title/artist, transport controls, seek bar, art tint | Done |
+| Notifications: per-app allowlist, compact and expanded, actions, inline reply | Done |
+| Calls: incoming / ongoing / ended from the dialer's `CallStyle` notification | Done |
+| Timers and stopwatch from Clock apps, built-in timer, next alarm | Done |
+| Charging alert with wattage, low / full battery | Done |
+| Bluetooth connect / disconnect with earbud battery | Done |
+| Navigation (Google Maps, Waze) and Android 16 Live Updates | Done |
+| Control deck: torch, DND, rotation, brightness, volume, Wi-Fi / Bluetooth panels, camera, shortcuts, widgets | Done |
+| Appearance, gestures, keep-alive guides, export / import, onboarding | Done |
+| Enhanced mode (accessibility service, FOSS flavor) | Done |
+| Release tooling: signing, R8, store metadata, privacy policy, Play declarations | Done (keystore and Play Console steps need a human) |
 
 Explicitly out of scope for v1: hosting real AppWidgets, Galaxy Buds per-bud battery, weather,
 a plugin API for third-party apps, Wear OS.
