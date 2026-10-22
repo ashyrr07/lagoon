@@ -35,6 +35,14 @@ object IslandGeometryDefaults {
 object IslandGeometry {
     const val MIN_ROUNDNESS = 0.35f
 
+    /** Smallest width of 600 dp or more: an unfolded foldable or a tablet. */
+    fun isLargeScreen(info: CutoutInfo): Boolean =
+        minOf(info.screenWidth, info.screenHeight) / info.density >= 600f
+
+    /** Camera centre more than 15% of the width away from the middle. */
+    fun isOffCentre(cutout: PxRect, screenWidth: Int): Boolean =
+        kotlin.math.abs(cutout.centerX - screenWidth / 2) > screenWidth * 0.15f
+
     /**
      * @param scale Appearance "Size": scales the ring and the idle width (0.8 to 1.3).
      * @param roundness Appearance "Roundness": corner radius as a fraction of half the height,
@@ -49,7 +57,11 @@ object IslandGeometry {
         val d = info.density
         fun dp(v: Float) = (v * d).roundToInt()
 
-        val camera = info.cutout ?: virtualCamera(info, calibration, ::dp)
+        // Unfolded foldables and tablets often put the camera in a corner (Galaxy Z Fold, Pixel Fold).
+        // Wrapping it there pins the island to the edge, so on a large screen an off-centre camera is
+        // ignored and the island sits at the top centre (or the user's placement) instead.
+        val cutout = info.cutout?.takeUnless { isLargeScreen(info) && isOffCentre(it, info.screenWidth) }
+        val camera = cutout ?: virtualCamera(info, calibration, ::dp)
         val padX = dp((calibration.padX ?: IslandGeometryDefaults.PAD_X_DP) * scale)
         val padY = dp((calibration.padY ?: IslandGeometryDefaults.PAD_Y_DP) * scale)
         val minWidth = dp((calibration.idleWidth ?: IslandGeometryDefaults.IDLE_MIN_WIDTH_DP) * scale)
@@ -84,7 +96,7 @@ object IslandGeometry {
         if (pill.right > info.screenWidth) pill = pill.offset(info.screenWidth - pill.right, 0)
         if (pill.top < 0) pill = pill.offset(0, -pill.top)
 
-        val cameraOut = info.cutout?.offset(dp(calibration.offsetX), dp(calibration.offsetY))
+        val cameraOut = cutout?.offset(dp(calibration.offsetX), dp(calibration.offsetY))
         return IdleFrame(
             pill = pill,
             camera = cameraOut,

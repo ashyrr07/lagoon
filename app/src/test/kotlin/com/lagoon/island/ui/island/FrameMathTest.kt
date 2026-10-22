@@ -143,4 +143,23 @@ class FrameMathTest {
             assertTrue(!a.containsRect(b))
         }
     }
+
+    @Test
+    fun `long compact content on a wide unfolded screen stays centred on the camera`() {
+        // Unfolded tablet-like screen, 2200 px wide, camera (or virtual camera) in the middle.
+        val wideHole = PxRect(1076, 12, 1124, 60)
+        val wideIdle = IdleFrame(pill = PxRect(1004, 0, 1196, 72), camera = wideHole, cornerRadius = 36f, statusBarBottom = 72)
+        val wide = FrameMath(wideIdle, screenWidth = 2200, density = 2f)
+        assertEquals(260, wide.maxSlotWidth) // 130 dp cap
+        val spec = wide.compact(ContentMeasure(leadingWidth = 48, trailingWidth = wide.maxSlotWidth), hasSecondary = false)
+        assertEquals(1100f, spec.pill.center.x, 0.5f)
+        assertTrue(spec.pill.width < 2200f / 2)
+    }
+
+    @Test
+    fun `compact corners follow the idle roundness`() {
+        val rounded = FrameMath(idle.copy(cornerRadius = 18f), screenWidth = 1080, density = 2f)
+        val spec = rounded.compact(ContentMeasure(leadingWidth = 40, trailingWidth = 40), hasSecondary = false)
+        assertEquals(spec.pill.height / 4f, spec.cornerRadius, 0.01f)
+    }
 }

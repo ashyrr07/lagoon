@@ -71,9 +71,19 @@ class FrameMath(
     /** Compact pill height: at least the idle pill, and reaching 14 dp below the status bar. */
     val compactHeight: Float = max(idleRect.bottom, idle.statusBarBottom + dp(COMPACT_BAND_DP)) - idleRect.top
 
-    /** The widest one compact slot may be before it would push the pill past the screen margin. */
-    val maxSlotWidth: Int = ((screenWidth - camera.width) / 2f - dp(RING_DP) - dp(CONTENT_INSET_DP) - margin)
-        .coerceAtLeast(0f).roundToInt()
+    /**
+     * The widest one compact slot may be: never more than [MAX_SLOT_DP] (compact is a glance, like
+     * iOS; long text ends in "…" and the full text is in the expanded view), and never so wide that
+     * a pill centred on the camera would cross the screen margin. On a wide unfolded screen this
+     * keeps a long message centred instead of stretching the pill toward one edge.
+     */
+    val maxSlotWidth: Int = minOf(
+        (screenWidth - camera.width) / 2f - dp(RING_DP) - dp(CONTENT_INSET_DP) - margin,
+        dp(MAX_SLOT_DP),
+    ).coerceAtLeast(0f).roundToInt()
+
+    /** Corner radius as a fraction of half the height, taken from the idle pill (Appearance "Roundness"). */
+    private val roundness: Float = if (idleRect.height > 0f) (idle.cornerRadius / (idleRect.height / 2f)).coerceIn(0f, 1f) else 1f
 
     fun idle(): FrameSpec = FrameSpec(FrameKind.Idle, idleRect, idle.cornerRadius)
 
@@ -150,7 +160,7 @@ class FrameMath(
         return FrameSpec(
             kind = kind,
             pill = pill,
-            cornerRadius = height / 2f,
+            cornerRadius = height / 2f * roundness,
             bubble = bubble,
             leading = leadingRect,
             trailing = trailingRect,
@@ -194,6 +204,7 @@ class FrameMath(
         const val RING_DP = 8f
         const val CONTENT_INSET_DP = 12f
         const val SLOT_GAP_DP = 8f
+        const val MAX_SLOT_DP = 130f
         const val BUBBLE_GAP_DP = 8f
         const val CONTENT_TOP_GAP_DP = 8f
         const val CARD_INSET_DP = 16f

@@ -190,7 +190,7 @@ class DemoViewModel @Inject constructor(
                     packageName = "com.whatsapp",
                     appName = "WhatsApp",
                     appIcon = IconSource.Res(R.drawable.ic_launcher_foreground),
-                    title = "Ada",
+                    title = "Ada · Weekend dinner group",
                     text = res.getString(R.string.island_demo_message_text),
                     largeIcon = IconSource.Image(avatar),
                     isConversation = true,

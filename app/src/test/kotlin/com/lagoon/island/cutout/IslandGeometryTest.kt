@@ -92,4 +92,23 @@ class IslandGeometryTest {
         val tooSquare = IslandGeometry.idleFrame(pixel, Calibration(touchBand = false), roundness = 0f)
         assertEquals(tooSquare.pill.height / 2f * IslandGeometry.MIN_ROUNDNESS, tooSquare.cornerRadius, 0.01f)
     }
+
+    @Test
+    fun `unfolded screen with a corner camera centres the island`() {
+        // Pixel Fold-like inner screen: 2076 x 2152 px at 2.625 density, camera in the top-right corner.
+        val unfolded = CutoutInfo(
+            cutout = PxRect(1940, 0, 2076, 136), shape = CutoutShape.Hole, statusBarHeight = 136,
+            screenWidth = 2076, screenHeight = 2152, rotation = 0, density = 2.625f,
+        )
+        val frame = IslandGeometry.idleFrame(unfolded, Calibration())
+        assertNull(frame.camera)
+        assertEquals(2076 / 2, frame.pill.centerX)
+    }
+
+    @Test
+    fun `phone with an off-centre camera still wraps it`() {
+        val corner = pixel.copy(cutout = PxRect(24, 12, 72, 60))
+        val frame = IslandGeometry.idleFrame(corner, Calibration())
+        assertEquals(PxRect(24, 12, 72, 60), frame.camera)
+    }
 }

@@ -39,6 +39,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 /**
@@ -79,7 +80,15 @@ class IslandController @Inject constructor(
     )
 
     private val configCallbacks = object : ComponentCallbacks {
-        override fun onConfigurationChanged(newConfig: Configuration) = refresh()
+        // Fold/unfold and rotation: the app's configuration can change a moment before the island
+        // window's display metrics do, so measure now and once more after the window has caught up.
+        override fun onConfigurationChanged(newConfig: Configuration) {
+            refresh()
+            scope?.launch {
+                delay(SETTLE_MS)
+                refresh()
+            }
+        }
 
         @Deprecated("Deprecated in Java")
         override fun onLowMemory() = Unit
@@ -147,6 +156,7 @@ class IslandController @Inject constructor(
         sourceManager.stopAll()
         engine.stop()
         runCatching { context.unregisterComponentCallbacks(configCallbacks) }
+        host?.let { runCatching { it.windowContext.unregisterComponentCallbacks(configCallbacks) } }
         enhanced.stopKeyguardWatch(context) // Enhanced mode
         window?.destroy()
         window = null
@@ -172,13 +182,18 @@ class IslandController @Inject constructor(
         // overlay permission. Re-host the live window when the host changes (state is kept).
         val host: OverlayHost = enhanced.host.value ?: appHost ?: AppOverlayHost(context).also { appHost = it }
         if (this.host !== host) {
+            this.host?.let { old -> runCatching { old.windowContext.unregisterComponentCallbacks(configCallbacks) } }
             this.host = host
+            // The window context gets its own configuration (and display) changes; listen there too.
+            runCatching { host.windowContext.registerComponentCallbacks(configCallbacks) }
             detector = null
             window?.rehost(host)
         }
         val needsOverlayPermission = host.kind == OverlayHost.Kind.App && !Settings.canDrawOverlays(context)
         // Enhanced mode: the app overlay draws under the keyguard anyway; the accessibility overlay
         // sits above it, so there the user decides with showOnLockScreen.
+        // Re-read rather than trust the last broadcast: some unlock paths never send USER_PRESENT.
+        enhanced.readKeyguard(context)
         val hiddenByKeyguard = enhanced.keyguardLocked.value &&
             (host.kind == OverlayHost.Kind.App || !settings.enhanced.showOnLockScreen)
         val screenOff = !screenState.state.value.screenOn
@@ -221,7 +236,7 @@ class IslandController @Inject constructor(
         engine.setVisible(true)
         _state.value = _state.value.copy(cutout = cutout, frame = frame)
         onPresentation(engine.presentation.value)
-        Log.d(TAG, "Island frame=${frame.pill} cutout=${cutout.cutout} shape=${cutout.shape}")
+        Log.d(TAG, "Island frame=${frame.pill} cutout=${cutout.cutout} shape=${cutout.shape} screen=${cutout.screenWidth}x${cutout.screenHeight} rot=${cutout.rotation} density=${cutout.density}")
     }
 
     private fun onPresentation(presentation: IslandPresentation) {
@@ -276,5 +291,6 @@ class IslandController @Inject constructor(
 
     companion object {
         private const val TAG = "IslandController"
+        private const val SETTLE_MS = 300L
     }
 }

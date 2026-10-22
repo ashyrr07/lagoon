@@ -88,7 +88,7 @@ class EnhancedModeManager @Inject constructor() {
         keyguardReceiver = null
     }
 
-    private fun readKeyguard(context: Context) {
+    fun readKeyguard(context: Context) {
         val km = context.getSystemService(KeyguardManager::class.java)
         _keyguardLocked.value = km?.isKeyguardLocked == true
     }
