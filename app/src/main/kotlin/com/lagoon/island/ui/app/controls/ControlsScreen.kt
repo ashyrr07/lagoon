@@ -118,7 +118,7 @@ fun ControlsScreen(
                             ControlsSection.Widgets -> R.string.screens_controls_widgets_hint
                         },
                     ),
-                    chosen = chosen.map { ControlsItem(it, viewModel.labelOf(it)) },
+                    chosen = chosen.map { ControlsItem(it, viewModel.labelOf(it), viewModel.labelResOf(it)) },
                     remaining = remaining,
                     onMove = { from, to -> viewModel.move(section, from, to) },
                     onRemove = { viewModel.remove(section, it) },
@@ -186,7 +186,7 @@ private fun OrderedSection(
             }
             chosen.forEachIndexed { index, item ->
                 Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                    Text(item.label, style = MaterialTheme.typography.bodyLarge, modifier = Modifier.weight(1f))
+                    Text(item.labelRes?.let { stringResource(it) } ?: item.label, style = MaterialTheme.typography.bodyLarge, modifier = Modifier.weight(1f))
                     IconButton(onClick = { onMove(index, index - 1) }, enabled = index > 0) {
                         Icon(Icons.Rounded.KeyboardArrowUp, contentDescription = stringResource(R.string.screens_controls_move_up))
                     }
@@ -205,7 +205,7 @@ private fun OrderedSection(
                     remaining.forEach { item ->
                         AssistChip(
                             onClick = { onAdd(item.id) },
-                            label = { Text(item.label) },
+                            label = { Text(item.labelRes?.let { stringResource(it) } ?: item.label) },
                             leadingIcon = { Icon(Icons.Rounded.Add, contentDescription = null, modifier = Modifier.size(18.dp)) },
                         )
                     }

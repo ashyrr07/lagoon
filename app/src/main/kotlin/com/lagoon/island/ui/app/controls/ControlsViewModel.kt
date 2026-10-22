@@ -22,7 +22,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 /** A row in one of the reorderable lists. */
-data class ControlsItem(val id: String, val label: String)
+/** [labelRes] is resolved on screen so the list follows the in-app language on every Android version. */
+data class ControlsItem(val id: String, val label: String, @androidx.annotation.StringRes val labelRes: Int? = null)
 
 /** Which list a reorder/add/remove applies to. */
 enum class ControlsSection { Tiles, Sliders, Widgets }
@@ -46,13 +47,15 @@ class ControlsViewModel @Inject constructor(
 
     /** Ids this device offers for [section], in registry order; Enhanced-only tiles only when active. */
     fun available(section: ControlsSection): List<ControlsItem> = when (section) {
-        ControlsSection.Tiles -> registry.tiles.filter { it.isAvailable() }.map { ControlsItem(it.id, it.label) }
-        ControlsSection.Sliders -> registry.sliders.filter { it.isAvailable() }.map { ControlsItem(it.id, it.label) }
-        ControlsSection.Widgets -> Widgets.ALL.map { ControlsItem(it.id, it.label) }
+        ControlsSection.Tiles -> registry.tiles.filter { it.isAvailable() }.map { ControlsItem(it.id, it.label, it.labelRes) }
+        ControlsSection.Sliders -> registry.sliders.filter { it.isAvailable() }.map { ControlsItem(it.id, it.label, it.labelRes) }
+        ControlsSection.Widgets -> Widgets.ALL.map { ControlsItem(it.id, it.label, it.labelRes) }
     }
 
     fun labelOf(id: String): String =
         registry[id]?.label ?: Widgets.ALL.firstOrNull { it.id == id }?.label ?: id
+
+    fun labelResOf(id: String): Int? = registry[id]?.labelRes ?: Widgets.ALL.firstOrNull { it.id == id }?.labelRes
 
     fun chosen(section: ControlsSection, settings: ControlSettings): List<String> {
         val available = available(section).map { it.id }

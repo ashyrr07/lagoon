@@ -4,8 +4,4 @@
     <string name="enhanced_service_label">Erweiterter Modus von Lagoon</string>
     <string name="enhanced_service_summary">Zeigt die Insel über der Statusleiste und auf dem Sperrbildschirm; Kacheln für Screenshot, Sperren und zuletzt verwendete Apps.</string>
     <string name="enhanced_service_description">Mit dem Erweiterten Modus kann Lagoon die Insel über der Statusleiste und auf dem Sperrbildschirm anzeigen, sodass die ganze Pille auf Tippen reagiert, und die Kacheln der Insel können beim Antippen einen Screenshot aufnehmen, den Bildschirm sperren oder die zuletzt verwendeten Apps öffnen. Der Dienst erfährt nur den Namen der App im Vordergrund, damit die Insel deinen Einstellungen pro App folgen kann. Er liest niemals, was auf deinem Bildschirm angezeigt wird, zeichnet es nicht auf und interagiert nicht damit, er kann keine Gesten für dich ausführen, und nichts verlässt dein Telefon: Lagoon hat keine Internetberechtigung. Du kannst ihn hier jederzeit ausschalten.</string>
-    <string name="keep_alive_channel">Hintergrundbetrieb</string>
-    <string name="keep_alive_channel_description">Stumme Benachrichtigung, die Lagoon auf Telefonen am Laufen hält, die Hintergrund-Apps beenden.</string>
-    <string name="keep_alive_notification_title">Lagoon ist aktiv</string>
-    <string name="keep_alive_notification_text">Du kannst das auf dem Bildschirm „Status“ ausschalten.</string>
 </resources>
