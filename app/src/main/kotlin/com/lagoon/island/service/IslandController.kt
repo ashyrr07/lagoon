@@ -18,6 +18,7 @@ import com.lagoon.island.overlay.AppOverlayHost
 import com.lagoon.island.overlay.IslandWindow
 import com.lagoon.island.overlay.OverlayHost
 import com.lagoon.island.sources.SourceManager
+import com.lagoon.island.sources.media.MediaSource
 import com.lagoon.island.ui.app.MainActivity
 import com.lagoon.island.ui.island.IslandRoot
 import com.lagoon.island.ui.island.IslandUiState
@@ -48,6 +49,7 @@ class IslandController @Inject constructor(
     private val launcher: IntentLauncher,
     private val engine: IslandEngine,
     private val sourceManager: SourceManager,
+    private val mediaSource: MediaSource,
 ) {
     private var scope: CoroutineScope? = null
     private var window: IslandWindow? = null
@@ -90,6 +92,7 @@ class IslandController @Inject constructor(
         uiState.onRequestWindow = ::growWindow
         uiState.onFrameSettled = ::fitWindow
         uiState.onRequestFocus = { focus -> window?.setFocusable(focus) }
+        engine.mediaCommand = mediaSource::command
         engine.openApp = { activity ->
             activity.onTap?.invoke() ?: launcher.launch(Intent(context, MainActivity::class.java))
         }
