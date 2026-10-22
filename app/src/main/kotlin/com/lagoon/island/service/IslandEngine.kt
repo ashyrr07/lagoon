@@ -132,6 +132,18 @@ class IslandEngine @Inject constructor(
 
     fun openControlDeck() = expand(UserIntent.CONTROL_DECK)
 
+    /**
+     * While the user is typing a reply the expanded view must not time out. [hold] = true clears the
+     * deadline; false restores a fresh one.
+     */
+    fun holdOpen(hold: Boolean) {
+        if (hold) {
+            intent.update { if (it.expandedId != null) it.copy(expandedUntil = null) else it }
+        } else {
+            touch()
+        }
+    }
+
     /** Interaction inside an expanded view: push the auto-collapse deadline out again. */
     fun touch() {
         val timeout = settings.appearance.expandedTimeoutSec.toLong() * 1000

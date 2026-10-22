@@ -97,7 +97,10 @@ class IslandController @Inject constructor(
         }
         uiState.onRequestWindow = ::growWindow
         uiState.onFrameSettled = ::fitWindow
-        uiState.onRequestFocus = { focus -> window?.setFocusable(focus) }
+        uiState.onRequestFocus = { focus ->
+            window?.setFocusable(focus)
+            engine.holdOpen(focus)
+        }
         engine.mediaCommand = mediaSource::command
         engine.toggleTorch = { controlsRegistry.torch.perform(null) }
         engine.openApp = { activity ->
