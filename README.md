@@ -1,7 +1,7 @@
 # Lagoon
 
 [![License: GPL-3.0](https://img.shields.io/badge/License-GPL--3.0-blue.svg)](LICENSE)
-[![CI](https://github.com/OWNER/lagoon/actions/workflows/ci.yml/badge.svg)](https://github.com/OWNER/lagoon/actions/workflows/ci.yml)
+[![CI](https://github.com/ashyrr07/lagoon/actions/workflows/ci.yml/badge.svg)](https://github.com/ashyrr07/lagoon/actions/workflows/ci.yml)
 ![Android 12+](https://img.shields.io/badge/Android-12%2B-3DDC84?logo=android&logoColor=white)
 ![No INTERNET permission](https://img.shields.io/badge/network-none-brightgreen)
 

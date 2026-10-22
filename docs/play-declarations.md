@@ -14,7 +14,7 @@ and resubmit.
 ## 1. Privacy policy URL
 
 ```
-https://github.com/<owner>/lagoon/blob/main/docs/privacy.md
+https://github.com/ashyrr07/lagoon/blob/main/docs/privacy.md
 ```
 
 Use the raw GitHub URL or a GitHub Pages URL if the reviewer wants a page without the

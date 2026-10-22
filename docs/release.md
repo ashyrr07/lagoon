@@ -132,14 +132,14 @@ F-Droid and the one from GitHub are different signatures and cannot update each 
    Categories:
      - System
    License: GPL-3.0-or-later
-   SourceCode: https://github.com/<owner>/lagoon
-   IssueTracker: https://github.com/<owner>/lagoon/issues
-   Changelog: https://github.com/<owner>/lagoon/releases
+   SourceCode: https://github.com/ashyrr07/lagoon
+   IssueTracker: https://github.com/ashyrr07/lagoon/issues
+   Changelog: https://github.com/ashyrr07/lagoon/releases
 
    AutoName: Lagoon
 
    RepoType: git
-   Repo: https://github.com/<owner>/lagoon.git
+   Repo: https://github.com/ashyrr07/lagoon.git
 
    Builds:
      - versionName: X.Y.Z
