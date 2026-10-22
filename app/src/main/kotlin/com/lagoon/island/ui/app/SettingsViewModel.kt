@@ -14,7 +14,6 @@ import com.lagoon.island.data.IslandSettings
 import com.lagoon.island.data.SettingsRepository
 import com.lagoon.island.service.IslandController
 import com.lagoon.island.service.IslandNotificationListener
-import com.lagoon.island.service.KeepAliveService
 import com.lagoon.island.util.Oem
 import com.lagoon.island.util.OemInfo
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -85,7 +84,6 @@ class SettingsViewModel @Inject constructor(
 
     /** The keep-alive foreground service: persisted so [com.lagoon.island.service.BootReceiver] restarts it. */
     fun setKeepAliveService(enabled: Boolean) {
-        if (enabled) KeepAliveService.start(context) else KeepAliveService.stop(context)
         update { it.copy(keepAlive = it.keepAlive.copy(foregroundService = enabled)) }
     }
 

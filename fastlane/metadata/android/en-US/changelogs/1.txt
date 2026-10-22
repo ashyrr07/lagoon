@@ -1,6 +1,7 @@
 First public release.
-• Idle island around the camera cutout with manual calibration.
-• Music, calls, timers, charging, Bluetooth and notification activities.
-• Long-press control deck with torch, DND, rotation, brightness, volume, app shortcuts.
-• Standard mode (overlay + notification access) and optional Enhanced mode (FOSS build).
-• No INTERNET permission, no analytics, GPL-3.0.
+• Island around the camera on any phone, with manual calibration.
+• Music, calls, timers, charging, earbuds, navigation and notifications.
+• Control deck with quick toggles, sliders, shortcuts and widgets.
+• Style picker on first launch; size and roundness.
+• Foldable support; five languages.
+• No INTERNET permission, no ads, GPL-3.0.

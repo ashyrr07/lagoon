@@ -109,6 +109,9 @@ Store listing paragraph (already in `fastlane/metadata/android/en-US/full_descri
 
 ## 9. Foreground service: `FOREGROUND_SERVICE_SPECIAL_USE`
 
+> **Not needed for version 0.1.0.** The optional keep-alive service was removed on 2026-10-23 (it showed a permanent "Lagoon is active" notification). The app declares no `FOREGROUND_SERVICE*` permission, so skip this form. Keep the text below for when the service comes back.
+
+
 Play Console > App content > **Foreground service permissions**. Lagoon uses one foreground
 service type, `specialUse`, for the optional keep-alive service.
 

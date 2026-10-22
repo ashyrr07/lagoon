@@ -230,7 +230,7 @@ private fun CompactLayout(
         report?.invoke(spec)
         val ringPad = 3.dp.roundToPx()
         val camera = measurables.firstOrNull { it.layoutId == "camera" }?.measure(
-            Constraints.fixed(math.camera.width.roundToInt() + ringPad * 2, math.camera.height.roundToInt() + ringPad * 2),
+            Constraints.fixed(math.cameraHole.width.roundToInt() + ringPad * 2, math.cameraHole.height.roundToInt() + ringPad * 2),
         )
         val origin = windowOrigin()
         layout(constraints.maxWidth, constraints.maxHeight) {
@@ -243,8 +243,8 @@ private fun CompactLayout(
                 (spec.trailing.center.y - origin.y - trailing.height / 2f).roundToInt(),
             )
             camera?.place(
-                (math.camera.left - origin.x).roundToInt() - ringPad,
-                (math.camera.top - origin.y).roundToInt() - ringPad,
+                (math.cameraHole.left - origin.x).roundToInt() - ringPad,
+                (math.cameraHole.top - origin.y).roundToInt() - ringPad,
             )
         }
     }

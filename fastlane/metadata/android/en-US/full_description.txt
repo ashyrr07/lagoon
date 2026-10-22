@@ -4,22 +4,28 @@ What it shows
 • Music: album art, title and artist, play/pause, next and previous, a seek bar. Tap to open the player.
 • Calls: who is calling with answer and decline, then a call timer and hang up.
 • Timers and stopwatches from your Clock app, plus the next alarm.
-• Charging: level and charging power when you plug in, low and full battery alerts.
-• Earbuds and other Bluetooth devices connecting, with battery level where the device reports it.
-• Turn-by-turn navigation from Google Maps or Waze.
+• Charging: battery level and charging power when you plug in, low and full battery alerts.
+• Earbuds and other Bluetooth devices connecting, with left, right and case battery where the device reports it.
+• Turn-by-turn navigation from Google Maps or Waze, and live progress (deliveries, rides, downloads) on Android 16.
 • Notifications from the apps you choose, with the full text, actions and inline reply when expanded.
 
 Quick controls
-Long-press the island for a control deck you arrange yourself: torch, Do Not Disturb, rotation lock, brightness and volume sliders, Wi-Fi and Bluetooth panels, camera, app shortcuts and small widgets.
+Tap the idle island for a control deck you arrange yourself: torch, Do Not Disturb, rotation lock, brightness and volume sliders, Wi-Fi and Bluetooth panels, camera, app shortcuts, a built-in timer and small widgets.
+
+Make it yours
+On first launch you pick a colour (black, wallpaper colours or album art), size, shape and whether the island stays visible when nothing is happening. Later you can fine-tune everything: exact position, width, ring, roundness, gestures and animation speed.
 
 Fits every phone
-Lagoon reads the cutout position from the system and lets you fine-tune position, size and corner radius by hand, so it fits a centred hole, a corner hole or a notch on any brand.
+Lagoon reads the camera cutout from the system and lets you adjust it by hand, so it fits a centred hole, a corner hole or a notch on any brand. On foldables it follows you between the cover screen and the inner screen.
+
+Five languages
+English, Русский, Deutsch, Français and Español, switchable inside the app.
 
 Private by design
 Lagoon has no INTERNET permission. It cannot send anything anywhere: no analytics, no crash reporting, no accounts, no ads. Notification access is used only to show your notifications and media on the island. The source code is public under the GPL-3.0 licence.
 
 Two modes
-• Standard mode needs only "Display over other apps" and Notification access. It is the default and does not use any accessibility service.
-• Enhanced mode is optional and off by default. It uses an accessibility service so that the whole pill is tappable, the island can appear on the lock screen and the control deck can take screenshots, lock the screen or open recents. The service does not read screen content. You can turn it off at any time in the system Accessibility settings.
+• Standard mode needs only "Display over other apps" and Notification access. It is the default and uses no accessibility service.
+• Enhanced mode is optional and off by default. It uses an accessibility service so the whole island is tappable, including the part over the status bar, the island can appear on the lock screen, and the control deck can take screenshots, lock the screen or open recents. The service never reads screen content. You can turn it off at any time in Accessibility settings.
 
 Lagoon is free, has no paid tier and never will. If something does not work on your phone, open an issue on GitHub with your device model and Android version.

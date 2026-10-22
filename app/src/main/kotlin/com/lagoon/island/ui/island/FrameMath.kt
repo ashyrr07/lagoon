@@ -68,9 +68,26 @@ class FrameMath(
 
     private val margin = dp(EDGE_MARGIN_DP)
 
+
     /** Compact pill height: at least the idle pill, and reaching 14 dp below the status bar. */
     val compactHeight: Float = max(idleRect.bottom, idle.statusBarBottom + dp(COMPACT_BAND_DP)) - idleRect.top
 
+
+    /**
+     * The round lens inside the reported cutout. Many phones (Samsung, Pixel emulators) report the
+     * cutout as a rectangle from the top edge down to the bottom of the hole; the hole is then the
+     * circle as wide as that rectangle, sitting at its bottom. Decorations (charging ring) use this.
+     */
+    val cameraHole: Rect = run {
+        val lens = if (camera.height > camera.width * 1.2f) {
+            Rect(camera.left, camera.bottom - camera.width, camera.right, camera.bottom)
+        } else {
+            camera
+        }
+        // A decoration ring never outgrows the pill: cap the circle and keep it centred on the lens.
+        val side = minOf(lens.width, lens.height, compactHeight - dp(8f))
+        Rect(lens.center.x - side / 2, lens.center.y - side / 2, lens.center.x + side / 2, lens.center.y + side / 2)
+    }
     /**
      * The widest one compact slot may be: never more than [MAX_SLOT_DP] (compact is a glance, like
      * iOS; long text ends in "…" and the full text is in the expanded view), and never so wide that

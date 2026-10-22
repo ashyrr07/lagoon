@@ -162,4 +162,12 @@ class FrameMathTest {
         val spec = rounded.compact(ContentMeasure(leadingWidth = 40, trailingWidth = 40), hasSecondary = false)
         assertEquals(spec.pill.height / 4f, spec.cornerRadius, 0.01f)
     }
+
+    @Test
+    fun `tall top-edge cutout gives a round hole at its bottom`() {
+        // Samsung-style report: 70 x 104 px from the top edge.
+        val tall = IdleFrame(pill = PxRect(498, 0, 750, 120), camera = PxRect(589, 0, 659, 104), cornerRadius = 60f, statusBarBottom = 110)
+        val hole = FrameMath(tall, 1248, 2.625f).cameraHole
+        assertEquals(Rect(589f, 34f, 659f, 104f), hole)
+    }
 }

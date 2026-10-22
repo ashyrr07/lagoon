@@ -15,6 +15,8 @@ import androidx.compose.material.icons.rounded.Notifications
 import androidx.compose.material.icons.rounded.Timer
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
@@ -88,10 +90,13 @@ fun BubbleGlyph(activity: IslandActivity, accent: Color, bubbleSize: Dp) {
     val glyph = bubbleSize * 0.46f
     Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         when (val c = activity.content) {
-            is ActivityContent.Media -> MediaArt(c, size = bubbleSize - 12.dp, corner = 6.dp)
+            is ActivityContent.Media -> MediaArt(c, size = bubbleSize - 14.dp, corner = (bubbleSize - 14.dp) / 2) // round art inside the round bubble
             is ActivityContent.Call -> Icon(Icons.Rounded.Call, null, tint = accent, modifier = Modifier.size(glyph))
             is ActivityContent.Timer -> Icon(Icons.Rounded.Timer, null, tint = accent, modifier = Modifier.size(glyph))
-            is ActivityContent.Notification -> IslandIcon(c.largeIcon ?: c.appIcon, Icons.Rounded.Notifications, size = bubbleSize - 14.dp)
+            // Avatars are square bitmaps: clip them so they sit inside the round bubble.
+            is ActivityContent.Notification -> Box(Modifier.size(bubbleSize - 14.dp).clip(CircleShape)) {
+                IslandIcon(c.largeIcon ?: c.appIcon, Icons.Rounded.Notifications, size = bubbleSize - 14.dp)
+            }
             is ActivityContent.Progress -> IslandIcon(c.icon, Icons.Rounded.Downloading, size = glyph, tint = if (c.icon == null) accent else null)
             is ActivityContent.Charging -> Icon(Icons.Rounded.Bolt, null, tint = accent, modifier = Modifier.size(glyph))
             is ActivityContent.Bluetooth -> Icon(Icons.Rounded.Bluetooth, null, tint = accent, modifier = Modifier.size(glyph))
