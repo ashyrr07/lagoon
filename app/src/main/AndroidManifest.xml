@@ -56,6 +56,11 @@
             </intent-filter>
         </activity>
 
+        <!-- Built-in deck timer: AlarmManager fires this when the countdown ends. -->
+        <receiver
+            android:name=".controls.TimerDoneReceiver"
+            android:exported="false" />
+
         <!-- Hosts the island while Notification access is granted (system-bound, no foreground service). -->
         <service
             android:name=".service.IslandNotificationListener"

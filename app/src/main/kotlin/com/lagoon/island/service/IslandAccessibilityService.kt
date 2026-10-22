@@ -4,6 +4,7 @@ import android.accessibilityservice.AccessibilityService
 import android.content.Intent
 import android.view.accessibility.AccessibilityEvent
 import android.view.inputmethod.InputMethodManager
+import com.lagoon.island.controls.GlobalActions
 import com.lagoon.island.overlay.AccessibilityOverlayHost
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -27,14 +28,22 @@ class IslandAccessibilityService : AccessibilityService() {
 
     @Inject lateinit var manager: EnhancedModeManager
     @Inject lateinit var actions: AccessibilityActions
+    @Inject lateinit var globalActions: GlobalActions
 
     private var host: AccessibilityOverlayHost? = null
+    private val mainHandler = android.os.Handler(android.os.Looper.getMainLooper())
 
     override fun onServiceConnected() {
         super.onServiceConnected()
         val host = AccessibilityOverlayHost(this).also { host = it }
         actions.bind(this)
         manager.onServiceConnected(host)
+        globalActions.delegate = object : GlobalActions.Delegate {
+            // Let the deck's collapse animation finish before the capture.
+            override fun screenshot() { mainHandler.postDelayed({ actions.takeScreenshot() }, 350) }
+            override fun lock() { actions.lockScreen() }
+            override fun recents() { actions.openRecents() }
+        }
     }
 
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
@@ -57,6 +66,7 @@ class IslandAccessibilityService : AccessibilityService() {
     }
 
     private fun release() {
+        globalActions.delegate = null
         host?.let { manager.onServiceDisconnected(it) }
         host = null
         actions.unbind(this)

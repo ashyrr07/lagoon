@@ -19,6 +19,7 @@ import com.lagoon.island.overlay.IslandWindow
 import com.lagoon.island.overlay.OverlayHost
 import com.lagoon.island.sources.SourceManager
 import com.lagoon.island.sources.media.MediaSource
+import com.lagoon.island.controls.ControlsRegistry
 import com.lagoon.island.ui.app.MainActivity
 import com.lagoon.island.ui.island.IslandRoot
 import com.lagoon.island.ui.island.IslandUiState
@@ -50,6 +51,7 @@ class IslandController @Inject constructor(
     private val engine: IslandEngine,
     private val sourceManager: SourceManager,
     private val mediaSource: MediaSource,
+    private val controlsRegistry: ControlsRegistry,
     private val enhanced: EnhancedModeManager, // Enhanced mode: accessibility host + keyguard state
 ) {
     private var scope: CoroutineScope? = null
@@ -95,6 +97,7 @@ class IslandController @Inject constructor(
         uiState.onFrameSettled = ::fitWindow
         uiState.onRequestFocus = { focus -> window?.setFocusable(focus) }
         engine.mediaCommand = mediaSource::command
+        engine.toggleTorch = { controlsRegistry.torch.perform(null) }
         engine.openApp = { activity ->
             activity.onTap?.invoke() ?: launcher.launch(Intent(context, MainActivity::class.java))
         }

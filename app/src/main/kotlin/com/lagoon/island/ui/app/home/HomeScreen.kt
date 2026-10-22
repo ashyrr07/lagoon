@@ -39,6 +39,7 @@ fun HomeScreen(
     onOpenPosition: () -> Unit,
     onOpenApps: () -> Unit = {},
     onOpenEnhanced: () -> Unit = {}, // Enhanced mode disclosure screen
+    onOpenControls: () -> Unit = {},
     viewModel: SettingsViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
@@ -117,6 +118,9 @@ fun HomeScreen(
             }
             OutlinedButton(onClick = onOpenEnhanced, modifier = Modifier.fillMaxWidth()) {
                 Text("Enhanced mode (optional)")
+            }
+            OutlinedButton(onClick = onOpenControls, modifier = Modifier.fillMaxWidth()) {
+                Text("Control deck")
             }
 
             island.cutout?.let { cutout ->
