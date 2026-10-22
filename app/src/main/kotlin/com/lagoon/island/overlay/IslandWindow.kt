@@ -15,9 +15,13 @@ import com.lagoon.island.cutout.PxRect
  * Resize discipline: callers change the window rect at most once per transition, never per frame.
  */
 class IslandWindow(
-    private val host: OverlayHost,
+    host: OverlayHost,
     onOutsideTouch: () -> Unit,
 ) {
+    /** Current host; swapped by [rehost] when Enhanced mode connects or disconnects. */
+    var host: OverlayHost = host
+        private set
+
     private val owner = OverlayLifecycleOwner()
     private val view = IslandComposeView(host.windowContext, onOutsideTouch).also { owner.attachTo(it) }
 
@@ -82,6 +86,23 @@ class IslandWindow(
     fun hide() {
         if (view.isAttachedToWindow) host.detach(view)
         owner.pause()
+    }
+
+    /**
+     * Move the window to another host (app overlay <-> accessibility overlay) keeping the same
+     * params, rect and content. The composition is rebuilt on re-attach; all island state lives in
+     * [com.lagoon.island.ui.island.IslandUiState], so nothing is lost.
+     */
+    fun rehost(newHost: OverlayHost) {
+        if (newHost === host) return
+        val wasShowing = view.isAttachedToWindow
+        if (wasShowing) host.detach(view)
+        host = newHost
+        params.type = newHost.windowType
+        // WindowManager stamps its own token onto the params on addView; clear the old host's so the
+        // new WindowManager (accessibility token vs. window-context token) can supply its own.
+        params.token = null
+        if (wasShowing) show(rect)
     }
 
     fun destroy() {
