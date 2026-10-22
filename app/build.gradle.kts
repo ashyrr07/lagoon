@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
@@ -5,6 +7,21 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
 }
+
+// Release signing. <root>/keystore.properties is gitignored and, when present, must contain:
+//   storeFile=/absolute/path/to/lagoon-release.jks   (or a path relative to the repo root)
+//   storePassword=...
+//   keyAlias=lagoon
+//   keyPassword=...
+// Without the file the release build type stays UNSIGNED, so `assembleFossRelease` and
+// `bundlePlayRelease` still succeed for contributors and pull-request CI; the output just
+// cannot be installed. The release workflow writes this file from GitHub secrets.
+// See docs/release.md for creating the keystore.
+val keystorePropertiesFile = rootProject.file("keystore.properties")
+val keystoreProperties = Properties().apply {
+    if (keystorePropertiesFile.isFile) keystorePropertiesFile.inputStream().use { load(it) }
+}
+val hasReleaseKeystore = !keystoreProperties.getProperty("storeFile").isNullOrBlank()
 
 android {
     namespace = "com.lagoon.island"
@@ -14,6 +31,12 @@ android {
         applicationId = "com.lagoon.island"
         minSdk = 31
         targetSdk = 36
+        // versionCode is bumped by hand, by exactly 1, on every tagged release (Play and
+        // F-Droid both reject a reused or decreasing code; F-Droid also keys its changelog on
+        // it: fastlane/metadata/android/en-US/changelogs/<versionCode>.txt). It is not derived
+        // from git on purpose: F-Droid builds from a clean checkout and a derived value would
+        // not be reproducible. versionName must equal the release tag without the "v"
+        // (tag v0.1.0 -> "0.1.0"); the release workflow fails when they differ.
         versionCode = 1
         versionName = "0.1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -33,11 +56,31 @@ android {
         }
     }
 
+    signingConfigs {
+        if (hasReleaseKeystore) {
+            create("release") {
+                storeFile = rootProject.file(keystoreProperties.getProperty("storeFile"))
+                storePassword = keystoreProperties.getProperty("storePassword")
+                keyAlias = keystoreProperties.getProperty("keyAlias")
+                keyPassword = keystoreProperties.getProperty("keyPassword")
+                // minSdk 31: v1 (JAR) signing is never consulted, so leave it off.
+                enableV1Signing = false
+                enableV2Signing = true
+                enableV3Signing = true
+            }
+        }
+    }
+
     buildTypes {
         release {
+            // Sanity: a release must never ship debuggable (Play rejects it, and it would let
+            // anyone attach a debugger to the notification listener).
+            isDebuggable = false
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            // Signed only when keystore.properties exists; otherwise unsigned (see top of file).
+            signingConfig = if (hasReleaseKeystore) signingConfigs.getByName("release") else null
         }
         debug {
             applicationIdSuffix = ".debug"

@@ -19,6 +19,24 @@ jobs:
         run: ./gradlew testFossDebugUnitTest --no-daemon
       - name: Assemble
         run: ./gradlew assembleFossDebug assemblePlayDebug --no-daemon
+      - name: Zero-network guarantee (no INTERNET permission in merged manifests)
+        # Lagoon's privacy promise is "no INTERNET permission". A dependency can merge the
+        # permission in silently, so check the *merged* manifest of both flavors, not the source.
+        run: |
+          set -euo pipefail
+          for variant in fossDebug playDebug; do
+            manifest="$(find "app/build/intermediates/merged_manifest/$variant" -name AndroidManifest.xml | head -n 1 || true)"
+            if [ -z "$manifest" ]; then
+              echo "::error::Merged manifest for $variant not found under app/build/intermediates/merged_manifest/$variant (did the Assemble step change?)"
+              exit 1
+            fi
+            if grep -q 'android.permission.INTERNET' "$manifest"; then
+              echo "::error::$manifest declares android.permission.INTERNET. Lagoon must never talk to the network; a dependency probably merged it in. Remove it with tools:node=\"remove\" or drop the dependency."
+              grep -n 'INTERNET' "$manifest"
+              exit 1
+            fi
+            echo "OK: $variant has no INTERNET permission ($manifest)"
+          done
       - name: Lint
         run: ./gradlew lintFossDebug --no-daemon
       - uses: actions/upload-artifact@v4
