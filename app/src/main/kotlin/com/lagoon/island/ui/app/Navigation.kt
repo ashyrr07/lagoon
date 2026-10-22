@@ -18,6 +18,11 @@ import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import com.lagoon.island.BuildConfig
 import com.lagoon.island.ui.app.about.AboutScreen
+import com.lagoon.island.ui.app.apps.AppsScreen
+import com.lagoon.island.ui.app.controls.ControlsScreen
+import com.lagoon.island.ui.app.demo.DemoScreen
+import com.lagoon.island.ui.app.enhanced.EnhancedScreen
+import com.lagoon.island.ui.app.features.FeaturesScreen
 import com.lagoon.island.ui.app.appearance.AppearanceScreen
 import com.lagoon.island.ui.app.components.ScreenScaffold
 import com.lagoon.island.ui.app.components.Note
@@ -36,6 +41,11 @@ import kotlinx.serialization.Serializable
 @Serializable data object GesturesKey : NavKey
 @Serializable data object HealthKey : NavKey
 @Serializable data object AboutKey : NavKey
+@Serializable data object DemoKey : NavKey
+@Serializable data object AppsKey : NavKey
+@Serializable data object FeaturesKey : NavKey
+@Serializable data object ControlsKey : NavKey
+@Serializable data object EnhancedKey : NavKey
 
 @Composable
 fun LagoonNavigation(viewModel: SettingsViewModel = hiltViewModel()) {
@@ -61,8 +71,6 @@ private fun LagoonNavGraph(startAtOnboarding: Boolean) {
             rememberViewModelStoreNavEntryDecorator(),
         ),
         entryProvider = entryProvider(
-            // Keys declared by other parts of the app (Demo, Apps, Features, Controls, Enhanced) land
-            // here until their screens are wired in.
             fallback = { key -> NavEntry(key) { ComingSoonScreen(onBack = ::back) } },
         ) {
             entry<OnboardingKey> {
@@ -99,6 +107,11 @@ private fun LagoonNavGraph(startAtOnboarding: Boolean) {
             entry<GesturesKey> { GesturesScreen(onBack = ::back) }
             entry<HealthKey> { HealthScreen(onBack = ::back) }
             entry<AboutKey> { AboutScreen(onBack = ::back) }
+            entry<DemoKey> { DemoScreen(onBack = ::back) }
+            entry<AppsKey> { AppsScreen(onBack = ::back) }
+            entry<FeaturesKey> { FeaturesScreen(onBack = ::back) }
+            entry<ControlsKey> { ControlsScreen(onBack = ::back) }
+            entry<EnhancedKey> { EnhancedScreen(onBack = ::back) }
         },
     )
 }
