@@ -41,15 +41,20 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.lagoon.island.R
 import com.lagoon.island.controls.BatteryInfo
 import com.lagoon.island.controls.CalendarState
 import com.lagoon.island.controls.TimerSnapshot
 import com.lagoon.island.engine.ActivityContent
 import com.lagoon.island.engine.IslandActivity
+import com.lagoon.island.ui.island.content.percentText
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -126,7 +131,14 @@ private fun WidgetButton(icon: ImageVector, description: String, onClick: () -> 
 fun NowPlayingWidget(activity: IslandActivity?, onOpen: (IslandActivity) -> Unit) {
     val media = activity?.content as? ActivityContent.Media
     if (activity == null || media == null) {
-        WidgetCard { IconText(Icons.Rounded.MusicNote, "Nothing playing", "Start something to control it here", DeckStyle.TextFaint) }
+        WidgetCard {
+            IconText(
+                Icons.Rounded.MusicNote,
+                stringResource(R.string.island_widget_nothing_playing),
+                stringResource(R.string.island_widget_nothing_playing_hint),
+                DeckStyle.TextFaint,
+            )
+        }
         return
     }
     WidgetCard(width = 232.dp, onClick = { onOpen(activity) }) {
@@ -155,13 +167,13 @@ fun NowPlayingWidget(activity: IslandActivity?, onOpen: (IslandActivity) -> Unit
             if (playPause != null) {
                 WidgetButton(
                     if (media.isPlaying) Icons.Rounded.Pause else Icons.Rounded.PlayArrow,
-                    if (media.isPlaying) "Pause" else "Play",
+                    stringResource(if (media.isPlaying) R.string.island_action_pause else R.string.island_action_play),
                     onClick = { playPause.perform(null) },
                     filled = true,
                 )
             }
             if (next != null) {
-                WidgetButton(Icons.Rounded.SkipNext, "Next", onClick = { next.perform(null) })
+                WidgetButton(Icons.Rounded.SkipNext, stringResource(R.string.island_action_next), onClick = { next.perform(null) })
             }
         }
     }
@@ -172,23 +184,41 @@ fun NowPlayingWidget(activity: IslandActivity?, onOpen: (IslandActivity) -> Unit
 @Composable
 fun NextAlarmWidget(triggerAt: Long?, onOpen: () -> Unit) {
     val context = LocalContext.current
-    val text = remember(triggerAt) {
+    val locale = LocalConfiguration.current.locales[0]
+    val parts = remember(triggerAt, locale) {
         if (triggerAt == null) {
             null
         } else {
             val time = DateFormat.getTimeFormat(context).format(Date(triggerAt))
             val dayMs = 24 * 60 * 60 * 1000L
             val day = when {
-                triggerAt - System.currentTimeMillis() < dayMs && isSameDay(triggerAt, System.currentTimeMillis()) -> "Today"
-                triggerAt - System.currentTimeMillis() < 2 * dayMs -> "Tomorrow"
-                else -> SimpleDateFormat("EEE", Locale.getDefault()).format(Date(triggerAt))
+                triggerAt - System.currentTimeMillis() < dayMs && isSameDay(triggerAt, System.currentTimeMillis()) -> AlarmDay.Today
+                triggerAt - System.currentTimeMillis() < 2 * dayMs -> AlarmDay.Tomorrow
+                else -> AlarmDay.Weekday(SimpleDateFormat("EEE", locale).format(Date(triggerAt)))
             }
-            "$day · $time"
+            day to time
+        }
+    }
+    val text = parts?.let { (day, time) ->
+        when (day) {
+            AlarmDay.Today -> stringResource(R.string.island_widget_alarm_today, time)
+            AlarmDay.Tomorrow -> stringResource(R.string.island_widget_alarm_tomorrow, time)
+            is AlarmDay.Weekday -> "${day.name} · $time"
         }
     }
     WidgetCard(onClick = onOpen) {
-        IconText(Icons.Rounded.Alarm, text ?: "No alarm", if (text == null) "Tap to set one" else "Next alarm")
+        IconText(
+            Icons.Rounded.Alarm,
+            text ?: stringResource(R.string.island_widget_no_alarm),
+            stringResource(if (text == null) R.string.island_widget_no_alarm_hint else R.string.island_widget_next_alarm),
+        )
     }
+}
+
+private sealed interface AlarmDay {
+    data object Today : AlarmDay
+    data object Tomorrow : AlarmDay
+    data class Weekday(val name: String) : AlarmDay
 }
 
 private fun isSameDay(a: Long, b: Long): Boolean {
@@ -204,12 +234,14 @@ fun BatteryWidget(battery: BatteryInfo, buds: ActivityContent.Bluetooth?) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             IconText(
                 if (battery.charging) Icons.Rounded.BatteryChargingFull else Icons.Rounded.BatteryStd,
-                if (battery.level >= 0) "${battery.level}%" else "Battery",
-                when {
-                    battery.full -> "Full"
-                    battery.charging -> "Charging"
-                    else -> "Phone"
-                },
+                if (battery.level >= 0) percentText(battery.level) else stringResource(R.string.island_widget_battery),
+                stringResource(
+                    when {
+                        battery.full -> R.string.island_widget_battery_full
+                        battery.charging -> R.string.island_widget_battery_charging
+                        else -> R.string.island_widget_battery_phone
+                    },
+                ),
                 tint = if (battery.level in 0..15 && !battery.charging) DeckStyle.Warn else DeckStyle.Accent,
             )
             if (buds != null) {
@@ -217,7 +249,7 @@ fun BatteryWidget(battery: BatteryInfo, buds: ActivityContent.Bluetooth?) {
                 val level = buds.battery ?: listOfNotNull(buds.left, buds.right).minOrNull()
                 IconText(
                     Icons.Rounded.Headphones,
-                    level?.let { "$it%" } ?: "—",
+                    level?.let { percentText(it) } ?: "—",
                     buds.deviceName.take(14),
                     tint = DeckStyle.TextMuted,
                 )
@@ -263,20 +295,23 @@ fun TimerWidget(
                                     .padding(horizontal = 8.dp),
                                 contentAlignment = Alignment.Center,
                             ) {
-                                Text("${minutes}m", style = DeckStyle.Label.copy(color = if (selected) DeckStyle.Accent else DeckStyle.TextMuted))
+                                Text(pluralStringResource(R.plurals.island_widget_timer_preset, minutes, minutes), style = DeckStyle.Label.copy(color = if (selected) DeckStyle.Accent else DeckStyle.TextMuted))
                             }
                         }
                     }
                 } else {
-                    Text(if (snapshot.running) "Running" else "Paused", style = DeckStyle.Body)
+                    Text(
+                        stringResource(if (snapshot.running) R.string.island_widget_timer_running else R.string.island_widget_timer_paused),
+                        style = DeckStyle.Body,
+                    )
                 }
             }
             if (!snapshot.idle) {
-                WidgetButton(Icons.Rounded.Refresh, "Reset", onClick = onReset)
+                WidgetButton(Icons.Rounded.Refresh, stringResource(R.string.island_action_reset), onClick = onReset)
             }
             WidgetButton(
                 if (snapshot.running) Icons.Rounded.Pause else Icons.Rounded.PlayArrow,
-                if (snapshot.running) "Pause" else "Start",
+                stringResource(if (snapshot.running) R.string.island_action_pause else R.string.island_widget_timer_start),
                 onClick = onToggle,
                 filled = true,
             )
@@ -291,18 +326,27 @@ fun CalendarWidget(state: CalendarState, onOpen: (CalendarState.Next?) -> Unit) 
     val context = LocalContext.current
     when (state) {
         CalendarState.NoPermission -> WidgetCard(width = 200.dp) {
-            IconText(Icons.Rounded.CalendarToday, "Calendar", "Grant calendar access in Lagoon settings", DeckStyle.TextFaint)
+            IconText(
+                Icons.Rounded.CalendarToday,
+                stringResource(R.string.island_widget_calendar),
+                stringResource(R.string.island_widget_calendar_grant),
+                DeckStyle.TextFaint,
+            )
         }
         CalendarState.Empty -> WidgetCard(onClick = { onOpen(null) }) {
-            IconText(Icons.Rounded.CalendarToday, "No events", "Next 24 hours are clear")
+            IconText(
+                Icons.Rounded.CalendarToday,
+                stringResource(R.string.island_widget_calendar_empty),
+                stringResource(R.string.island_widget_calendar_empty_hint),
+            )
         }
         is CalendarState.Next -> WidgetCard(width = 200.dp, onClick = { onOpen(state) }) {
             val whenText = if (state.allDay) {
-                "All day"
+                stringResource(R.string.island_widget_calendar_all_day)
             } else {
                 DateFormat.getTimeFormat(context).format(Date(state.startAt))
             }
-            IconText(Icons.Rounded.CalendarToday, state.title, whenText)
+            IconText(Icons.Rounded.CalendarToday, state.title ?: stringResource(R.string.island_widget_calendar_no_title), whenText)
         }
     }
 }

@@ -77,7 +77,7 @@ fun ProgressExpanded(scope: ContentScope, p: ActivityContent.Progress) {
             }
             p.progress?.let {
                 Spacer(Modifier.width(12.dp))
-                Text("${(it * 100).toInt()}%", style = IslandType.body)
+                Text(percentText((it * 100).toInt()), style = IslandType.body)
             }
         }
         Spacer(Modifier.height(12.dp))

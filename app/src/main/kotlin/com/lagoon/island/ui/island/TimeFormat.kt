@@ -36,8 +36,8 @@ object TimeFormat {
         return if (media.durationMs > 0) pos.coerceIn(0, media.durationMs) else pos.coerceAtLeast(0)
     }
 
-    /** "27 W" style wattage, one decimal below 10 W. */
+    /** The number in "27 W", one decimal below 10 W; the unit comes from the island_watts string. */
     fun watts(watts: Float?): String? = watts?.let {
-        if (it >= 10f) "${it.toInt()} W" else "%.1f W".format(it)
+        if (it >= 10f) "${it.toInt()}" else "%.1f".format(it)
     }
 }

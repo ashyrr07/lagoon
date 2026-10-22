@@ -12,8 +12,10 @@ import android.telecom.TelecomManager
 import android.telephony.TelephonyCallback
 import android.telephony.TelephonyManager
 import android.util.Log
+import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
 import androidx.core.os.BundleCompat
+import com.lagoon.island.R
 import com.lagoon.island.data.SettingsRepository
 import com.lagoon.island.engine.ActivityContent
 import com.lagoon.island.engine.ActivityRegistry
@@ -102,10 +104,10 @@ class CallSource @Inject constructor(
         if (!features.current.calls) return
         when (state) {
             TelephonyManager.CALL_STATE_IDLE -> if (previous != null && previous != TelephonyManager.CALL_STATE_IDLE && notificationKey == null) postEnded()
-            TelephonyManager.CALL_STATE_RINGING -> if (notificationKey == null) postBare(ActivityContent.Call.State.Ringing, "Incoming call")
+            TelephonyManager.CALL_STATE_RINGING -> if (notificationKey == null) postBare(ActivityContent.Call.State.Ringing, context.getString(R.string.island_call_incoming))
             TelephonyManager.CALL_STATE_OFFHOOK -> {
                 if (activeSince == null) activeSince = System.currentTimeMillis()
-                if (notificationKey == null) postBare(ActivityContent.Call.State.Active, "Call in progress")
+                if (notificationKey == null) postBare(ActivityContent.Call.State.Active, context.getString(R.string.island_call_in_progress))
                 else registry.update(ID) { a -> (a.content as? ActivityContent.Call)?.takeIf { it.state == ActivityContent.Call.State.Ringing }?.let { c -> rebuild(a, c.copy(state = ActivityContent.Call.State.Active, startedAt = activeSince ?: a.startedAt)) } ?: a }
             }
         }
@@ -119,7 +121,7 @@ class CallSource @Inject constructor(
         val callType = extras?.takeIf { it.containsKey(EXTRA_CALL_TYPE) }?.getInt(EXTRA_CALL_TYPE)
         val person = extras?.let { runCatching { BundleCompat.getParcelable(it, Notification.EXTRA_CALL_PERSON, Person::class.java) }.getOrNull() }
 
-        val name = person?.name?.toString()?.takeIf { it.isNotBlank() } ?: n.title ?: lastName ?: "Call"
+        val name = person?.name?.toString()?.takeIf { it.isNotBlank() } ?: n.title ?: lastName ?: context.getString(R.string.island_call_fallback_name)
         val photo = person?.icon.toBitmapOrNull(context) ?: n.getLargeIcon().toBitmapOrNull(context) ?: lastPhoto
         val detail = n.text?.takeIf { it != name }
 
@@ -224,9 +226,9 @@ class CallSource @Inject constructor(
         val result = mutableListOf<IslandAction>()
         fun pending(key: String): PendingIntent? = extras?.let { runCatching { BundleCompat.getParcelable(it, key, PendingIntent::class.java) }.getOrNull() }
         if (callType != null) {
-            pending(Notification.EXTRA_ANSWER_INTENT)?.let { result += action(ACTION_ANSWER, "Answer", it) }
-            pending(Notification.EXTRA_DECLINE_INTENT)?.let { result += action(ACTION_DECLINE, "Decline", it) }
-            pending(Notification.EXTRA_HANG_UP_INTENT)?.let { result += action(ACTION_HANG_UP, "Hang up", it) }
+            pending(Notification.EXTRA_ANSWER_INTENT)?.let { result += action(ACTION_ANSWER, R.string.island_call_answer, it) }
+            pending(Notification.EXTRA_DECLINE_INTENT)?.let { result += action(ACTION_DECLINE, R.string.island_call_decline, it) }
+            pending(Notification.EXTRA_HANG_UP_INTENT)?.let { result += action(ACTION_HANG_UP, R.string.island_call_hang_up, it) }
             if (result.isNotEmpty()) return result
         }
         val notificationActions = n.actions.orEmpty()
@@ -234,13 +236,14 @@ class CallSource @Inject constructor(
             CallActionCandidate(index, a.title?.toString(), iconName(sbn.packageName, a.getIcon()?.takeIf { it.type == android.graphics.drawable.Icon.TYPE_RESOURCE }?.resId))
         }
         val matched = CallActionMatcher.match(candidates)
-        matched.answer?.let { i -> notificationActions[i].actionIntent?.let { result += action(ACTION_ANSWER, "Answer", it) } }
-        matched.decline?.let { i -> notificationActions[i].actionIntent?.let { result += action(ACTION_DECLINE, "Decline", it) } }
-        matched.hangUp?.let { i -> notificationActions[i].actionIntent?.let { result += action(ACTION_HANG_UP, "Hang up", it) } }
+        matched.answer?.let { i -> notificationActions[i].actionIntent?.let { result += action(ACTION_ANSWER, R.string.island_call_answer, it) } }
+        matched.decline?.let { i -> notificationActions[i].actionIntent?.let { result += action(ACTION_DECLINE, R.string.island_call_decline, it) } }
+        matched.hangUp?.let { i -> notificationActions[i].actionIntent?.let { result += action(ACTION_HANG_UP, R.string.island_call_hang_up, it) } }
         return result
     }
 
-    private fun action(id: String, label: String, intent: PendingIntent) = IslandAction(id, label, perform = { launcher.send(intent) })
+    private fun action(id: String, @StringRes label: Int, intent: PendingIntent) =
+        IslandAction(id, context.getString(label), perform = { launcher.send(intent) })
 
     private fun iconName(packageName: String, resId: Int?): String? {
         if (resId == null || resId == 0) return null

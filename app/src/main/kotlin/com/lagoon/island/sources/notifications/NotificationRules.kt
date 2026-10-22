@@ -6,6 +6,7 @@ package com.lagoon.island.sources.notifications
  * [Extras] first.
  */
 object NotificationRules {
+    /** Default for [resolveText]'s fallback in tests; the source passes the localized text. */
     const val FALLBACK_TEXT = "New notification"
 
     fun activityId(key: String) = "notif:$key"
@@ -63,9 +64,9 @@ object NotificationRules {
     /**
      * Picks a title and a body. The newest message wins for conversations, then big text, then
      * plain text. Android 15 redacts OTP notifications for listeners (empty text), so a notification
-     * with nothing readable still shows [FALLBACK_TEXT] under the app name.
+     * with nothing readable still shows [fallback] under the app name.
      */
-    fun resolveText(extras: Extras, appName: String): Text {
+    fun resolveText(extras: Extras, appName: String, fallback: String = FALLBACK_TEXT): Text {
         val message = extras.lastMessageText?.clean()
         val sender = extras.lastMessageSender?.clean()
         val title = extras.title?.clean()
@@ -81,7 +82,7 @@ object NotificationRules {
             title != null && body != null -> Text(title, body)
             title != null -> Text(appName, title)
             body != null -> Text(appName, body)
-            else -> Text(appName, FALLBACK_TEXT)
+            else -> Text(appName, fallback)
         }
     }
 

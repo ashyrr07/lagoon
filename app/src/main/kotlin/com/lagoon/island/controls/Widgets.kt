@@ -14,6 +14,7 @@ import android.os.Looper
 import android.provider.AlarmClock
 import android.provider.CalendarContract
 import android.util.Log
+import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Alarm
 import androidx.compose.material.icons.rounded.BatteryStd
@@ -22,6 +23,7 @@ import androidx.compose.material.icons.rounded.MusicNote
 import androidx.compose.material.icons.rounded.Timer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.core.content.ContextCompat
+import com.lagoon.island.R
 import com.lagoon.island.engine.ActivityContent
 import com.lagoon.island.engine.ActivityRegistry
 import com.lagoon.island.engine.IslandActivity
@@ -42,7 +44,10 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 /** Static description of a built-in widget, for the Controls screen. */
-data class WidgetSpec(val id: String, val label: String, val icon: ImageVector)
+data class WidgetSpec(val id: String, @StringRes val labelRes: Int, val icon: ImageVector) {
+    /** [labelRes] resolved outside Compose, in the app's language; composables use stringResource. */
+    val label: String get() = ModelText.get(labelRes, id)
+}
 
 data class BatteryInfo(
     val level: Int = -1,
@@ -53,7 +58,8 @@ data class BatteryInfo(
 sealed interface CalendarState {
     data object NoPermission : CalendarState
     data object Empty : CalendarState
-    data class Next(val title: String, val startAt: Long, val endAt: Long, val allDay: Boolean) : CalendarState
+    /** [title] is null when the event has none; the widget shows a localized placeholder. */
+    data class Next(val title: String?, val startAt: Long, val endAt: Long, val allDay: Boolean) : CalendarState
 }
 
 /**
@@ -66,6 +72,10 @@ class Widgets @Inject constructor(
     private val registry: ActivityRegistry,
     private val launcher: IntentLauncher,
 ) {
+    init {
+        ModelText.init(context)
+    }
+
     private val mainHandler = Handler(Looper.getMainLooper())
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
     private val alarmManager = context.getSystemService(AlarmManager::class.java)
@@ -212,7 +222,7 @@ class Widgets @Inject constructor(
         )?.use { cursor ->
             if (!cursor.moveToFirst()) return@use null
             CalendarState.Next(
-                title = cursor.getString(0)?.takeIf { it.isNotBlank() } ?: "(No title)",
+                title = cursor.getString(0)?.takeIf { it.isNotBlank() },
                 startAt = cursor.getLong(1),
                 endAt = cursor.getLong(2),
                 allDay = cursor.getInt(3) == 1,
@@ -231,11 +241,11 @@ class Widgets @Inject constructor(
         const val ID_CALENDAR = "calendar"
 
         val ALL: List<WidgetSpec> = listOf(
-            WidgetSpec(ID_NOW_PLAYING, "Now playing", Icons.Rounded.MusicNote),
-            WidgetSpec(ID_NEXT_ALARM, "Next alarm", Icons.Rounded.Alarm),
-            WidgetSpec(ID_BATTERY, "Battery", Icons.Rounded.BatteryStd),
-            WidgetSpec(ID_TIMER, "Timer", Icons.Rounded.Timer),
-            WidgetSpec(ID_CALENDAR, "Next event", Icons.Rounded.CalendarToday),
+            WidgetSpec(ID_NOW_PLAYING, R.string.island_widget_now_playing, Icons.Rounded.MusicNote),
+            WidgetSpec(ID_NEXT_ALARM, R.string.island_widget_next_alarm, Icons.Rounded.Alarm),
+            WidgetSpec(ID_BATTERY, R.string.island_widget_battery, Icons.Rounded.BatteryStd),
+            WidgetSpec(ID_TIMER, R.string.island_widget_timer, Icons.Rounded.Timer),
+            WidgetSpec(ID_CALENDAR, R.string.island_widget_next_event, Icons.Rounded.CalendarToday),
         )
         val IDS: List<String> = ALL.map { it.id }
     }

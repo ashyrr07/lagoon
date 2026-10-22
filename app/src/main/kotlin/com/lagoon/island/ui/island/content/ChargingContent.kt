@@ -1,5 +1,6 @@
 package com.lagoon.island.ui.island.content
 
+import androidx.annotation.StringRes
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.Canvas
@@ -28,10 +29,11 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.unit.dp
+import com.lagoon.island.R
 import com.lagoon.island.engine.ActivityContent
-import com.lagoon.island.ui.island.TimeFormat
 
 private fun ActivityContent.Charging.glyph() = when (state) {
     ActivityContent.Charging.State.Connected -> Icons.Rounded.Bolt
@@ -46,11 +48,12 @@ private fun ActivityContent.Charging.color(accent: Color) = when (state) {
     else -> accent
 }
 
-private fun ActivityContent.Charging.headline(): String = when (state) {
-    ActivityContent.Charging.State.Connected -> "Charging"
-    ActivityContent.Charging.State.Disconnected -> "Unplugged"
-    ActivityContent.Charging.State.Low -> "Low battery"
-    ActivityContent.Charging.State.Full -> "Fully charged"
+@StringRes
+private fun ActivityContent.Charging.headline(): Int = when (state) {
+    ActivityContent.Charging.State.Connected -> R.string.island_charging
+    ActivityContent.Charging.State.Disconnected -> R.string.island_charging_unplugged
+    ActivityContent.Charging.State.Low -> R.string.island_charging_low
+    ActivityContent.Charging.State.Full -> R.string.island_charging_full
 }
 
 @Composable
@@ -60,7 +63,7 @@ fun ChargingCompactLeading(scope: ContentScope, c: ActivityContent.Charging) {
 
 @Composable
 fun ChargingCompactTrailing(scope: ContentScope, c: ActivityContent.Charging) {
-    val text = TimeFormat.watts(c.watts)?.takeIf { c.state == ActivityContent.Charging.State.Connected } ?: "${c.level}%"
+    val text = wattsText(c.watts)?.takeIf { c.state == ActivityContent.Charging.State.Connected } ?: percentText(c.level)
     Text(
         text,
         style = IslandType.compact.copy(color = c.color(scope.accent), platformStyle = PlatformTextStyle(includeFontPadding = false)),
@@ -113,13 +116,12 @@ fun ChargingExpanded(scope: ContentScope, c: ActivityContent.Charging) {
         GlyphDisc(c.glyph(), c.color(scope.accent), size = 40.dp)
         Spacer(Modifier.width(14.dp))
         Column(Modifier.weight(1f)) {
-            Text(c.headline(), style = IslandType.title)
-            val detail = buildString {
-                append("${c.level}%")
-                TimeFormat.watts(c.watts)?.takeIf { c.state == ActivityContent.Charging.State.Connected }?.let { append(" · $it") }
-            }
+            Text(stringResource(c.headline()), style = IslandType.title)
+            val level = percentText(c.level)
+            val watts = wattsText(c.watts)?.takeIf { c.state == ActivityContent.Charging.State.Connected }
+            val detail = if (watts != null) "$level · $watts" else level
             Text(detail, style = IslandType.bodyDim)
         }
-        Text("${c.level}%", style = IslandType.big.copy(color = c.color(scope.accent)))
+        Text(percentText(c.level), style = IslandType.big.copy(color = c.color(scope.accent)))
     }
 }

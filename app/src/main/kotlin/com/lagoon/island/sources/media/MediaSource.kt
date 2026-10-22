@@ -10,6 +10,7 @@ import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
 import android.util.Log
+import com.lagoon.island.R
 import com.lagoon.island.data.AppsRepository
 import com.lagoon.island.data.GestureAction
 import com.lagoon.island.data.SettingsRepository
@@ -240,10 +241,10 @@ class MediaSource @Inject constructor(
     private fun actions(c: MediaController, playing: Boolean): List<IslandAction> {
         val transport = c.transportControls
         return listOf(
-            IslandAction(MediaRules.ACTION_PREV, "Previous") { transport.skipToPrevious() },
-            IslandAction(MediaRules.ACTION_PLAY_PAUSE, if (playing) "Pause" else "Play") { togglePlay(c) },
-            IslandAction(MediaRules.ACTION_NEXT, "Next") { transport.skipToNext() },
-            IslandAction(MediaRules.ACTION_SEEK, "Seek", acceptsText = true) { text ->
+            IslandAction(MediaRules.ACTION_PREV, context.getString(R.string.island_action_previous)) { transport.skipToPrevious() },
+            IslandAction(MediaRules.ACTION_PLAY_PAUSE, context.getString(if (playing) R.string.island_action_pause else R.string.island_action_play)) { togglePlay(c) },
+            IslandAction(MediaRules.ACTION_NEXT, context.getString(R.string.island_action_next)) { transport.skipToNext() },
+            IslandAction(MediaRules.ACTION_SEEK, context.getString(R.string.island_action_seek), acceptsText = true) { text ->
                 MediaRules.parseSeekMillis(text)?.let { transport.seekTo(it) }
             },
         )

@@ -32,10 +32,12 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.lagoon.island.R
 import com.lagoon.island.engine.ActivityContent
 import com.lagoon.island.engine.IslandAction
 
@@ -130,14 +132,14 @@ private fun ReplyField(scope: ContentScope, action: IslandAction) {
                 .onFocusChanged { if (it.isFocused) scope.requestFocus(true) },
             decorationBox = { inner ->
                 Box {
-                    if (text.isEmpty()) Text(action.label.ifBlank { "Reply" }, style = IslandType.bodyDim)
+                    if (text.isEmpty()) Text(action.label.ifBlank { stringResource(R.string.island_reply) }, style = IslandType.bodyDim)
                     inner()
                 }
             },
         )
         RoundIconButton(
             Icons.AutoMirrored.Rounded.Send,
-            "Send",
+            stringResource(R.string.island_send),
             onClick = ::send,
             size = 32.dp,
             container = if (text.isBlank()) Color.White.copy(alpha = 0.12f) else scope.accent,

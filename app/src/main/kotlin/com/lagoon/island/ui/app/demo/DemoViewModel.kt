@@ -1,5 +1,6 @@
 package com.lagoon.island.ui.app.demo
 
+import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.LinearGradient
@@ -23,7 +24,11 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
-/** Posts realistic fake activities so the island can be tried, screenshotted and QA'd without real sources. */
+/**
+ * Posts realistic fake activities so the island can be tried, screenshotted and QA'd without real
+ * sources. Each call takes the screen's [Resources], so labels and sample texts follow the app's
+ * language (song titles and names stay as they are).
+ */
 @HiltViewModel
 class DemoViewModel @Inject constructor(
     private val registry: ActivityRegistry,
@@ -35,7 +40,7 @@ class DemoViewModel @Inject constructor(
     private val art: Bitmap by lazy { gradientBitmap(0xFF7F5AF0.toInt(), 0xFF2CB67D.toInt(), 0xFFFF8906.toInt()) }
     private val avatar: Bitmap by lazy { gradientBitmap(0xFF25D366.toInt(), 0xFF128C7E.toInt(), 0xFF075E54.toInt(), letter = "A") }
 
-    fun music() {
+    fun music(res: Resources) {
         val now = System.currentTimeMillis()
         var playing = true
         var position = 42_000L
@@ -59,8 +64,8 @@ class DemoViewModel @Inject constructor(
                     startedAt = now,
                     updatedAt = System.currentTimeMillis(),
                     actions = listOf(
-                        IslandAction("prev", "Previous") { position = 0L; post() },
-                        IslandAction("play_pause", if (playing) "Pause" else "Play") {
+                        IslandAction("prev", res.getString(R.string.island_action_previous)) { position = 0L; post() },
+                        IslandAction("play_pause", res.getString(if (playing) R.string.island_action_pause else R.string.island_action_play)) {
                             val t = System.currentTimeMillis()
                             position = (registry[ID_MEDIA]?.content as? ActivityContent.Media)?.let { m ->
                                 if (m.isPlaying) m.positionMs + (t - m.positionSampledAt) else m.positionMs
@@ -68,8 +73,8 @@ class DemoViewModel @Inject constructor(
                             playing = !playing
                             post()
                         },
-                        IslandAction("next", "Next") { position = 0L; post() },
-                        IslandAction("seek", "Seek") { text -> text?.toLongOrNull()?.let { position = it; post() } },
+                        IslandAction("next", res.getString(R.string.island_action_next)) { position = 0L; post() },
+                        IslandAction("seek", res.getString(R.string.island_action_seek)) { text -> text?.toLongOrNull()?.let { position = it; post() } },
                     ),
                 ),
             )
@@ -88,46 +93,46 @@ class DemoViewModel @Inject constructor(
         }
     }
 
-    fun incomingCall() {
+    fun incomingCall(res: Resources) {
         val now = System.currentTimeMillis()
         registry.post(
             IslandActivity(
                 id = ID_CALL,
                 source = Source.Demo,
                 priority = Priority.Alert,
-                content = ActivityContent.Call("Ada Lovelace", "Mobile", avatar, ActivityContent.Call.State.Ringing, now),
+                content = ActivityContent.Call("Ada Lovelace", res.getString(R.string.island_demo_call_detail), avatar, ActivityContent.Call.State.Ringing, now),
                 startedAt = now,
                 alertMs = 30_000L,
                 actions = listOf(
-                    IslandAction("answer", "Answer") { activeCall() },
-                    IslandAction("decline", "Decline") { registry.remove(ID_CALL) },
+                    IslandAction("answer", res.getString(R.string.island_call_answer)) { activeCall(res) },
+                    IslandAction("decline", res.getString(R.string.island_call_decline)) { registry.remove(ID_CALL) },
                 ),
             ),
         )
     }
 
-    fun activeCall() {
+    fun activeCall(res: Resources) {
         val now = System.currentTimeMillis()
         registry.post(
             IslandActivity(
                 id = ID_CALL,
                 source = Source.Demo,
                 priority = Priority.Call,
-                content = ActivityContent.Call("Ada Lovelace", "Mobile", avatar, ActivityContent.Call.State.Active, now),
+                content = ActivityContent.Call("Ada Lovelace", res.getString(R.string.island_demo_call_detail), avatar, ActivityContent.Call.State.Active, now),
                 startedAt = now,
-                actions = listOf(IslandAction("hang_up", "Hang up") { registry.remove(ID_CALL) }),
+                actions = listOf(IslandAction("hang_up", res.getString(R.string.island_call_hang_up)) { registry.remove(ID_CALL) }),
             ),
         )
     }
 
-    fun timer() {
+    fun timer(res: Resources) {
         val now = System.currentTimeMillis()
         registry.post(
             IslandActivity(
                 id = ID_TIMER,
                 source = Source.Demo,
                 priority = Priority.Timer,
-                content = ActivityContent.Timer("Pasta", endAt = now + 5 * 60_000L, baseAt = now, running = true),
+                content = ActivityContent.Timer(res.getString(R.string.island_demo_timer_label), endAt = now + 5 * 60_000L, baseAt = now, running = true),
                 startedAt = now,
                 ttlMs = 5 * 60_000L + 2_000L,
                 actions = listOf(
@@ -137,7 +142,7 @@ class DemoViewModel @Inject constructor(
                             a.copy(content = t.copy(endAt = (t.endAt ?: now) + 60_000L), updatedAt = System.currentTimeMillis())
                         }
                     },
-                    IslandAction("cancel", "Cancel") { registry.remove(ID_TIMER) },
+                    IslandAction("cancel", res.getString(R.string.island_demo_cancel)) { registry.remove(ID_TIMER) },
                 ),
             ),
         )
@@ -173,7 +178,7 @@ class DemoViewModel @Inject constructor(
         )
     }
 
-    fun message() {
+    fun message(res: Resources) {
         val now = System.currentTimeMillis()
         registry.post(
             IslandActivity(
@@ -186,35 +191,40 @@ class DemoViewModel @Inject constructor(
                     appName = "WhatsApp",
                     appIcon = IconSource.Res(R.drawable.ic_launcher_foreground),
                     title = "Ada",
-                    text = "Are we still on for 7? I can bring dessert if you do the pasta.",
+                    text = res.getString(R.string.island_demo_message_text),
                     largeIcon = IconSource.Image(avatar),
                     isConversation = true,
                 ),
                 startedAt = now,
                 ttlMs = 60_000L,
                 actions = listOf(
-                    IslandAction("reply", "Reply", acceptsText = true) { text -> Log.i(TAG, "Demo reply: $text") },
-                    IslandAction("mark_read", "Mark as read") { registry.remove(ID_MESSAGE) },
+                    IslandAction("reply", res.getString(R.string.island_reply), acceptsText = true) { text -> Log.i(TAG, "Demo reply: $text") },
+                    IslandAction("mark_read", res.getString(R.string.island_demo_mark_read)) { registry.remove(ID_MESSAGE) },
                 ),
             ),
         )
     }
 
-    fun navigation() {
+    fun navigation(res: Resources) {
         val now = System.currentTimeMillis()
         registry.post(
             IslandActivity(
                 id = ID_NAV,
                 source = Source.Demo,
                 priority = Priority.Navigation,
-                content = ActivityContent.Navigation("Turn right onto Market St", "350 m", "12 min · 4.2 km · 18:42", icon = null),
+                content = ActivityContent.Navigation(
+                    res.getString(R.string.island_demo_nav_instruction),
+                    res.getString(R.string.island_demo_nav_distance),
+                    res.getString(R.string.island_demo_nav_eta),
+                    icon = null,
+                ),
                 startedAt = now,
                 ttlMs = 120_000L,
             ),
         )
     }
 
-    fun progress() {
+    fun progress(res: Resources) {
         val now = System.currentTimeMillis()
         progressJob?.cancel()
         progressJob = viewModelScope.launch {
@@ -225,7 +235,12 @@ class DemoViewModel @Inject constructor(
                         id = ID_PROGRESS,
                         source = Source.Demo,
                         priority = Priority.Progress,
-                        content = ActivityContent.Progress("Order on its way", "Arriving in ${(12 * (1f - p)).toInt() + 1} min", p, icon = null),
+                        content = ActivityContent.Progress(
+                            res.getString(R.string.island_demo_progress_title),
+                            ((12 * (1f - p)).toInt() + 1).let { res.getQuantityString(R.plurals.island_demo_progress_eta, it, it) },
+                            p,
+                            icon = null,
+                        ),
                         startedAt = now,
                         updatedAt = System.currentTimeMillis(),
                         ttlMs = 30_000L,

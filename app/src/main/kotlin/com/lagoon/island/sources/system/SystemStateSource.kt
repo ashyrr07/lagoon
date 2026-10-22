@@ -109,18 +109,22 @@ class SystemStateSource @Inject constructor(
 
     private fun postRinger(mode: Int) {
         val (title, icon) = when (mode) {
-            AudioManager.RINGER_MODE_SILENT -> "Silent" to R.drawable.ic_sys_silent
-            AudioManager.RINGER_MODE_VIBRATE -> "Vibrate" to R.drawable.ic_sys_vibrate
-            AudioManager.RINGER_MODE_NORMAL -> "Ring" to R.drawable.ic_sys_ring
+            AudioManager.RINGER_MODE_SILENT -> R.string.island_system_silent to R.drawable.ic_sys_silent
+            AudioManager.RINGER_MODE_VIBRATE -> R.string.island_system_vibrate to R.drawable.ic_sys_vibrate
+            AudioManager.RINGER_MODE_NORMAL -> R.string.island_system_ring to R.drawable.ic_sys_ring
             else -> return
         }
-        postTransient(ID_RINGER, ActivityContent.Generic(IconSource.Res(icon), title, null))
+        postTransient(ID_RINGER, ActivityContent.Generic(IconSource.Res(icon), context.getString(title), null))
     }
 
     private fun postDnd(on: Boolean) {
         postTransient(
             ID_DND,
-            ActivityContent.Generic(IconSource.Res(R.drawable.ic_sys_dnd), "Do not disturb", if (on) "On" else "Off"),
+            ActivityContent.Generic(
+                IconSource.Res(R.drawable.ic_sys_dnd),
+                context.getString(R.string.island_system_dnd),
+                context.getString(if (on) R.string.island_system_on else R.string.island_system_off),
+            ),
         )
     }
 
@@ -176,10 +180,10 @@ class SystemStateSource @Inject constructor(
                 id = ID_TORCH,
                 source = Source.System,
                 priority = Priority.Ambient,
-                content = ActivityContent.Generic(IconSource.Res(R.drawable.ic_sys_torch), "Flashlight on", null),
+                content = ActivityContent.Generic(IconSource.Res(R.drawable.ic_sys_torch), context.getString(R.string.island_system_torch_on), null),
                 startedAt = now,
                 actions = listOf(
-                    IslandAction(id = "torch-off", label = "Turn off", perform = {
+                    IslandAction(id = "torch-off", label = context.getString(R.string.island_action_turn_off), perform = {
                         litCameras.forEach { id -> runCatching { camera.setTorchMode(id, false) } }
                     }),
                 ),
@@ -211,12 +215,12 @@ class SystemStateSource @Inject constructor(
                 priority = Priority.Ambient,
                 content = ActivityContent.Generic(
                     icon = IconSource.Res(R.drawable.ic_sys_record),
-                    title = n.title ?: "Screen recording",
+                    title = n.title ?: context.getString(R.string.island_system_screen_recording),
                     text = n.text,
                 ),
                 startedAt = if (n.showsChronometer && n.`when` > 0) n.`when` else now,
                 updatedAt = now,
-                actions = sbn.islandActions(launcher) { TimerActionLabels.shorten(it) },
+                actions = sbn.clockActions(launcher, context),
                 onTap = sbn.openAction(launcher),
                 dismissible = false,
             ),
@@ -267,7 +271,7 @@ class SystemStateSource @Inject constructor(
                 id = ID_NO_INTERNET,
                 source = Source.System,
                 priority = Priority.Ambient,
-                content = ActivityContent.Generic(IconSource.Res(R.drawable.ic_sys_no_internet), "No internet", null),
+                content = ActivityContent.Generic(IconSource.Res(R.drawable.ic_sys_no_internet), context.getString(R.string.island_system_no_internet), null),
                 startedAt = System.currentTimeMillis(),
             ),
         )
@@ -290,7 +294,7 @@ class SystemStateSource @Inject constructor(
             "com.vivo.smartshot",
             "com.huawei.screenrecorder",
         )
-        private val RECORDING_WORDS = listOf("recording", "record", "aufnahme", "enregistrement", "grabaci", "grava", "registrazione")
+        private val RECORDING_WORDS = listOf("recording", "record", "aufnahme", "enregistrement", "grabaci", "grava", "registrazione", "запис")
 
         fun isScreenRecording(sbn: StatusBarNotification): Boolean {
             if (sbn.packageName !in RECORDER_PACKAGES) return false

@@ -25,11 +25,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.lagoon.island.R
 import com.lagoon.island.engine.ActivityContent
+import com.lagoon.island.sources.system.CallSource
 import com.lagoon.island.ui.island.TimeFormat
 
 @Composable
@@ -63,7 +66,7 @@ fun CallCompactTrailing(scope: ContentScope, call: ActivityContent.Call) {
             val now by rememberTicking()
             Text(TimeFormat.clock(now - call.startedAt), style = IslandType.compact.copy(color = scope.accent, platformStyle = PlatformTextStyle(includeFontPadding = false)))
         }
-        ActivityContent.Call.State.Ended -> Text("Ended", style = IslandType.compactDim)
+        ActivityContent.Call.State.Ended -> Text(stringResource(R.string.island_call_ended_short), style = IslandType.compactDim)
     }
 }
 
@@ -76,19 +79,19 @@ fun CallExpanded(scope: ContentScope, call: ActivityContent.Call) {
             Column(Modifier.weight(1f)) {
                 Text(call.name, style = IslandType.title, maxLines = 1, overflow = TextOverflow.Ellipsis)
                 val subtitle = when (call.state) {
-                    ActivityContent.Call.State.Ringing -> call.detail ?: "Incoming call"
+                    ActivityContent.Call.State.Ringing -> call.detail ?: stringResource(R.string.island_call_incoming)
                     ActivityContent.Call.State.Active -> {
                         val now by rememberTicking()
                         TimeFormat.clock(now - call.startedAt) + (call.detail?.let { " · $it" } ?: "")
                     }
-                    ActivityContent.Call.State.Ended -> "Call ended"
+                    ActivityContent.Call.State.Ended -> stringResource(R.string.island_call_ended)
                 }
                 Text(subtitle, style = IslandType.bodyDim, maxLines = 1, overflow = TextOverflow.Ellipsis)
             }
         }
-        val answer = scope.action("answer", "accept")
-        val decline = scope.action("decline", "reject")
-        val hangUp = scope.action("hang_up", "hangup", "end")
+        val answer = scope.action(CallSource.ACTION_ANSWER, "answer", "accept")
+        val decline = scope.action(CallSource.ACTION_DECLINE, "decline", "reject")
+        val hangUp = scope.action(CallSource.ACTION_HANG_UP, "hang_up", "hangup", "end")
         val others = scope.activity.actions.filter { it !== answer && it !== decline && it !== hangUp }
         if (answer != null || decline != null || hangUp != null) {
             Spacer(Modifier.height(16.dp))

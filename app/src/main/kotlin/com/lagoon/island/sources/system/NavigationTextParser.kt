@@ -10,13 +10,17 @@ data class NavigationInfo(val instruction: String, val distance: String, val eta
  * minus an "In 200 m" / "in 1.2 km" that carries the distance itself.
  */
 object NavigationTextParser {
-    private const val UNITS = """(?:km|m|mi|ft|yd|meters?|metres?|miles?|feet|kilomet(?:er|re)s?)"""
-    private const val PREPOSITIONS = """(?:in|en|dans|tra|em|à|a)"""
-    private val DISTANCE = Regex("""\b(\d+(?:[.,]\d+)?)\s?$UNITS\b""", RegexOption.IGNORE_CASE)
-    private val LEADING_DISTANCE = Regex("""^\s*$PREPOSITIONS\s+(\d+(?:[.,]\d+)?\s?$UNITS)\b\s*[,:\-–·]?\s*""", RegexOption.IGNORE_CASE)
-    private val TRAILING_DISTANCE = Regex("""\s*[,:\-–·]?\s*\b$PREPOSITIONS\s+(\d+(?:[.,]\d+)?\s?$UNITS)\b\s*$""", RegexOption.IGNORE_CASE)
+    private const val UNITS = """(?:km|m|mi|ft|yd|meters?|metres?|miles?|feet|kilomet(?:er|re)s?|км|м)"""
+    private const val PREPOSITIONS = """(?:in|en|dans|tra|em|à|a|nach|[Чч]ерез)"""
+
+    /** End of a word that also holds after Cyrillic (`\b` is ASCII-only on the JVM). */
+    private const val END = """(?![\p{L}\d])"""
+    private val DISTANCE = Regex("""\b(\d+(?:[.,]\d+)?)\s?$UNITS$END""", RegexOption.IGNORE_CASE)
+    private val LEADING_DISTANCE = Regex("""^\s*$PREPOSITIONS\s+(\d+(?:[.,]\d+)?\s?$UNITS)$END\s*[,:\-–·]?\s*""", RegexOption.IGNORE_CASE)
+    private val TRAILING_DISTANCE = Regex("""\s*[,:\-–·]?\s*(?<![\p{L}])$PREPOSITIONS\s+(\d+(?:[.,]\d+)?\s?$UNITS)$END\s*$""", RegexOption.IGNORE_CASE)
     private val CLOCK_TIME = Regex("""\b\d{1,2}:\d{2}\s?(?:[ap]\.?m\.?)?\b""", RegexOption.IGNORE_CASE)
-    private val DURATION = Regex("""\b\d+\s?(?:min|mins|minutes?|h|hr|hrs|hours?)\b""", RegexOption.IGNORE_CASE)
+    private val DURATION = Regex("""\b\d+\s?(?:min|mins|minutes?|h|hr|hrs|hours?|std|мин|ч)$END""", RegexOption.IGNORE_CASE)
+    private val ARRIVAL_WORDS = listOf("eta", "arriv", "ankunft", "llegada", "прибыт")
     private val SEPARATORS = Regex("""\s*[·•|]\s*""")
 
     fun parse(title: String?, text: String?, subText: String?): NavigationInfo? {
@@ -58,7 +62,7 @@ object NavigationTextParser {
     fun isEtaLine(s: String): Boolean {
         val hasSeparator = SEPARATORS.containsMatchIn(s)
         val hasTime = CLOCK_TIME.containsMatchIn(s) || DURATION.containsMatchIn(s)
-        return hasTime && (hasSeparator || DISTANCE.containsMatchIn(s) || s.contains("eta", ignoreCase = true) || s.contains("arriv", ignoreCase = true))
+        return hasTime && (hasSeparator || DISTANCE.containsMatchIn(s) || ARRIVAL_WORDS.any { s.contains(it, ignoreCase = true) })
     }
 
     /** "12 min · 4.5 km · 14:05" -> "14:05 · 12 min · 4.5 km": arrival first, as the island shows it. */

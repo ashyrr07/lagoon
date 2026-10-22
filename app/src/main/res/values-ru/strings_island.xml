@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Shared formats -->
+    <string name="island_percent">%1$d %%</string>
+    <string name="island_watts">%1$s Вт</string>
+
+    <!-- Control deck: tiles and sliders -->
+    <string name="island_control_torch">Фонарик</string>
+    <string name="island_control_torch_level">Яркость фонарика</string>
+    <string name="island_control_dnd">Не беспокоить</string>
+    <string name="island_control_rotation">Блокировка поворота</string>
+    <string name="island_control_brightness">Яркость</string>
+    <string name="island_control_media_volume">Громкость медиа</string>
+    <string name="island_control_ring_volume">Громкость звонка</string>
+    <string name="island_control_internet">Интернет</string>
+    <string name="island_control_bluetooth">Bluetooth</string>
+    <string name="island_control_camera">Камера</string>
+    <string name="island_control_screenshot">Скриншот</string>
+    <string name="island_control_lock">Блокировка</string>
+    <string name="island_control_recents">Недавние</string>
+    <string name="island_control_dnd_priority">Важные</string>
+    <string name="island_control_dnd_alarms">Только будильники</string>
+    <string name="island_control_dnd_silence">Полная тишина</string>
+    <string name="island_control_brightness_auto">Авто</string>
+    <string name="island_control_ringer_vibrate">Вибрация</string>
+    <string name="island_control_ringer_silent">Без звука</string>
+    <string name="island_deck_tile_grant">%1$s · разрешить</string>
+    <string name="island_deck_slider_grant">Нажмите, чтобы разрешить</string>
+
+    <!-- Control deck: widgets -->
+    <string name="island_widget_now_playing">Сейчас играет</string>
+    <string name="island_widget_next_alarm">Следующий будильник</string>
+    <string name="island_widget_battery">Батарея</string>
+    <string name="island_widget_timer">Таймер</string>
+    <string name="island_widget_next_event">Ближайшее событие</string>
+    <string name="island_widget_nothing_playing">Ничего не играет</string>
+    <string name="island_widget_nothing_playing_hint">Включите что-нибудь, чтобы управлять отсюда</string>
+    <string name="island_widget_alarm_today">Сегодня · %1$s</string>
+    <string name="island_widget_alarm_tomorrow">Завтра · %1$s</string>
+    <string name="island_widget_no_alarm">Нет будильника</string>
+    <string name="island_widget_no_alarm_hint">Нажмите, чтобы завести</string>
+    <string name="island_widget_battery_full">Заряжено</string>
+    <string name="island_widget_battery_charging">Зарядка</string>
+    <string name="island_widget_battery_phone">Телефон</string>
+    <string name="island_widget_timer_running">Идёт</string>
+    <string name="island_widget_timer_paused">На паузе</string>
+    <string name="island_widget_timer_start">Старт</string>
+    <plurals name="island_widget_timer_preset">
+        <item quantity="one">%dм</item>
+        <item quantity="few">%dм</item>
+        <item quantity="many">%dм</item>
+        <item quantity="other">%dм</item>
+    </plurals>
+    <string name="island_widget_calendar">Календарь</string>
+    <string name="island_widget_calendar_grant">Откройте доступ к календарю в настройках Lagoon</string>
+    <string name="island_widget_calendar_empty">Нет событий</string>
+    <string name="island_widget_calendar_empty_hint">Ближайшие 24 часа свободны</string>
+    <string name="island_widget_calendar_all_day">Весь день</string>
+    <string name="island_widget_calendar_no_title">(Без названия)</string>
+
+    <!-- Actions -->
+    <string name="island_action_play">Воспроизвести</string>
+    <string name="island_action_pause">Пауза</string>
+    <string name="island_action_resume">Продолжить</string>
+    <string name="island_action_next">Следующий трек</string>
+    <string name="island_action_previous">Предыдущий трек</string>
+    <string name="island_action_seek">Перемотка</string>
+    <string name="island_action_reset">Сброс</string>
+    <string name="island_action_stop">Стоп</string>
+    <string name="island_action_lap">Круг</string>
+    <string name="island_action_snooze">Отложить</string>
+    <string name="island_action_delete">Удалить</string>
+    <string name="island_action_dismiss">Закрыть</string>
+    <string name="island_action_turn_off">Выключить</string>
+    <string name="island_action_fallback">Действие</string>
+    <string name="island_reply">Ответить</string>
+    <string name="island_send">Отправить</string>
+
+    <!-- Charging -->
+    <string name="island_charging">Зарядка</string>
+    <string name="island_charging_unplugged">Зарядка отключена</string>
+    <string name="island_charging_low">Низкий заряд</string>
+    <string name="island_charging_full">Полностью заряжено</string>
+
+    <!-- Bluetooth devices -->
+    <string name="island_bt_connected">Подключено</string>
+    <string name="island_bt_disconnected">Отключено</string>
+    <string name="island_bt_connected_battery">Подключено · %1$s</string>
+    <string name="island_bt_battery_pair">Л %1$d %% · П %2$d %%</string>
+    <string name="island_bt_left">Левый</string>
+    <string name="island_bt_right">Правый</string>
+    <string name="island_bt_case">Кейс</string>
+    <string name="island_bt_battery">Батарея</string>
+    <string name="island_bt_device_fallback">Bluetooth-устройство</string>
+
+    <!-- Calls -->
+    <string name="island_call_incoming">Входящий вызов</string>
+    <string name="island_call_in_progress">Идёт разговор</string>
+    <string name="island_call_ended">Вызов завершён</string>
+    <string name="island_call_ended_short">Завершён</string>
+    <string name="island_call_fallback_name">Вызов</string>
+    <string name="island_call_answer">Ответить</string>
+    <string name="island_call_decline">Отклонить</string>
+    <string name="island_call_hang_up">Завершить</string>
+
+    <!-- Timers and alarms -->
+    <string name="island_timer">Таймер</string>
+    <string name="island_stopwatch">Секундомер</string>
+    <string name="island_timer_done">Время вышло</string>
+    <string name="island_timer_done_text">Таймер на %1$s истёк</string>
+    <string name="island_timer_channel">Таймер</string>
+    <string name="island_timer_channel_description">Сигнал, когда таймер на острове закончится</string>
+    <string name="island_alarm">Будильник</string>
+
+    <!-- Notifications -->
+    <string name="island_notification_fallback">Новое уведомление</string>
+
+    <!-- System indicators -->
+    <string name="island_system_silent">Без звука</string>
+    <string name="island_system_vibrate">Вибрация</string>
+    <string name="island_system_ring">Звук</string>
+    <string name="island_system_dnd">Не беспокоить</string>
+    <string name="island_system_on">Вкл.</string>
+    <string name="island_system_off">Выкл.</string>
+    <string name="island_system_torch_on">Фонарик включён</string>
+    <string name="island_system_screen_recording">Запись экрана</string>
+    <string name="island_system_no_internet">Нет интернета</string>
+
+    <!-- Keep-alive service notification -->
+    <string name="island_keep_alive_channel">Работа в фоне</string>
+    <string name="island_keep_alive_channel_description">Беззвучное уведомление, которое не даёт остановить Lagoon на телефонах, закрывающих фоновые приложения.</string>
+    <string name="island_keep_alive_title">Lagoon работает</string>
+    <string name="island_keep_alive_text">Отключить его можно на экране «Состояние».</string>
+
+    <!-- Per-brand keep-alive guides -->
+    <string name="island_oem_xiaomi_summary">HyperOS и MIUI останавливают приложения, которых нет в списке автозапуска, и вдобавок к Android включают собственную экономию заряда.</string>
+    <string name="island_oem_xiaomi_autostart_title">Разрешите автозапуск</string>
+    <string name="island_oem_xiaomi_autostart_detail">Приложение «Безопасность» &gt; Приложения &gt; Lagoon &gt; включите «Автозапуск».</string>
+    <string name="island_oem_xiaomi_battery_title">Без ограничений для батареи</string>
+    <string name="island_oem_xiaomi_battery_detail">Настройки &gt; Приложения &gt; Все приложения &gt; Lagoon &gt; Контроль активности &gt; Нет ограничений.</string>
+    <string name="island_oem_xiaomi_lock_title">Закрепите в недавних</string>
+    <string name="island_oem_xiaomi_lock_detail">Откройте недавние приложения и потяните карточку Lagoon вниз, пока не появится замок: тогда очистка списка её не закроет.</string>
+
+    <string name="island_oem_samsung_summary">One UI переводит в спящий режим приложения, которыми не пользовались несколько дней, и вместе с ними может отключить доступ к уведомлениям.</string>
+    <string name="island_oem_samsung_never_sleeping_title">Приложения, которые никогда не переходят в спящий режим</string>
+    <string name="island_oem_samsung_never_sleeping_detail">Настройки &gt; Батарея &gt; Ограничения фонового использования &gt; Приложения, которые никогда не переходят в спящий режим &gt; добавьте Lagoon.</string>
+    <string name="island_oem_samsung_adaptive_title">Адаптивная батарея</string>
+    <string name="island_oem_samsung_adaptive_detail">Если остров продолжает пропадать, на том же экране выключите «Переводить неиспользуемые приложения в спящий режим».</string>
+
+    <string name="island_oem_huawei_summary">Диспетчер запуска приложений в EMUI останавливает всё, чем не управляют вручную.</string>
+    <string name="island_oem_huawei_manual_title">Управлять вручную</string>
+    <string name="island_oem_huawei_manual_detail">Настройки &gt; Батарея &gt; Запуск приложений &gt; Lagoon &gt; Управлять вручную &gt; разрешите автозапуск, косвенный запуск и работу в фоновом режиме.</string>
+    <string name="island_oem_huawei_protected_title">Защищённые приложения</string>
+    <string name="island_oem_huawei_protected_detail">В старых версиях EMUI: Диспетчер телефона &gt; Защищённые приложения &gt; включите Lagoon.</string>
+
+    <string name="island_oem_oppo_summary">В ColorOS и OxygenOS общий диспетчер батареи, который останавливает приложения без разрешения на автозапуск.</string>
+    <string name="island_oem_oppo_autolaunch_title">Разрешите автозапуск</string>
+    <string name="island_oem_oppo_autolaunch_detail">Настройки &gt; Приложения &gt; Lagoon &gt; Разрешить автозапуск (а также «Разрешить запуск другими приложениями»).</string>
+    <string name="island_oem_oppo_battery_title">Батарея: без ограничений</string>
+    <string name="island_oem_oppo_battery_detail">Настройки &gt; Батарея &gt; Другие настройки &gt; Управление батареей приложений &gt; Lagoon &gt; Не оптимизировать, а также выключите «Оптимизацию в режиме сна».</string>
+
+    <string name="island_oem_vivo_summary">Funtouch и OriginOS требуют разрешить и автозапуск, и высокое энергопотребление в фоне.</string>
+    <string name="island_oem_vivo_autostart_title">Разрешите автозапуск</string>
+    <string name="island_oem_vivo_autostart_detail">i Manager &gt; Диспетчер приложений &gt; Автозапуск &gt; включите Lagoon.</string>
+    <string name="island_oem_vivo_power_title">Энергопотребление в фоне</string>
+    <string name="island_oem_vivo_power_detail">Настройки &gt; Батарея &gt; Управление энергопотреблением в фоне &gt; Lagoon &gt; Разрешить высокое энергопотребление в фоне.</string>
+
+    <string name="island_oem_other_summary">Обычный Android сам поддерживает доступ к уведомлениям. Если остров всё равно пропадает, проверьте настройку батареи для приложения.</string>
+    <string name="island_oem_other_battery_title">Батарея: без ограничений</string>
+    <string name="island_oem_other_battery_detail">Настройки &gt; Приложения &gt; Lagoon &gt; Батарея &gt; Без ограничений.</string>
+
+    <!-- Try it screen -->
+    <string name="island_demo_title">Попробовать</string>
+    <string name="island_demo_back">Назад</string>
+    <string name="island_demo_description">Каждая кнопка отправляет на остров тестовое событие. Нажмите на остров, чтобы развернуть его, удерживайте, чтобы открыть приложение, и смахните вверх, чтобы скрыть.</string>
+    <string name="island_demo_now_playing">Сейчас играет</string>
+    <string name="island_demo_incoming_call">Входящий вызов</string>
+    <string name="island_demo_active_call">Текущий вызов</string>
+    <string name="island_demo_timer">Таймер 5:00</string>
+    <string name="island_demo_charging">Зарядка 27 Вт</string>
+    <string name="island_demo_earbuds">Наушники подключены</string>
+    <string name="island_demo_message">Сообщение с ответом</string>
+    <string name="island_demo_navigation">Навигация</string>
+    <string name="island_demo_progress">Статус доставки</string>
+    <string name="island_demo_clear">Очистить всё</string>
+    <string name="island_demo_call_detail">Мобильный</string>
+    <string name="island_demo_timer_label">Паста</string>
+    <string name="island_demo_cancel">Отмена</string>
+    <string name="island_demo_message_text">В семь всё в силе? Могу принести десерт, если с тебя паста.</string>
+    <string name="island_demo_mark_read">Прочитано</string>
+    <string name="island_demo_nav_instruction">Поверните направо на Market St</string>
+    <string name="island_demo_nav_distance">350 м</string>
+    <string name="island_demo_nav_eta">12 мин · 4,2 км · 18:42</string>
+    <string name="island_demo_progress_title">Заказ в пути</string>
+    <plurals name="island_demo_progress_eta">
+        <item quantity="one">Прибудет через %d минуту</item>
+        <item quantity="few">Прибудет через %d минуты</item>
+        <item quantity="many">Прибудет через %d минут</item>
+        <item quantity="other">Прибудет через %d минуты</item>
+    </plurals>
+</resources>

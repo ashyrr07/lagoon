@@ -1,5 +1,8 @@
 package com.lagoon.island.controls
 
+import android.annotation.SuppressLint
+import android.content.Context
+import androidx.annotation.StringRes
 import androidx.compose.ui.graphics.vector.ImageVector
 import kotlinx.coroutines.flow.StateFlow
 
@@ -30,7 +33,7 @@ enum class ControlKind {
  * @property enabled  False while the control cannot act right now (no flash unit, DND access missing
  *                    and the tile will open the grant screen instead).
  * @property needsPermission True when tapping opens a system permission screen instead of acting.
- * @property detail   Optional short text for the tile (e.g. "Priority").
+ * @property detail   Optional short text for the tile (e.g. "Priority"), as a string resource.
  */
 data class ControlState(
     val active: Boolean = false,
@@ -38,7 +41,7 @@ data class ControlState(
     val max: Float = 1f,
     val enabled: Boolean = true,
     val needsPermission: Boolean = false,
-    val detail: String? = null,
+    @StringRes val detail: Int? = null,
 )
 
 /**
@@ -53,7 +56,8 @@ data class ControlState(
  */
 class Control(
     val id: String,
-    val label: String,
+    /** Name shown on the tile; composables resolve it with stringResource so a language change shows at once. */
+    @StringRes val labelRes: Int,
     val icon: ImageVector,
     val kind: ControlKind,
     val isAvailable: () -> Boolean,
@@ -62,5 +66,27 @@ class Control(
     /** Alternate icon while [ControlState.active] (torch off vs on). Null = same icon. */
     val activeIcon: ImageVector? = null,
 ) {
+    /** [labelRes] resolved outside Compose (the Controls screen's view model), in the app's language. */
+    val label: String get() = ModelText.get(labelRes, id)
+
     override fun toString(): String = "Control($id)"
+}
+
+/**
+ * Resolves model labels for callers outside Compose, which read [Control.label] and
+ * [WidgetSpec.label] as plain strings. Composables use the @StringRes ids with stringResource
+ * instead, which also follows the overlay's locale-wrapped context on Android 12.
+ * Set by [ControlsRegistry] and [Widgets], whichever is created first.
+ */
+@SuppressLint("StaticFieldLeak")
+internal object ModelText {
+    // Only ever the application context, which lives as long as the process.
+    @Volatile
+    private var context: Context? = null
+
+    fun init(context: Context) {
+        if (this.context == null) this.context = context.applicationContext
+    }
+
+    fun get(@StringRes id: Int, fallback: String): String = context?.getString(id) ?: fallback
 }

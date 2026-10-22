@@ -50,6 +50,13 @@ class CallActionMatcherTest {
         assertEquals(CallActions(answer = 0, decline = 1), CallActionMatcher.match(candidates("Annehmen", "Ablehnen")))
         assertEquals(CallActions(answer = 1, decline = 0), CallActionMatcher.match(candidates("Refuser", "Répondre")))
         assertEquals(CallActions(hangUp = 0), CallActionMatcher.match(candidates("Auflegen")))
+        assertEquals(CallActions(answer = 1, decline = 0), CallActionMatcher.match(candidates("Сбросить", "Принять")))
+        assertEquals(CallActions(answer = 0, decline = 1), CallActionMatcher.match(candidates("Ответить", "Отклонить")))
+        assertEquals(CallActions(hangUp = 0), CallActionMatcher.match(candidates("Завершить", "Динамик")))
+        assertEquals(CallActions(answer = 0, decline = 1), CallActionMatcher.match(candidates("Aceptar", "Rechazar")))
+        assertEquals(CallActions(hangUp = 0), CallActionMatcher.match(candidates("Terminar")))
+        assertEquals(CallActions(answer = 1, decline = 0), CallActionMatcher.match(candidates("Ignorer", "Accepter")))
+        assertEquals(CallActions(answer = 1, decline = 0), CallActionMatcher.match(candidates("Ignorieren", "Abheben")))
     }
 
     @Test

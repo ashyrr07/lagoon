@@ -17,6 +17,7 @@ import android.os.ParcelUuid
 import android.util.Log
 import androidx.core.content.ContextCompat
 import androidx.core.content.IntentCompat
+import com.lagoon.island.R
 import com.lagoon.island.data.SettingsRepository
 import com.lagoon.island.engine.ActivityContent
 import com.lagoon.island.engine.ActivityRegistry
@@ -245,9 +246,11 @@ class BluetoothSource @Inject constructor(
     }
 
     private fun deviceName(device: BluetoothDevice): String {
-        if (ContextCompat.checkSelfPermission(context, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) return FALLBACK_NAME
-        return runCatching { device.name }.getOrNull()?.takeIf { it.isNotBlank() } ?: FALLBACK_NAME
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) return fallbackName()
+        return runCatching { device.name }.getOrNull()?.takeIf { it.isNotBlank() } ?: fallbackName()
     }
+
+    private fun fallbackName(): String = context.getString(R.string.island_bt_device_fallback)
 
     private fun deviceClass(device: BluetoothDevice): Int? {
         if (ContextCompat.checkSelfPermission(context, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) return null
@@ -256,7 +259,6 @@ class BluetoothSource @Inject constructor(
 
     companion object {
         private const val TAG = "BluetoothSource"
-        private const val FALLBACK_NAME = "Bluetooth device"
         const val ACTION_BATTERY_LEVEL_CHANGED = "android.bluetooth.device.action.BATTERY_LEVEL_CHANGED"
         const val EXTRA_BATTERY_LEVEL = "android.bluetooth.device.extra.BATTERY_LEVEL"
         private const val SCAN_MAX_MS = 8_000L
