@@ -57,6 +57,11 @@ import com.lagoon.island.ui.app.SettingsViewModel
 import com.lagoon.island.ui.app.components.Health
 import com.lagoon.island.ui.app.components.IslandPreview
 import com.lagoon.island.ui.app.components.NavRow
+import com.lagoon.island.ui.app.language.currentLanguageTag
+import com.lagoon.island.ui.app.language.SupportedLanguages
+import androidx.compose.ui.res.stringResource
+import androidx.compose.material.icons.rounded.Translate
+import androidx.compose.material.icons.rounded.TouchApp
 import com.lagoon.island.ui.app.components.SettingGroup
 import com.lagoon.island.ui.app.components.StatusRow
 import com.lagoon.island.ui.app.health.CheckId
@@ -66,7 +71,7 @@ import com.lagoon.island.ui.app.health.setupChecks
 import com.lagoon.island.ui.theme.GroupRadius
 import com.lagoon.island.ui.theme.LagoonPreviewTheme
 
-enum class HomeDestination { Position, Appearance, Gestures, Features, Apps, Controls, Enhanced, Demo, Health, About }
+enum class HomeDestination { Position, Appearance, Gestures, Features, Apps, Controls, Enhanced, Demo, Health, Language, About }
 
 @Composable
 fun HomeScreen(
@@ -77,6 +82,7 @@ fun HomeScreen(
     val settings by viewModel.settings.collectAsStateWithLifecycle()
     val permissions by viewModel.permissions.collectAsStateWithLifecycle()
     val island by viewModel.islandState.collectAsStateWithLifecycle()
+    val enhancedActive by viewModel.enhancedActive.collectAsStateWithLifecycle()
 
     LifecycleResumeEffect(Unit) {
         viewModel.refreshPermissions()
@@ -88,6 +94,7 @@ fun HomeScreen(
         permissions = permissions,
         island = island,
         enhancedAvailable = enhancedAvailable,
+        enhancedActive = enhancedActive,
         onToggleIsland = { on -> viewModel.update { it.copy(islandEnabled = on) } },
         onNavigate = onNavigate,
     )
@@ -101,6 +108,7 @@ private fun HomeContent(
     enhancedAvailable: Boolean,
     onToggleIsland: (Boolean) -> Unit,
     onNavigate: (HomeDestination) -> Unit,
+    enhancedActive: Boolean = false,
 ) {
     val context = LocalContext.current
     val checks = setupChecks(permissions, island, settings)
@@ -124,6 +132,21 @@ private fun HomeContent(
                 island = island,
                 onToggle = onToggleIsland,
             )
+
+            if (enhancedAvailable && !enhancedActive && permissions.allGranted) {
+                // Standard mode cannot receive taps over the status bar (Android gives that strip to
+                // the system), so point people who want to tap right at the camera to Enhanced mode.
+                SettingGroup(null) {
+                    row {
+                        NavRow(
+                            "Tap right at the camera",
+                            "Turn on Enhanced mode so the whole island responds, including the part over the status bar.",
+                            Icons.Rounded.TouchApp,
+                            MaterialTheme.colorScheme.tertiary,
+                        ) { onNavigate(HomeDestination.Enhanced) }
+                    }
+                }
+            }
 
             SetupHealthGroup(
                 checks = checks,
@@ -160,6 +183,15 @@ private fun HomeContent(
                 }
                 row { NavRow("Try it", "Fire sample activities", Icons.Rounded.AutoAwesome, more) { onNavigate(HomeDestination.Demo) } }
                 row { NavRow("Health", "Keep Lagoon running", Icons.Rounded.MonitorHeart, more) { onNavigate(HomeDestination.Health) } }
+                row {
+                    NavRow(
+                        stringResource(R.string.language_title),
+                        SupportedLanguages.firstOrNull { it.tag == currentLanguageTag() }?.nativeName
+                            ?: stringResource(R.string.language_system),
+                        Icons.Rounded.Translate,
+                        more,
+                    ) { onNavigate(HomeDestination.Language) }
+                }
                 row { NavRow("About", "Version, licence, backup", Icons.Rounded.Info, more) { onNavigate(HomeDestination.About) } }
             }
             Spacer(Modifier.height(WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding() + 8.dp))

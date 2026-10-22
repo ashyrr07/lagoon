@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="language_title">Language</string>
+    <string name="language_subtitle">Lagoon\'s language, separate from your phone</string>
+    <string name="language_system">Phone language</string>
+    <string name="language_system_detail">Follows your phone\'s settings</string>
+    <string name="language_note">Notification text comes from the apps that post it and stays in their language.</string>
+    <string name="language_open_system">Open system language settings</string>
+</resources>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="language_title">Язык</string>
+    <string name="language_subtitle">Язык Lagoon, отдельно от языка телефона</string>
+    <string name="language_system">Язык телефона</string>
+    <string name="language_system_detail">Как в настройках телефона</string>
+    <string name="language_note">Текст уведомлений приходит от приложений и остаётся на их языке.</string>
+    <string name="language_open_system">Открыть языковые настройки системы</string>
+</resources>

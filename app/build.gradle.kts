@@ -93,6 +93,12 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
 
+    // Lagoon ships en (default), ru, de, fr, es. AGP writes the locale list for the system
+    // per-app language picker (Android 13+) from the values-* folders.
+    androidResources {
+        generateLocaleConfig = true
+    }
+
     buildFeatures {
         compose = true
         buildConfig = true
@@ -112,6 +118,7 @@ android {
 dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.appcompat)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.androidx.lifecycle.viewmodel.compose)

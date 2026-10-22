@@ -104,17 +104,14 @@ class EnhancedModeManager @Inject constructor() {
         return isServiceListed(enabled, component.packageName, component.className)
     }
 
+    /** Straight to Lagoon's own switch in Accessibility settings, with fallbacks. */
     fun openAccessibilitySettings(context: Context) {
-        val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        runCatching { context.startActivity(intent) }.onFailure { Log.w(TAG, "No accessibility settings screen", it) }
+        com.lagoon.island.util.SystemScreens.accessibility(context)
     }
 
     /** Opens our App info page, where "Allow restricted settings" lives in the overflow menu. */
     fun openAppInfo(context: Context) {
-        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-            .setData(Uri.fromParts("package", context.packageName, null))
-            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        runCatching { context.startActivity(intent) }.onFailure { Log.w(TAG, "No app info screen", it) }
+        com.lagoon.island.util.SystemScreens.appInfo(context)
     }
 
     /**

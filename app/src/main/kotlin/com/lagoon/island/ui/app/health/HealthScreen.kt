@@ -50,23 +50,12 @@ fun HealthScreen(
         onPauseOrDispose { }
     }
 
-    val notificationPermission = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) {
-        // Whether or not the notification may show, the service can run; the user asked for it.
-        viewModel.setKeepAliveService(true)
-    }
-
     HealthContent(
         settings = settings,
         permissions = permissions,
         island = island,
         onBack = onBack,
-        onKeepAlive = { on ->
-            if (on && Build.VERSION.SDK_INT >= 33 && !permissions.postNotifications) {
-                notificationPermission.launch(Manifest.permission.POST_NOTIFICATIONS)
-            } else {
-                viewModel.setKeepAliveService(on)
-            }
-        },
+        onKeepAlive = { on -> viewModel.setKeepAliveService(on) },
     )
 }
 
@@ -122,13 +111,19 @@ private fun HealthContent(
                 }
             }
             row {
-                SwitchRow(
-                    "Keep-alive service",
-                    checked = keepAlive.foregroundService,
-                    onCheckedChange = onKeepAlive,
-                    subtitle = "Holds a silent \"Lagoon is active\" notification so the process is not killed. " +
-                        "Only for phones that keep dropping the island; costs nothing otherwise.",
-                )
+                ContentRow {
+                    Text("Battery optimisation", style = MaterialTheme.typography.titleMedium)
+                    Text(
+                        "If the island disappears after a while, let Lagoon run without battery limits.",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                    if (!permissions.ignoringBatteryOptimizations) {
+                        FilledTonalButton(onClick = { requestBatteryExemption(context) }) {
+                            Text("Open battery setting")
+                        }
+                    }
+                }
             }
         }
 

@@ -2,6 +2,7 @@ package com.lagoon.island.data
 
 import android.content.Context
 import androidx.datastore.core.CorruptionException
+import androidx.datastore.core.DataMigration
 import androidx.datastore.core.DataStore
 import androidx.datastore.core.DataStoreFactory
 import androidx.datastore.core.Serializer
@@ -36,11 +37,28 @@ object IslandSettingsSerializer : Serializer<IslandSettings> {
     }
 }
 
+/**
+ * Schema 1 -> 2 (2026-10-23, real-device feedback): the idle pill gets the tap band by default, and
+ * the keep-alive foreground service (permanent "Lagoon is active" notification) is switched off.
+ */
+object SettingsMigration : DataMigration<IslandSettings> {
+    override suspend fun shouldMigrate(currentData: IslandSettings) = currentData.schemaVersion < CURRENT_SCHEMA
+
+    override suspend fun migrate(currentData: IslandSettings): IslandSettings = currentData.copy(
+        schemaVersion = CURRENT_SCHEMA,
+        calibration = currentData.calibration.copy(touchBand = true),
+        keepAlive = currentData.keepAlive.copy(foregroundService = false),
+    )
+
+    override suspend fun cleanUp() = Unit
+}
+
 @Singleton
 class SettingsRepository @Inject constructor(@ApplicationContext context: Context) {
     private val store: DataStore<IslandSettings> = DataStoreFactory.create(
         serializer = IslandSettingsSerializer,
         corruptionHandler = ReplaceFileCorruptionHandler { IslandSettings() },
+        migrations = listOf(SettingsMigration),
         produceFile = { context.dataStoreFile("island_settings.json") },
     )
 

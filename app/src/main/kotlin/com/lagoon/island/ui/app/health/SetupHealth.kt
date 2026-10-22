@@ -11,6 +11,7 @@ import com.lagoon.island.ui.app.Permissions
 import com.lagoon.island.ui.app.components.Health
 import com.lagoon.island.util.Oem
 import com.lagoon.island.util.OemInfo
+import com.lagoon.island.util.SystemScreens
 
 enum class CheckId { Overlay, NotificationAccess, Listener, Battery, Oem }
 
@@ -96,37 +97,21 @@ fun setupChecks(
 
 /** Opens the system screen that fixes a check. OEM guides are in-app, handled by the caller. */
 fun openSystemScreen(context: Context, id: CheckId) {
-    val pkg = "package:${context.packageName}".toUri()
-    val intent = when (id) {
-        CheckId.Overlay -> Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, pkg)
-        CheckId.NotificationAccess -> Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS)
-        CheckId.Listener -> Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS)
-        CheckId.Battery -> Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, pkg)
-        CheckId.Oem -> OemInfo.guide().steps.firstNotNullOfOrNull { OemInfo.resolve(context, it) }
-            ?: Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, pkg)
+    when (id) {
+        CheckId.Overlay -> SystemScreens.overlay(context)
+        CheckId.NotificationAccess, CheckId.Listener -> SystemScreens.notificationAccess(context)
+        CheckId.Battery -> SystemScreens.battery(context)
+        CheckId.Oem -> {
+            val oemScreen = OemInfo.guide().steps.firstNotNullOfOrNull { OemInfo.resolve(context, it) }
+            if (oemScreen == null || !SystemScreens.open(context, oemScreen)) SystemScreens.battery(context)
+        }
     }
-    runCatching { context.startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)) }
 }
 
-fun openAppInfo(context: Context) {
-    runCatching {
-        context.startActivity(
-            Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, "package:${context.packageName}".toUri())
-                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK),
-        )
-    }
-}
+fun openAppInfo(context: Context) = SystemScreens.appInfo(context)
 
 /**
- * Play policy allows this for apps whose core function breaks under Doze; it is offered only after
- * the listener was observed disconnecting, never during onboarding.
+ * Play policy allows this for apps whose core function breaks under Doze; it is only shown when
+ * the user taps it themselves, never during onboarding.
  */
-@SuppressLint("BatteryLife")
-fun requestBatteryExemption(context: Context) {
-    runCatching {
-        context.startActivity(
-            Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS, "package:${context.packageName}".toUri())
-                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK),
-        )
-    }
-}
+fun requestBatteryExemption(context: Context) = SystemScreens.battery(context)

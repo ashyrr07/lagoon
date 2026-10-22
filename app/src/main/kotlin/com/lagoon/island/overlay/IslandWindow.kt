@@ -16,6 +16,8 @@ import com.lagoon.island.cutout.PxRect
  */
 class IslandWindow(
     host: OverlayHost,
+    /** In-app language tag ("" = phone language); applied to the overlay only below Android 13. */
+    private val language: String = "",
     onOutsideTouch: () -> Unit,
 ) {
     /** Current host; swapped by [rehost] when Enhanced mode connects or disconnects. */
@@ -23,7 +25,7 @@ class IslandWindow(
         private set
 
     private val owner = OverlayLifecycleOwner()
-    private val view = IslandComposeView(host.windowContext, onOutsideTouch).also { owner.attachTo(it) }
+    private val view = IslandComposeView(localized(host.windowContext, language), onOutsideTouch).also { owner.attachTo(it) }
 
     private val params = WindowManager.LayoutParams(
         0, 0, 0, 0,
@@ -131,4 +133,16 @@ class IslandWindow(
                 WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH or
                 WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED
     }
+}
+
+/**
+ * Android 13+ applies Lagoon's per-app language to every context in the process. Android 12 has no
+ * per-app languages, so the overlay's view context gets the chosen locale explicitly.
+ */
+private fun localized(base: android.content.Context, language: String): android.content.Context {
+    if (language.isEmpty() || android.os.Build.VERSION.SDK_INT >= 33) return base
+    val config = android.content.res.Configuration(base.resources.configuration).apply {
+        setLocales(android.os.LocaleList.forLanguageTags(language))
+    }
+    return android.view.ContextThemeWrapper(base, 0).apply { applyOverrideConfiguration(config) }
 }

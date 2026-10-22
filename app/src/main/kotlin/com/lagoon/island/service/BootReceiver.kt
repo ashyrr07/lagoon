@@ -27,9 +27,8 @@ class BootReceiver : BroadcastReceiver() {
         val pending = goAsync()
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                if (repository.settings.first().keepAlive.foregroundService) {
-                    KeepAliveService.start(context.applicationContext)
-                }
+                // The keep-alive service is switched off for now (it posted a permanent
+                // "Lagoon is active" notification). The listener alone keeps the island alive.
                 IslandNotificationListener.requestRebind(context.applicationContext)
             } finally {
                 pending.finish()

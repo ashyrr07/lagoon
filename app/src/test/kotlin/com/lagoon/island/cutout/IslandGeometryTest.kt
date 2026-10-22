@@ -22,7 +22,7 @@ class IslandGeometryTest {
 
     @Test
     fun `idle pill hugs the hole vertically and is a wide pill centred on it`() {
-        val frame = IslandGeometry.idleFrame(pixel, Calibration())
+        val frame = IslandGeometry.idleFrame(pixel, Calibration(touchBand = false))
         assertEquals(PxRect(540 - 96, 0, 540 + 96, 72), frame.pill)
         assertEquals(36f, frame.cornerRadius, 0f)
         assertEquals(hole, frame.camera)
@@ -30,9 +30,10 @@ class IslandGeometryTest {
     }
 
     @Test
-    fun `touch band extends below the status bar`() {
+    fun `touch band extends below the status bar and is on by default`() {
         val frame = IslandGeometry.idleFrame(pixel, Calibration(touchBand = true))
         assertEquals(72 + 20, frame.pill.bottom)
+        assertEquals(frame, IslandGeometry.idleFrame(pixel, Calibration()))
     }
 
     @Test

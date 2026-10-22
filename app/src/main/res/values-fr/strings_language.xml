@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="language_title">Langue</string>
+    <string name="language_subtitle">La langue de Lagoon, indépendante du téléphone</string>
+    <string name="language_system">Langue du téléphone</string>
+    <string name="language_system_detail">Suit les réglages de votre téléphone</string>
+    <string name="language_note">Le texte des notifications vient des applis qui les envoient et reste dans leur langue.</string>
+    <string name="language_open_system">Ouvrir les réglages de langue du système</string>
+</resources>

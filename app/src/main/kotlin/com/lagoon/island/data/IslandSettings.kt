@@ -9,9 +9,12 @@ import kotlinx.serialization.Serializable
  * Each area lives in its own file (FeatureSettings.kt, GestureSettings.kt, ...) so that work on
  * different areas does not collide.
  */
+/** Bump when a default changes for existing users; see [SettingsMigration]. */
+const val CURRENT_SCHEMA = 2
+
 @Serializable
 data class IslandSettings(
-    val schemaVersion: Int = 1,
+    val schemaVersion: Int = CURRENT_SCHEMA,
     /** Master switch: the island is shown while the notification listener is bound and this is true. */
     val islandEnabled: Boolean = true,
     val onboardingDone: Boolean = false,
@@ -23,6 +26,11 @@ data class IslandSettings(
     val controls: ControlSettings = ControlSettings(),
     val enhanced: EnhancedSettings = EnhancedSettings(),
     val keepAlive: KeepAliveSettings = KeepAliveSettings(),
+    /**
+     * In-app language as a BCP 47 tag ("" = follow the phone). Android 13+ applies it through the
+     * system per-app language; this copy lets the overlay follow it on Android 12.
+     */
+    val language: String = "",
 )
 
 /** Adjustments on top of the detected cutout, in dp. */
@@ -36,10 +44,11 @@ data class Calibration(
     /** Idle pill width in dp; null = automatic (at least [IslandGeometryDefaults.IDLE_MIN_WIDTH_DP]). */
     val idleWidth: Float? = null,
     /**
-     * Standard mode only: extend the idle pill below the status bar so it can be tapped
-     * (SystemUI owns touches inside the status bar). Off by default: looks cleaner.
+     * Standard mode only: extend the idle pill a little below the status bar so it can be tapped
+     * (SystemUI owns touches inside the status bar). On by default; ignored in Enhanced mode,
+     * where the whole pill is tappable.
      */
-    val touchBand: Boolean = false,
+    val touchBand: Boolean = true,
     /** When the system reports no cutout, where to put the pill. */
     val placement: Placement = Placement.Center,
 )

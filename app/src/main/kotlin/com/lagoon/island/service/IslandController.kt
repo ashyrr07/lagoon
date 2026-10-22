@@ -4,6 +4,7 @@ import android.content.ComponentCallbacks
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
+import android.os.Build
 import android.provider.Settings
 import android.util.Log
 import com.lagoon.island.cutout.CutoutDetector
@@ -58,6 +59,7 @@ class IslandController @Inject constructor(
 ) {
     private var scope: CoroutineScope? = null
     private var window: IslandWindow? = null
+    private var windowLanguage: String = ""
     private var host: OverlayHost? = null
     private var appHost: AppOverlayHost? = null // Enhanced mode: kept for falling back
     private var detector: CutoutDetector? = null
@@ -188,7 +190,13 @@ class IslandController @Inject constructor(
             return
         }
         val detector = detector ?: CutoutDetector(host.windowContext).also { detector = it }
-        val window = window ?: IslandWindow(host, onOutsideTouch = { uiState.onOutsideTouch() }).also {
+        // Android 12 only: the overlay carries the in-app language itself, so rebuild it on a change.
+        if (Build.VERSION.SDK_INT < 33 && window != null && windowLanguage != settings.language) {
+            window?.destroy()
+            window = null
+        }
+        windowLanguage = settings.language
+        val window = window ?: IslandWindow(host, settings.language, onOutsideTouch = { uiState.onOutsideTouch() }).also {
             it.setContent { IslandRoot(uiState) }
             window = it
         }
@@ -202,7 +210,13 @@ class IslandController @Inject constructor(
             _state.value = _state.value.copy(showing = false, cutout = cutout)
             return
         }
-        val frame = IslandGeometry.idleFrame(cutout, settings.calibration)
+        // The accessibility overlay sits above the status bar, so the whole pill is tappable there.
+        val calibration = if (host.kind == OverlayHost.Kind.Accessibility) {
+            settings.calibration.copy(touchBand = false)
+        } else {
+            settings.calibration
+        }
+        val frame = IslandGeometry.idleFrame(cutout, calibration)
         uiState.idle = frame
         engine.setVisible(true)
         _state.value = _state.value.copy(cutout = cutout, frame = frame)

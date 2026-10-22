@@ -49,7 +49,13 @@ class SettingsViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     private val repository: SettingsRepository,
     private val controller: IslandController,
+    enhanced: com.lagoon.island.service.EnhancedModeManager,
 ) : ViewModel() {
+
+    /** True while the accessibility overlay hosts the island (taps work over the status bar too). */
+    val enhancedActive: StateFlow<Boolean> = enhanced.host
+        .map { it != null }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), enhanced.host.value != null)
 
     val settings: StateFlow<IslandSettings> = repository.settings
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), IslandSettings())

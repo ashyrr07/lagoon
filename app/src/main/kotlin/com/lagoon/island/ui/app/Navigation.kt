@@ -30,6 +30,7 @@ import com.lagoon.island.ui.app.gestures.GesturesScreen
 import com.lagoon.island.ui.app.health.HealthScreen
 import com.lagoon.island.ui.app.home.HomeDestination
 import com.lagoon.island.ui.app.home.HomeScreen
+import com.lagoon.island.ui.app.language.LanguageScreen
 import com.lagoon.island.ui.app.onboarding.OnboardingScreen
 import com.lagoon.island.ui.app.position.PositionScreen
 import kotlinx.serialization.Serializable
@@ -46,6 +47,7 @@ import kotlinx.serialization.Serializable
 @Serializable data object FeaturesKey : NavKey
 @Serializable data object ControlsKey : NavKey
 @Serializable data object EnhancedKey : NavKey
+@Serializable data object LanguageKey : NavKey
 
 @Composable
 fun LagoonNavigation(viewModel: SettingsViewModel = hiltViewModel()) {
@@ -96,6 +98,7 @@ private fun LagoonNavGraph(startAtOnboarding: Boolean) {
                                 HomeDestination.Controls -> ControlsKey
                                 HomeDestination.Enhanced -> EnhancedKey
                                 HomeDestination.Demo -> DemoKey
+                                HomeDestination.Language -> LanguageKey
                             },
                         )
                     },
@@ -112,6 +115,7 @@ private fun LagoonNavGraph(startAtOnboarding: Boolean) {
             entry<FeaturesKey> { FeaturesScreen(onBack = ::back) }
             entry<ControlsKey> { ControlsScreen(onBack = ::back) }
             entry<EnhancedKey> { EnhancedScreen(onBack = ::back) }
+            entry<LanguageKey> { LanguageScreen(onBack = ::back) }
         },
     )
 }
