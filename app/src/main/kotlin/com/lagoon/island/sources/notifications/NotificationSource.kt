@@ -1,5 +1,6 @@
 package com.lagoon.island.sources.notifications
 
+import com.lagoon.island.BuildConfig
 import android.app.Notification
 import android.app.RemoteInput
 import android.content.Context
@@ -95,7 +96,7 @@ class NotificationSource @Inject constructor(
             isMediaStyle = isMediaStyle(n),
             isCallStyle = isCallStyle(n),
         )
-        if (!NotificationRules.shouldShow(facts, features.notificationApps, context.packageName)) return
+        if (!NotificationRules.shouldShow(facts, features.notificationApps, context.packageName, BuildConfig.DEBUG)) return
 
         val appName = apps.labelOf(sbn.packageName)
         val messaging = runCatching { NotificationCompat.MessagingStyle.extractMessagingStyleFromNotification(n) }.getOrNull()

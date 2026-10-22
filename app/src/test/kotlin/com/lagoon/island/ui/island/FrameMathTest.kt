@@ -30,14 +30,26 @@ class FrameMathTest {
         assertEquals(0f, spec.pill.top, 0f)
         assertEquals(72f + 28f, spec.pill.bottom, 0f)
         assertEquals(50f, spec.cornerRadius, 0f)
-        // ring = max(8dp, (72 - 48) / 2) = 16 px; inset 24 px.
-        assertEquals(516f - 16f - 60f - 24f, spec.pill.left, 0f)
+        // ring = max(8dp, (72 - 48) / 2) = 16 px; inset 24 px. Both sides take the wider slot (80),
+        // so the pill stays centred on the camera.
+        assertEquals(516f - 16f - 80f - 24f, spec.pill.left, 0f)
         assertEquals(564f + 16f + 80f + 24f, spec.pill.right, 0f)
-        // Slots sit either side of the camera ring and never cover it.
-        assertEquals(516f - 16f, spec.leading.right, 0f)
-        assertEquals(564f + 16f, spec.trailing.left, 0f)
-        assertTrue(spec.leading.right <= hole.left)
-        assertTrue(spec.trailing.left >= hole.right)
+        assertEquals(540f, spec.pill.center.x, 0f)
+        // Slots sit at the outer edges and never cover the camera ring.
+        assertEquals(spec.pill.left + 24f, spec.leading.left, 0f)
+        assertEquals(spec.pill.right - 24f, spec.trailing.right, 0f)
+        assertTrue(spec.leading.right <= hole.left - 16f)
+        assertTrue(spec.trailing.left >= hole.right + 16f)
+    }
+
+    @Test
+    fun `compact pill falls back to hugging the camera when centring would leave the screen`() {
+        // Camera 120 px from the left edge: a centred pill with a 300 px slot cannot fit.
+        val nearEdge = IdleFrame(pill = PxRect(24, 0, 216, 72), camera = PxRect(96, 12, 144, 60), cornerRadius = 36f, statusBarBottom = 72)
+        val spec = FrameMath(nearEdge, 1080, 2f).compact(ContentMeasure(leadingWidth = 20, trailingWidth = 300), hasSecondary = false)
+        assertTrue(spec.pill.left >= 24f)
+        assertTrue(spec.leading.right <= 96f)
+        assertTrue(spec.trailing.left >= 144f)
     }
 
     @Test

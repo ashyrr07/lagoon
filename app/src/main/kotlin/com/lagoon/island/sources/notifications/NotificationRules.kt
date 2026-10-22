@@ -26,11 +26,20 @@ object NotificationRules {
      * (other sources own those). With an empty [allowlist] every app except the system's own
      * packages shows; otherwise only allowlisted packages do. Our own package never shows.
      */
-    fun shouldShow(facts: Facts, allowlist: Set<String>, ownPackage: String): Boolean {
+    fun shouldShow(
+        facts: Facts,
+        allowlist: Set<String>,
+        ownPackage: String,
+        allowShellForTesting: Boolean = false,
+    ): Boolean {
         if (facts.packageName == ownPackage) return false
         if (facts.isGroupSummary || facts.isOngoing || facts.isMediaStyle || facts.isCallStyle) return false
+        // Debug builds only: lets `adb shell cmd notification post` drive the real pipeline on a device.
+        if (allowShellForTesting && facts.packageName == SHELL_PACKAGE) return true
         return if (allowlist.isEmpty()) !isSystemPackage(facts.packageName) else facts.packageName in allowlist
     }
+
+    const val SHELL_PACKAGE = "com.android.shell"
 
     /** Packages that post plumbing notifications nobody wants mirrored (SystemUI, Settings, ...). */
     fun isSystemPackage(packageName: String): Boolean =

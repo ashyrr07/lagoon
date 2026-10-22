@@ -79,8 +79,9 @@ class FrameMath(
 
     /**
      * Compact pill: at least as tall as the idle pill and tall enough to leave a tappable band
-     * below the status bar; wide enough for the camera ring plus both content slots, grown
-     * symmetrically where the screen allows (12 dp margins kept).
+     * below the status bar. Centred on the camera with both sides as wide as the wider slot
+     * (the narrower slot sits at its outer edge), falling back to hugging the camera when a
+     * centred pill would cross the 12 dp screen margins.
      */
     fun compact(measure: ContentMeasure, hasSecondary: Boolean, kind: FrameKind = FrameKind.Compact): FrameSpec {
         val top = idleRect.top
@@ -101,7 +102,19 @@ class FrameMath(
         var right: Float
         val leadingRect: Rect
         val trailingRect: Rect
-        if (leadingOnLeft) {
+        // iOS-style balance: both sides as wide as the wider slot, so the pill is centred on the camera.
+        val leadingSide = if (leadingW > 0f) leadingW + inset else 0f
+        val trailingSide = if (trailingW > 0f) trailingW + inset else 0f
+        val side = max(leadingSide, trailingSide)
+        val centredLeft = camera.left - ring - side
+        val centredRight = camera.right + ring + side
+        val centredFits = leadingOnLeft && centredLeft >= margin && centredRight <= screenWidth - margin
+        if (centredFits) {
+            left = centredLeft
+            right = centredRight
+            leadingRect = Rect(left + inset, top, left + inset + leadingW, bottom)
+            trailingRect = Rect(right - inset - trailingW, top, right - inset, bottom)
+        } else if (leadingOnLeft) {
             left = camera.left - ring - (if (leadingW > 0f) leadingW + inset else 0f)
             right = camera.right + ring + (if (trailingW > 0f) trailingW + inset else 0f)
             leadingRect = Rect(camera.left - ring - leadingW, top, camera.left - ring, bottom)

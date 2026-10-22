@@ -18,6 +18,9 @@ class NotificationRulesTest {
         assertFalse(NotificationRules.shouldShow(Facts("com.android.systemui"), emptySet(), own))
         assertFalse(NotificationRules.shouldShow(Facts("android"), emptySet(), own))
         assertFalse(NotificationRules.shouldShow(Facts("com.google.android.gms"), emptySet(), own))
+        // The adb shell passes only when a debug build asks for it.
+        assertFalse(NotificationRules.shouldShow(Facts("com.android.shell"), emptySet(), own))
+        assertTrue(NotificationRules.shouldShow(Facts("com.android.shell"), emptySet(), own, allowShellForTesting = true))
         assertFalse(NotificationRules.shouldShow(Facts("com.samsung.android.messaging"), emptySet(), own))
     }
 
