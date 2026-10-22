@@ -48,8 +48,8 @@ class KeepAliveService : Service() {
         return NotificationCompat.Builder(this, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_stat_lagoon)
             .setColor(getColor(R.color.lagoon))
-            .setContentTitle(getString(R.string.keep_alive_notification_title))
-            .setContentText(getString(R.string.keep_alive_notification_text))
+            .setContentTitle(getString(R.string.island_keep_alive_title))
+            .setContentText(getString(R.string.island_keep_alive_text))
             .setContentIntent(open)
             .setOngoing(true)
             .setSilent(true)
@@ -77,10 +77,10 @@ class KeepAliveService : Service() {
             val manager = context.getSystemService(NotificationManager::class.java)
             val channel = NotificationChannel(
                 CHANNEL_ID,
-                context.getString(R.string.keep_alive_channel),
+                context.getString(R.string.island_keep_alive_channel),
                 NotificationManager.IMPORTANCE_MIN,
             ).apply {
-                description = context.getString(R.string.keep_alive_channel_description)
+                description = context.getString(R.string.island_keep_alive_channel_description)
                 setShowBadge(false)
             }
             manager.createNotificationChannel(channel)

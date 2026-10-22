@@ -11,6 +11,7 @@ import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
 import androidx.core.app.NotificationCompat
 import androidx.core.os.BundleCompat
+import com.lagoon.island.R
 import com.lagoon.island.data.AppsRepository
 import com.lagoon.island.data.FeatureSettings
 import com.lagoon.island.data.SettingsRepository
@@ -109,7 +110,7 @@ class NotificationSource @Inject constructor(
             lastMessageSender = lastMessage?.person?.name?.toString(),
             lastMessageText = lastMessage?.text?.toString(),
         )
-        val text = NotificationRules.resolveText(extras, appName)
+        val text = NotificationRules.resolveText(extras, appName, context.getString(R.string.island_notification_fallback))
         val actions = actions(n)
 
         val key = sbn.key
@@ -175,7 +176,7 @@ class NotificationSource @Inject constructor(
             val freeForm = remoteInputs.orEmpty().filter { it.allowFreeFormInput }
             IslandAction(
                 id = "action:$index",
-                label = action.title?.toString()?.trim().orEmpty().ifEmpty { "Action" },
+                label = action.title?.toString()?.trim().orEmpty().ifEmpty { context.getString(R.string.island_action_fallback) },
                 icon = action.getIcon()?.let { IconSource.Platform(it) },
                 acceptsText = freeForm.isNotEmpty(),
             ) { text ->

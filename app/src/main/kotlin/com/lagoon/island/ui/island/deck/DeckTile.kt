@@ -24,9 +24,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.lagoon.island.R
 import com.lagoon.island.controls.Control
 import com.lagoon.island.controls.ControlKind
 import com.lagoon.island.controls.ControlState
@@ -81,9 +83,9 @@ fun DeckTile(
             Spacer(Modifier.height(3.dp))
             Text(
                 text = when {
-                    state.needsPermission -> "${control.label} · grant"
-                    state.detail != null && state.active -> state.detail
-                    else -> control.label
+                    state.needsPermission -> stringResource(R.string.island_deck_tile_grant, stringResource(control.labelRes))
+                    state.detail != null && state.active -> stringResource(state.detail)
+                    else -> stringResource(control.labelRes)
                 },
                 style = DeckStyle.Label.copy(color = foreground),
                 maxLines = 1,

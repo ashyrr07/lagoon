@@ -13,9 +13,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.lagoon.island.R
 import com.lagoon.island.engine.ActivityContent
 import com.lagoon.island.ui.island.TimeFormat
 
@@ -42,7 +44,7 @@ fun TimerExpanded(scope: ContentScope, timer: ActivityContent.Timer) {
             GlyphDisc(Icons.Rounded.Timer, scope.accent, size = 40.dp)
             Spacer(Modifier.width(14.dp))
             Column(Modifier.weight(1f)) {
-                Text(timer.label.ifBlank { if (timer.endAt != null) "Timer" else "Stopwatch" }, style = IslandType.bodyDim, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                Text(timer.label.ifBlank { stringResource(if (timer.endAt != null) R.string.island_timer else R.string.island_stopwatch) }, style = IslandType.bodyDim, maxLines = 1, overflow = TextOverflow.Ellipsis)
                 Text(
                     TimeFormat.clock(TimeFormat.timerMillis(timer, now)),
                     style = IslandType.big.copy(color = if (timer.running) IslandType.white else IslandType.white60),

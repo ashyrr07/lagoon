@@ -8,6 +8,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.util.Log
+import com.lagoon.island.R
 import com.lagoon.island.engine.ActivityContent
 import com.lagoon.island.engine.ActivityRegistry
 import com.lagoon.island.engine.IslandAction
@@ -66,7 +67,7 @@ class LagoonTimer @Inject constructor(
                 source = Source.Timer,
                 priority = Priority.Alert,
                 content = ActivityContent.Timer(
-                    label = "Timer done",
+                    label = context.getString(R.string.island_timer_done),
                     endAt = s.endAt,
                     baseAt = s.baseAt,
                     running = false,
@@ -76,7 +77,7 @@ class LagoonTimer @Inject constructor(
                 ttlMs = DONE_TTL_MS,
                 alertMs = DONE_ALERT_MS,
                 tint = TINT,
-                actions = listOf(IslandAction(id = "dismiss", label = "Dismiss", perform = { dismissDone() })),
+                actions = listOf(IslandAction(id = "dismiss", label = context.getString(R.string.island_action_dismiss), perform = { dismissDone() })),
                 onTap = { dismissDone() },
             ),
         )
@@ -115,7 +116,7 @@ class LagoonTimer @Inject constructor(
                 source = Source.Timer,
                 priority = Priority.Timer,
                 content = ActivityContent.Timer(
-                    label = "Timer",
+                    label = context.getString(R.string.island_timer),
                     endAt = s.endAt,
                     baseAt = s.baseAt,
                     running = s.running,
@@ -125,8 +126,8 @@ class LagoonTimer @Inject constructor(
                 updatedAt = now(),
                 tint = TINT,
                 actions = listOf(
-                    IslandAction(id = "play_pause", label = if (s.running) "Pause" else "Resume", perform = { toggle() }),
-                    IslandAction(id = "reset", label = "Reset", perform = { reset() }),
+                    IslandAction(id = "play_pause", label = context.getString(if (s.running) R.string.island_action_pause else R.string.island_action_resume), perform = { toggle() }),
+                    IslandAction(id = "reset", label = context.getString(R.string.island_action_reset), perform = { reset() }),
                 ),
                 dismissible = true,
             ),
@@ -168,8 +169,8 @@ class LagoonTimer @Inject constructor(
         val nm = notificationManager ?: return
         runCatching {
             nm.createNotificationChannel(
-                NotificationChannel(CHANNEL_ID, "Timer", NotificationManager.IMPORTANCE_HIGH).apply {
-                    description = "Rings when the island timer finishes"
+                NotificationChannel(CHANNEL_ID, context.getString(R.string.island_timer_channel), NotificationManager.IMPORTANCE_HIGH).apply {
+                    description = context.getString(R.string.island_timer_channel_description)
                 },
             )
             val open = PendingIntent.getActivity(
@@ -180,8 +181,8 @@ class LagoonTimer @Inject constructor(
             )
             val notification = Notification.Builder(context, CHANNEL_ID)
                 .setSmallIcon(android.R.drawable.ic_lock_idle_alarm)
-                .setContentTitle("Timer done")
-                .setContentText("${TimerSnapshot.format(s.durationMs)} is up")
+                .setContentTitle(context.getString(R.string.island_timer_done))
+                .setContentText(context.getString(R.string.island_timer_done_text, TimerSnapshot.format(s.durationMs)))
                 .setCategory(Notification.CATEGORY_ALARM)
                 .setAutoCancel(true)
                 .setContentIntent(open)

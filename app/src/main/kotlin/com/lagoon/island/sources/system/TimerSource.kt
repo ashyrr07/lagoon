@@ -1,7 +1,9 @@
 package com.lagoon.island.sources.system
 
 import android.app.Notification
+import android.content.Context
 import android.service.notification.StatusBarNotification
+import com.lagoon.island.R
 import com.lagoon.island.data.SettingsRepository
 import com.lagoon.island.engine.ActivityContent
 import com.lagoon.island.engine.ActivityRegistry
@@ -11,6 +13,7 @@ import com.lagoon.island.engine.Source
 import com.lagoon.island.sources.IslandSource
 import com.lagoon.island.sources.NotificationBus
 import com.lagoon.island.util.IntentLauncher
+import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineScope
@@ -22,6 +25,7 @@ import kotlinx.coroutines.launch
  */
 @Singleton
 class TimerSource @Inject constructor(
+    @ApplicationContext private val context: Context,
     private val registry: ActivityRegistry,
     private val bus: NotificationBus,
     private val launcher: IntentLauncher,
@@ -58,7 +62,7 @@ class TimerSource @Inject constructor(
         val now = System.currentTimeMillis()
         val existing = registry[id]
         val previousBase = (existing?.content as? ActivityContent.Timer)?.baseAt
-        val label = n.title ?: if (n.chronometerCountsDown) "Timer" else "Stopwatch"
+        val label = n.title ?: context.getString(if (n.chronometerCountsDown) R.string.island_timer else R.string.island_stopwatch)
         val content = ChronometerMath.content(
             label = label,
             showChronometer = n.showsChronometer,
@@ -80,7 +84,7 @@ class TimerSource @Inject constructor(
                 content = content,
                 startedAt = existing?.startedAt ?: now,
                 updatedAt = now,
-                actions = sbn.islandActions(launcher) { TimerActionLabels.shorten(it) },
+                actions = sbn.clockActions(launcher, context),
                 onTap = sbn.openAction(launcher),
                 dismissible = false,
             ),

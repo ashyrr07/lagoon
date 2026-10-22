@@ -65,4 +65,29 @@ class NavigationTextParserTest {
         assertEquals("", info.distance)
         assertNull(info.eta)
     }
+
+    @Test
+    fun `russian maps text`() {
+        val info = NavigationTextParser.parse("Через 200 м поверните направо на ул. Ленина", "12 мин · 4,5 км · 14:05", null)!!
+        assertEquals("Поверните направо на ул. Ленина", info.instruction)
+        assertEquals("200 м", info.distance)
+        assertEquals("14:05 · 12 мин · 4,5 км", info.eta)
+        assertTrue(NavigationTextParser.isOnlyDistance("350 м"))
+        assertTrue(NavigationTextParser.isOnlyDistance("1,2 км"))
+        assertFalse(NavigationTextParser.isOnlyDistance("5 мин"))
+        assertTrue(NavigationTextParser.isEtaLine("Прибытие 14:05"))
+    }
+
+    @Test
+    fun `german french and spanish maps text`() {
+        val de = NavigationTextParser.parse("Nach 300 m links abbiegen", "1 Std. 5 Min. · 80 km · 15:10", null)!!
+        assertEquals("Links abbiegen", de.instruction)
+        assertEquals("300 m", de.distance)
+        assertEquals("15:10 · 1 Std. 5 Min. · 80 km", de.eta)
+        val fr = NavigationTextParser.parse("Dans 150 m, tournez à gauche", null, null)!!
+        assertEquals("Tournez à gauche", fr.instruction)
+        assertEquals("150 m", fr.distance)
+        assertTrue(NavigationTextParser.isEtaLine("Llegada 18:42"))
+        assertTrue(NavigationTextParser.isEtaLine("Ankunft 18:42"))
+    }
 }

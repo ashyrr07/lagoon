@@ -82,24 +82,57 @@ class ChronometerMathTest {
         assertTrue(ChronometerMath.isPaused("Paused"))
         assertTrue(ChronometerMath.isPaused("Timer pausiert"))
         assertTrue(ChronometerMath.isPaused("En pause"))
+        assertTrue(ChronometerMath.isPaused("Таймер на паузе"))
+        assertTrue(ChronometerMath.isPaused("Приостановлено"))
+        assertTrue(ChronometerMath.isPaused("Temporizador en pausa"))
         assertFalse(ChronometerMath.isPaused("Running"))
         assertFalse(ChronometerMath.isPaused(null))
     }
 
+    /** The island's own names are string resources; the kind's name stands in for them here. */
+    private fun shorten(label: String) = TimerActionLabels.shorten(label) { it.name }
+
     @Test
     fun `action labels shorten to island size`() {
-        assertEquals("+1:00", TimerActionLabels.shorten("Add 1 minute"))
-        assertEquals("+1:00", TimerActionLabels.shorten("+1 min"))
-        assertEquals("+1:00", TimerActionLabels.shorten("+1:00"))
-        assertEquals("Pause", TimerActionLabels.shorten("Pause"))
-        assertEquals("Resume", TimerActionLabels.shorten("Start"))
-        assertEquals("Stop", TimerActionLabels.shorten("Stop timer"))
-        assertEquals("Stop", TimerActionLabels.shorten("Dismiss"))
-        assertEquals("Snooze", TimerActionLabels.shorten("Snooze"))
-        assertEquals("Lap", TimerActionLabels.shorten("Lap"))
-        assertEquals("Reset", TimerActionLabels.shorten("Reset"))
-        assertEquals("Share", TimerActionLabels.shorten("Share"))
-        assertEquals("Something…", TimerActionLabels.shorten("Something longer"))
-        assertEquals("", TimerActionLabels.shorten(""))
+        assertEquals("+1:00", shorten("Add 1 minute"))
+        assertEquals("+1:00", shorten("+1 min"))
+        assertEquals("+1:00", shorten("+1:00"))
+        assertEquals("Pause", shorten("Pause"))
+        assertEquals("Resume", shorten("Start"))
+        assertEquals("Stop", shorten("Stop timer"))
+        assertEquals("Stop", shorten("Dismiss"))
+        assertEquals("Snooze", shorten("Snooze"))
+        assertEquals("Lap", shorten("Lap"))
+        assertEquals("Reset", shorten("Reset"))
+        assertEquals("Delete", shorten("Cancel"))
+        assertEquals("Share", shorten("Share"))
+        assertEquals("Something…", shorten("Something longer"))
+        assertEquals("", shorten(""))
+    }
+
+    @Test
+    fun `clock buttons in german, french, spanish and russian`() {
+        assertEquals(TimerActionKind.Pause, TimerActionLabels.classify("Pausieren"))
+        assertEquals(TimerActionKind.Resume, TimerActionLabels.classify("Fortsetzen"))
+        assertEquals(TimerActionKind.Reset, TimerActionLabels.classify("Zurücksetzen"))
+        assertEquals(TimerActionKind.Lap, TimerActionLabels.classify("Runde"))
+        assertEquals(TimerActionKind.Resume, TimerActionLabels.classify("Reprendre"))
+        assertEquals(TimerActionKind.Delete, TimerActionLabels.classify("Supprimer"))
+        assertEquals(TimerActionKind.Snooze, TimerActionLabels.classify("Répéter"))
+        assertEquals(TimerActionKind.Pause, TimerActionLabels.classify("Pausar"))
+        assertEquals(TimerActionKind.Resume, TimerActionLabels.classify("Reanudar"))
+        assertEquals(TimerActionKind.Reset, TimerActionLabels.classify("Reiniciar"))
+        assertEquals(TimerActionKind.Snooze, TimerActionLabels.classify("Posponer"))
+        assertEquals(TimerActionKind.Lap, TimerActionLabels.classify("Vuelta"))
+        assertEquals(TimerActionKind.Pause, TimerActionLabels.classify("Пауза"))
+        assertEquals(TimerActionKind.Resume, TimerActionLabels.classify("Продолжить"))
+        assertEquals(TimerActionKind.Stop, TimerActionLabels.classify("Остановить"))
+        assertEquals(TimerActionKind.Reset, TimerActionLabels.classify("Сбросить"))
+        assertEquals(TimerActionKind.Lap, TimerActionLabels.classify("Круг"))
+        assertEquals(TimerActionKind.Snooze, TimerActionLabels.classify("Отложить"))
+        assertEquals(TimerActionKind.Delete, TimerActionLabels.classify("Удалить"))
+        assertEquals("+1:00", shorten("+1 мин"))
+        assertEquals("+1:00", shorten("+1 Min."))
+        assertEquals(null, TimerActionLabels.classify("Teilen"))
     }
 }

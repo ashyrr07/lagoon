@@ -131,5 +131,9 @@ internal fun StatusBarNotification.islandActions(
     )
 }
 
+/** A Clock app's buttons as island actions, with known ones renamed in Lagoon's language. */
+internal fun StatusBarNotification.clockActions(launcher: IntentLauncher, context: Context): List<IslandAction> =
+    islandActions(launcher) { label -> TimerActionLabels.shorten(label) { context.getString(it.labelRes) } }
+
 internal fun StatusBarNotification.openAction(launcher: IntentLauncher): (() -> Unit)? =
     notification.contentIntent?.let { intent -> { launcher.send(intent) } }

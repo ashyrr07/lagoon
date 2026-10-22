@@ -17,6 +17,7 @@ import androidx.compose.material.icons.rounded.Speaker
 import androidx.compose.material.icons.rounded.Watch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -24,8 +25,10 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.lagoon.island.R
 import com.lagoon.island.engine.ActivityContent
 
 private fun ActivityContent.Bluetooth.glyph() = when (kind) {
@@ -35,9 +38,11 @@ private fun ActivityContent.Bluetooth.glyph() = when (kind) {
     ActivityContent.Bluetooth.Kind.Other -> Icons.Rounded.Bluetooth
 }
 
+@Composable
+@ReadOnlyComposable
 private fun ActivityContent.Bluetooth.batteryText(): String? = when {
-    left != null && right != null -> "L ${left}% · R ${right}%"
-    battery != null -> "${battery}%"
+    left != null && right != null -> stringResource(R.string.island_bt_battery_pair, left, right)
+    battery != null -> percentText(battery)
     else -> null
 }
 
@@ -48,7 +53,11 @@ fun BluetoothCompactLeading(scope: ContentScope, b: ActivityContent.Bluetooth) {
 
 @Composable
 fun BluetoothCompactTrailing(scope: ContentScope, b: ActivityContent.Bluetooth) {
-    val text = if (!b.connected) "Disconnected" else b.batteryText() ?: "Connected"
+    val text = if (!b.connected) {
+        stringResource(R.string.island_bt_disconnected)
+    } else {
+        b.batteryText() ?: stringResource(R.string.island_bt_connected)
+    }
     Text(text, style = IslandType.compact.copy(color = if (b.connected) scope.accent else IslandType.white60), maxLines = 1)
 }
 
@@ -78,22 +87,27 @@ fun BluetoothExpanded(scope: ContentScope, b: ActivityContent.Bluetooth) {
             Spacer(Modifier.width(14.dp))
             Column(Modifier.weight(1f)) {
                 Text(b.deviceName, style = IslandType.title, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                val battery = b.batteryText()
                 Text(
-                    if (b.connected) b.batteryText()?.let { "Connected · $it" } ?: "Connected" else "Disconnected",
+                    when {
+                        !b.connected -> stringResource(R.string.island_bt_disconnected)
+                        battery != null -> stringResource(R.string.island_bt_connected_battery, battery)
+                        else -> stringResource(R.string.island_bt_connected)
+                    },
                     style = IslandType.bodyDim,
                 )
             }
         }
         val rings = buildList {
-            b.left?.let { add("Left" to it) }
-            b.right?.let { add("Right" to it) }
-            b.case?.let { add("Case" to it) }
-            if (isEmpty()) b.battery?.let { add("Battery" to it) }
+            b.left?.let { add(R.string.island_bt_left to it) }
+            b.right?.let { add(R.string.island_bt_right to it) }
+            b.case?.let { add(R.string.island_bt_case to it) }
+            if (isEmpty()) b.battery?.let { add(R.string.island_bt_battery to it) }
         }
         if (b.connected && rings.isNotEmpty()) {
             Spacer(Modifier.height(14.dp))
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(28.dp, Alignment.CenterHorizontally)) {
-                rings.forEach { (label, pct) -> BatteryRing(label, pct, scope.accent) }
+                rings.forEach { (label, pct) -> BatteryRing(stringResource(label), pct, scope.accent) }
             }
         }
     }

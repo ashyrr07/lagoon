@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Shared formats -->
+    <string name="island_percent">%1$d %%</string>
+    <string name="island_watts">%1$s W</string>
+
+    <!-- Control deck: tiles and sliders -->
+    <string name="island_control_torch">Lampe torche</string>
+    <string name="island_control_torch_level">Intensité de la lampe</string>
+    <string name="island_control_dnd">Ne pas déranger</string>
+    <string name="island_control_rotation">Verrouillage de la rotation</string>
+    <string name="island_control_brightness">Luminosité</string>
+    <string name="island_control_media_volume">Volume multimédia</string>
+    <string name="island_control_ring_volume">Volume de la sonnerie</string>
+    <string name="island_control_internet">Internet</string>
+    <string name="island_control_bluetooth">Bluetooth</string>
+    <string name="island_control_camera">Appareil photo</string>
+    <string name="island_control_screenshot">Capture d\'écran</string>
+    <string name="island_control_lock">Verrouiller</string>
+    <string name="island_control_recents">Récents</string>
+    <string name="island_control_dnd_priority">Prioritaires</string>
+    <string name="island_control_dnd_alarms">Alarmes seulement</string>
+    <string name="island_control_dnd_silence">Silence total</string>
+    <string name="island_control_brightness_auto">Auto</string>
+    <string name="island_control_ringer_vibrate">Vibreur</string>
+    <string name="island_control_ringer_silent">Silencieux</string>
+    <string name="island_deck_tile_grant">%1$s · autoriser</string>
+    <string name="island_deck_slider_grant">Appuyez pour autoriser</string>
+
+    <!-- Control deck: widgets -->
+    <string name="island_widget_now_playing">En cours de lecture</string>
+    <string name="island_widget_next_alarm">Prochaine alarme</string>
+    <string name="island_widget_battery">Batterie</string>
+    <string name="island_widget_timer">Minuteur</string>
+    <string name="island_widget_next_event">Prochain évènement</string>
+    <string name="island_widget_nothing_playing">Aucune lecture</string>
+    <string name="island_widget_nothing_playing_hint">Lancez une lecture pour la contrôler ici</string>
+    <string name="island_widget_alarm_today">Aujourd\'hui · %1$s</string>
+    <string name="island_widget_alarm_tomorrow">Demain · %1$s</string>
+    <string name="island_widget_no_alarm">Aucune alarme</string>
+    <string name="island_widget_no_alarm_hint">Appuyez pour en régler une</string>
+    <string name="island_widget_battery_full">Pleine</string>
+    <string name="island_widget_battery_charging">En charge</string>
+    <string name="island_widget_battery_phone">Téléphone</string>
+    <string name="island_widget_timer_running">En cours</string>
+    <string name="island_widget_timer_paused">En pause</string>
+    <string name="island_widget_timer_start">Démarrer</string>
+    <plurals name="island_widget_timer_preset">
+        <item quantity="one">%dm</item>
+        <item quantity="many">%dm</item>
+        <item quantity="other">%dm</item>
+    </plurals>
+    <string name="island_widget_calendar">Agenda</string>
+    <string name="island_widget_calendar_grant">Autorisez l\'accès à l\'agenda dans les réglages de Lagoon</string>
+    <string name="island_widget_calendar_empty">Aucun évènement</string>
+    <string name="island_widget_calendar_empty_hint">Rien de prévu dans les prochaines 24 heures</string>
+    <string name="island_widget_calendar_all_day">Toute la journée</string>
+    <string name="island_widget_calendar_no_title">(Sans titre)</string>
+
+    <!-- Actions -->
+    <string name="island_action_play">Lecture</string>
+    <string name="island_action_pause">Pause</string>
+    <string name="island_action_resume">Reprendre</string>
+    <string name="island_action_next">Suivant</string>
+    <string name="island_action_previous">Précédent</string>
+    <string name="island_action_seek">Position de lecture</string>
+    <string name="island_action_reset">Réinitialiser</string>
+    <string name="island_action_stop">Arrêter</string>
+    <string name="island_action_lap">Tour</string>
+    <string name="island_action_snooze">Répéter</string>
+    <string name="island_action_delete">Supprimer</string>
+    <string name="island_action_dismiss">Fermer</string>
+    <string name="island_action_turn_off">Éteindre</string>
+    <string name="island_action_fallback">Action</string>
+    <string name="island_reply">Répondre</string>
+    <string name="island_send">Envoyer</string>
+
+    <!-- Charging -->
+    <string name="island_charging">En charge</string>
+    <string name="island_charging_unplugged">Débranché</string>
+    <string name="island_charging_low">Batterie faible</string>
+    <string name="island_charging_full">Charge complète</string>
+
+    <!-- Bluetooth devices -->
+    <string name="island_bt_connected">Connecté</string>
+    <string name="island_bt_disconnected">Déconnecté</string>
+    <string name="island_bt_connected_battery">Connecté · %1$s</string>
+    <string name="island_bt_battery_pair">G %1$d %% · D %2$d %%</string>
+    <string name="island_bt_left">Gauche</string>
+    <string name="island_bt_right">Droite</string>
+    <string name="island_bt_case">Boîtier</string>
+    <string name="island_bt_battery">Batterie</string>
+    <string name="island_bt_device_fallback">Appareil Bluetooth</string>
+
+    <!-- Calls -->
+    <string name="island_call_incoming">Appel entrant</string>
+    <string name="island_call_in_progress">Appel en cours</string>
+    <string name="island_call_ended">Appel terminé</string>
+    <string name="island_call_ended_short">Terminé</string>
+    <string name="island_call_fallback_name">Appel</string>
+    <string name="island_call_answer">Répondre</string>
+    <string name="island_call_decline">Refuser</string>
+    <string name="island_call_hang_up">Raccrocher</string>
+
+    <!-- Timers and alarms -->
+    <string name="island_timer">Minuteur</string>
+    <string name="island_stopwatch">Chronomètre</string>
+    <string name="island_timer_done">Minuteur terminé</string>
+    <string name="island_timer_done_text">Le minuteur de %1$s est terminé</string>
+    <string name="island_timer_channel">Minuteur</string>
+    <string name="island_timer_channel_description">Sonne quand le minuteur de l\'île se termine</string>
+    <string name="island_alarm">Alarme</string>
+
+    <!-- Notifications -->
+    <string name="island_notification_fallback">Nouvelle notification</string>
+
+    <!-- System indicators -->
+    <string name="island_system_silent">Silencieux</string>
+    <string name="island_system_vibrate">Vibreur</string>
+    <string name="island_system_ring">Sonnerie</string>
+    <string name="island_system_dnd">Ne pas déranger</string>
+    <string name="island_system_on">Activé</string>
+    <string name="island_system_off">Désactivé</string>
+    <string name="island_system_torch_on">Lampe torche allumée</string>
+    <string name="island_system_screen_recording">Enregistrement d\'écran</string>
+    <string name="island_system_no_internet">Pas d\'Internet</string>
+
+    <!-- Keep-alive service notification -->
+    <string name="island_keep_alive_channel">Maintien en activité</string>
+    <string name="island_keep_alive_channel_description">Notification silencieuse qui maintient Lagoon actif sur les téléphones qui arrêtent les applis en arrière-plan.</string>
+    <string name="island_keep_alive_title">Lagoon est actif</string>
+    <string name="island_keep_alive_text">Vous pouvez la désactiver depuis l\'écran État.</string>
+
+    <!-- Per-brand keep-alive guides -->
+    <string name="island_oem_xiaomi_summary">HyperOS et MIUI arrêtent les applis absentes de la liste de démarrage automatique et ajoutent leur propre économiseur de batterie à celui d\'Android.</string>
+    <string name="island_oem_xiaomi_autostart_title">Autoriser le démarrage auto</string>
+    <string name="island_oem_xiaomi_autostart_detail">Appli Sécurité &gt; Gérer les applis &gt; Lagoon &gt; Démarrage automatique activé.</string>
+    <string name="island_oem_xiaomi_battery_title">Aucune restriction de batterie</string>
+    <string name="island_oem_xiaomi_battery_detail">Paramètres &gt; Applis &gt; Gérer les applis &gt; Lagoon &gt; Économiseur de batterie &gt; Aucune restriction.</string>
+    <string name="island_oem_xiaomi_lock_title">Verrouiller dans les récents</string>
+    <string name="island_oem_xiaomi_lock_detail">Ouvrez les applis récentes et tirez la carte de Lagoon vers le bas jusqu\'à voir un cadenas : elle restera ouverte quand vous videz la liste.</string>
+
+    <string name="island_oem_samsung_summary">One UI met en veille les applis inutilisées depuis quelques jours et peut couper l\'accès aux notifications avec elles.</string>
+    <string name="island_oem_samsung_never_sleeping_title">Applis jamais mises en veille</string>
+    <string name="island_oem_samsung_never_sleeping_detail">Paramètres &gt; Batterie &gt; Limites d\'utilisation en arrière-plan &gt; Applis jamais mises en veille &gt; ajoutez Lagoon.</string>
+    <string name="island_oem_samsung_adaptive_title">Batterie adaptative</string>
+    <string name="island_oem_samsung_adaptive_detail">Si l\'île disparaît encore, désactivez « Mettre en veille les applis inutilisées » sur le même écran.</string>
+
+    <string name="island_oem_huawei_summary">Le gestionnaire de lancement d\'EMUI arrête tout ce qui n\'est pas géré manuellement.</string>
+    <string name="island_oem_huawei_manual_title">Gérer manuellement</string>
+    <string name="island_oem_huawei_manual_detail">Paramètres &gt; Batterie &gt; Lancement d\'applications &gt; Lagoon &gt; Gérer manuellement &gt; autorisez Lancement auto, Lancement secondaire et Exécution en arrière-plan.</string>
+    <string name="island_oem_huawei_protected_title">Applis protégées</string>
+    <string name="island_oem_huawei_protected_detail">Sur les anciennes versions d\'EMUI : Gestionnaire du téléphone &gt; Applis protégées &gt; Lagoon activé.</string>
+
+    <string name="island_oem_oppo_summary">ColorOS et OxygenOS partagent un gestionnaire de batterie qui arrête les applis non autorisées à se lancer automatiquement.</string>
+    <string name="island_oem_oppo_autolaunch_title">Autoriser le lancement auto</string>
+    <string name="island_oem_oppo_autolaunch_detail">Paramètres &gt; Applis &gt; Lagoon &gt; Autoriser le lancement automatique (ainsi que « Autoriser le lancement par d\'autres applis »).</string>
+    <string name="island_oem_oppo_battery_title">Batterie : sans limite</string>
+    <string name="island_oem_oppo_battery_detail">Paramètres &gt; Batterie &gt; Plus de paramètres &gt; Gestion de la batterie des applis &gt; Lagoon &gt; Ne pas optimiser, puis désactivez « Optimisation de la veille ».</string>
+
+    <string name="island_oem_vivo_summary">Funtouch et OriginOS exigent d\'autoriser à la fois le démarrage auto et une forte consommation en arrière-plan.</string>
+    <string name="island_oem_vivo_autostart_title">Autoriser le démarrage auto</string>
+    <string name="island_oem_vivo_autostart_detail">i Manager &gt; Gestionnaire d\'applis &gt; Gestionnaire de démarrage auto &gt; Lagoon activé.</string>
+    <string name="island_oem_vivo_power_title">Consommation en arrière-plan</string>
+    <string name="island_oem_vivo_power_detail">Paramètres &gt; Batterie &gt; Gestion de la consommation en arrière-plan &gt; Lagoon &gt; Autoriser une forte consommation en arrière-plan.</string>
+
+    <string name="island_oem_other_summary">Android d\'origine maintient seul l\'accès aux notifications. Si l\'île disparaît malgré tout, vérifiez le réglage de batterie de l\'appli.</string>
+    <string name="island_oem_other_battery_title">Batterie : sans restriction</string>
+    <string name="island_oem_other_battery_detail">Paramètres &gt; Applis &gt; Lagoon &gt; Batterie &gt; Sans restriction.</string>
+
+    <!-- Try it screen -->
+    <string name="island_demo_title">Essayer</string>
+    <string name="island_demo_back">Retour</string>
+    <string name="island_demo_description">Chaque bouton envoie une activité fictive à l\'île. Appuyez sur l\'île pour l\'agrandir, appuyez de manière prolongée pour ouvrir l\'appli et balayez vers le haut pour la fermer.</string>
+    <string name="island_demo_now_playing">En cours de lecture</string>
+    <string name="island_demo_incoming_call">Appel entrant</string>
+    <string name="island_demo_active_call">Appel en cours</string>
+    <string name="island_demo_timer">Minuteur 5:00</string>
+    <string name="island_demo_charging">Recharge à 27 W</string>
+    <string name="island_demo_earbuds">Écouteurs connectés</string>
+    <string name="island_demo_message">Message avec réponse</string>
+    <string name="island_demo_navigation">Navigation</string>
+    <string name="island_demo_progress">Suivi de livraison</string>
+    <string name="island_demo_clear">Tout effacer</string>
+    <string name="island_demo_call_detail">Mobile</string>
+    <string name="island_demo_timer_label">Pâtes</string>
+    <string name="island_demo_cancel">Annuler</string>
+    <string name="island_demo_message_text">Toujours d\'accord pour 19 h ? Je peux apporter le dessert si tu fais les pâtes.</string>
+    <string name="island_demo_mark_read">Marquer comme lu</string>
+    <string name="island_demo_nav_instruction">Tournez à droite sur Market St</string>
+    <string name="island_demo_nav_distance">350 m</string>
+    <string name="island_demo_nav_eta">12 min · 4,2 km · 18:42</string>
+    <string name="island_demo_progress_title">Commande en route</string>
+    <plurals name="island_demo_progress_eta">
+        <item quantity="one">Arrivée dans %d min</item>
+        <item quantity="many">Arrivée dans %d min</item>
+        <item quantity="other">Arrivée dans %d min</item>
+    </plurals>
+</resources>

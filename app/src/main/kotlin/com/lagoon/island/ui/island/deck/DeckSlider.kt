@@ -28,7 +28,9 @@ import androidx.compose.ui.input.pointer.PointerInputScope
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.lagoon.island.R
 import com.lagoon.island.controls.Control
 import com.lagoon.island.controls.ControlState
 import kotlin.math.roundToInt
@@ -102,14 +104,15 @@ fun DeckSlider(
         )
         Icon(
             icon,
-            contentDescription = control.label,
+            contentDescription = stringResource(control.labelRes),
             tint = if (fraction > 0.12f) DeckStyle.OnAccent else DeckStyle.Text,
             modifier = Modifier
                 .align(Alignment.CenterStart)
                 .padding(start = 10.dp)
                 .size(18.dp),
         )
-        val caption = state.detail ?: if (state.needsPermission) "Tap to grant" else null
+        val caption = state.detail?.let { stringResource(it) }
+            ?: if (state.needsPermission) stringResource(R.string.island_deck_slider_grant) else null
         if (caption != null) {
             Text(
                 caption,

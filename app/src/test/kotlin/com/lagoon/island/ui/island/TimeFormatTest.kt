@@ -56,8 +56,8 @@ class TimeFormatTest {
 
     @Test
     fun `watts formatting`() {
-        assertEquals("27 W", TimeFormat.watts(27.4f))
-        assertEquals("7.5 W", TimeFormat.watts(7.5f))
+        assertEquals("27", TimeFormat.watts(27.4f))
+        assertEquals(String.format("%.1f", 7.5f), TimeFormat.watts(7.5f))
         assertNull(TimeFormat.watts(null))
     }
 }

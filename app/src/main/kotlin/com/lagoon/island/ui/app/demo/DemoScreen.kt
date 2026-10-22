@@ -20,8 +20,11 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalResources
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.lagoon.island.R
 
 /** "Try it": fire fake activities at the island (also what the store screenshots are made from). */
 @OptIn(ExperimentalMaterial3Api::class)
@@ -30,13 +33,14 @@ fun DemoScreen(
     onBack: () -> Unit,
     viewModel: DemoViewModel = hiltViewModel(),
 ) {
+    val res = LocalResources.current
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Try it") },
+                title = { Text(stringResource(R.string.island_demo_title)) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.island_demo_back))
                     }
                 },
             )
@@ -51,21 +55,21 @@ fun DemoScreen(
             verticalArrangement = Arrangement.spacedBy(10.dp),
         ) {
             Text(
-                "Each button posts a fake activity to the island. Tap the pill to expand, long-press for the app, swipe up to dismiss.",
+                stringResource(R.string.island_demo_description),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
-            DemoButton("Now playing", viewModel::music)
-            DemoButton("Incoming call", viewModel::incomingCall)
-            DemoButton("Active call", viewModel::activeCall)
-            DemoButton("Timer 5:00", viewModel::timer)
-            DemoButton("Charging 27 W", viewModel::charging)
-            DemoButton("Earbuds connected", viewModel::earbuds)
-            DemoButton("Message with reply", viewModel::message)
-            DemoButton("Navigation", viewModel::navigation)
-            DemoButton("Delivery progress", viewModel::progress)
+            DemoButton(stringResource(R.string.island_demo_now_playing)) { viewModel.music(res) }
+            DemoButton(stringResource(R.string.island_demo_incoming_call)) { viewModel.incomingCall(res) }
+            DemoButton(stringResource(R.string.island_demo_active_call)) { viewModel.activeCall(res) }
+            DemoButton(stringResource(R.string.island_demo_timer)) { viewModel.timer(res) }
+            DemoButton(stringResource(R.string.island_demo_charging), viewModel::charging)
+            DemoButton(stringResource(R.string.island_demo_earbuds), viewModel::earbuds)
+            DemoButton(stringResource(R.string.island_demo_message)) { viewModel.message(res) }
+            DemoButton(stringResource(R.string.island_demo_navigation)) { viewModel.navigation(res) }
+            DemoButton(stringResource(R.string.island_demo_progress)) { viewModel.progress(res) }
             OutlinedButton(onClick = viewModel::clearAll, modifier = Modifier.fillMaxWidth()) {
-                Text("Clear all")
+                Text(stringResource(R.string.island_demo_clear))
             }
         }
     }

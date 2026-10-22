@@ -28,16 +28,19 @@ object CallActionMatcher {
     private val ANSWER = listOf(
         "answer", "accept", "pick up", "pickup", "annehmen", "répondre", "repondre", "rispondi", "responder",
         "contestar", "atender", "beantwoorden", "svara", "odbierz", "ответить", "応答", "接听", "접수", "수락",
+        "abheben", "accepter", "aceptar", "принять",
     )
     private val DECLINE = listOf(
         "decline", "reject", "dismiss", "ignore", "ablehnen", "refuser", "rifiuta", "rechazar", "recusar",
         "rejeitar", "weigeren", "avvisa", "odrzuć", "odrzuc", "отклонить", "拒否", "拒绝", "거절",
+        "ignorieren", "ignorer", "ignorar", "сбросить",
     )
     private val HANG_UP = listOf(
         "hang up", "hangup", "end call", "disconnect", "auflegen", "raccrocher", "termina", "colgar",
         "desligar", "encerrar", "ophangen", "lägg på", "rozłącz", "rozlacz", "завершить", "終了", "挂断", "통화 종료",
+        "положить трубку",
     )
-    private val END = listOf("end", "beenden", "fin", "terminer", "finalizar")
+    private val END = listOf("end", "beenden", "fin", "terminer", "finalizar", "terminar", "закончить")
 
     private val ICON_ANSWER = listOf("answer", "accept", "call_received", "pickup")
     private val ICON_DECLINE = listOf("decline", "reject", "dismiss")

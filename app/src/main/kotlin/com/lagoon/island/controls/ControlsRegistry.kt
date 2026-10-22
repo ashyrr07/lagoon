@@ -37,6 +37,7 @@ import androidx.compose.material.icons.rounded.ViewCarousel
 import androidx.compose.material.icons.rounded.Wifi
 import androidx.compose.material.icons.rounded.WbSunny
 import androidx.core.content.ContextCompat
+import com.lagoon.island.R
 import com.lagoon.island.util.IntentLauncher
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
@@ -62,6 +63,10 @@ class ControlsRegistry @Inject constructor(
     private val launcher: IntentLauncher,
     private val globalActions: GlobalActions,
 ) {
+    init {
+        ModelText.init(context)
+    }
+
     private val mainHandler = Handler(Looper.getMainLooper())
     private val cameraManager = context.getSystemService(CameraManager::class.java)
     private val notificationManager = context.getSystemService(NotificationManager::class.java)
@@ -95,7 +100,7 @@ class ControlsRegistry @Inject constructor(
 
     val torch = Control(
         id = ID_TORCH,
-        label = "Torch",
+        labelRes = R.string.island_control_torch,
         icon = Icons.Rounded.FlashlightOff,
         activeIcon = Icons.Rounded.FlashlightOn,
         kind = ControlKind.Toggle,
@@ -106,7 +111,7 @@ class ControlsRegistry @Inject constructor(
 
     val torchStrength = Control(
         id = ID_TORCH_STRENGTH,
-        label = "Torch level",
+        labelRes = R.string.island_control_torch_level,
         icon = Icons.Rounded.FlashlightOn,
         kind = ControlKind.Slider,
         isAvailable = { torchCameraId != null && torchMaxStrength > 1 },
@@ -116,7 +121,7 @@ class ControlsRegistry @Inject constructor(
 
     val dnd = Control(
         id = ID_DND,
-        label = "Do not disturb",
+        labelRes = R.string.island_control_dnd,
         icon = Icons.Rounded.DoNotDisturbOn,
         kind = ControlKind.Toggle,
         isAvailable = { notificationManager != null },
@@ -126,7 +131,7 @@ class ControlsRegistry @Inject constructor(
 
     val rotation = Control(
         id = ID_ROTATION,
-        label = "Rotation lock",
+        labelRes = R.string.island_control_rotation,
         icon = Icons.Rounded.ScreenRotation,
         activeIcon = Icons.Rounded.ScreenLockRotation,
         kind = ControlKind.Toggle,
@@ -137,7 +142,7 @@ class ControlsRegistry @Inject constructor(
 
     val brightness = Control(
         id = ID_BRIGHTNESS,
-        label = "Brightness",
+        labelRes = R.string.island_control_brightness,
         icon = Icons.Rounded.Brightness6,
         activeIcon = Icons.Rounded.WbSunny,
         kind = ControlKind.Slider,
@@ -148,7 +153,7 @@ class ControlsRegistry @Inject constructor(
 
     val mediaVolume = Control(
         id = ID_MEDIA_VOLUME,
-        label = "Media volume",
+        labelRes = R.string.island_control_media_volume,
         icon = Icons.AutoMirrored.Rounded.VolumeUp,
         kind = ControlKind.Slider,
         isAvailable = { audioManager != null },
@@ -158,7 +163,7 @@ class ControlsRegistry @Inject constructor(
 
     val ringVolume = Control(
         id = ID_RING_VOLUME,
-        label = "Ring volume",
+        labelRes = R.string.island_control_ring_volume,
         icon = Icons.Rounded.NotificationsActive,
         kind = ControlKind.Slider,
         isAvailable = { audioManager != null },
@@ -168,7 +173,7 @@ class ControlsRegistry @Inject constructor(
 
     val wifi = Control(
         id = ID_WIFI,
-        label = "Internet",
+        labelRes = R.string.island_control_internet,
         icon = Icons.Rounded.Wifi,
         kind = ControlKind.Panel,
         isAvailable = { true },
@@ -178,7 +183,7 @@ class ControlsRegistry @Inject constructor(
 
     val bluetooth = Control(
         id = ID_BLUETOOTH,
-        label = "Bluetooth",
+        labelRes = R.string.island_control_bluetooth,
         icon = Icons.Rounded.Bluetooth,
         kind = ControlKind.Panel,
         isAvailable = { context.packageManager.hasSystemFeature(PackageManager.FEATURE_BLUETOOTH) },
@@ -188,7 +193,7 @@ class ControlsRegistry @Inject constructor(
 
     val camera = Control(
         id = ID_CAMERA,
-        label = "Camera",
+        labelRes = R.string.island_control_camera,
         icon = Icons.Rounded.CameraAlt,
         kind = ControlKind.Launch,
         isAvailable = { context.packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY) },
@@ -198,7 +203,7 @@ class ControlsRegistry @Inject constructor(
 
     val screenshot = Control(
         id = ID_SCREENSHOT,
-        label = "Screenshot",
+        labelRes = R.string.island_control_screenshot,
         icon = Icons.Rounded.Screenshot,
         kind = ControlKind.Global,
         isAvailable = { globalActions.available.value },
@@ -208,7 +213,7 @@ class ControlsRegistry @Inject constructor(
 
     val lock = Control(
         id = ID_LOCK,
-        label = "Lock",
+        labelRes = R.string.island_control_lock,
         icon = Icons.Rounded.Lock,
         kind = ControlKind.Global,
         isAvailable = { globalActions.available.value },
@@ -218,7 +223,7 @@ class ControlsRegistry @Inject constructor(
 
     val recents = Control(
         id = ID_RECENTS,
-        label = "Recents",
+        labelRes = R.string.island_control_recents,
         icon = Icons.Rounded.ViewCarousel,
         kind = ControlKind.Global,
         isAvailable = { globalActions.available.value },
@@ -418,9 +423,9 @@ class ControlsRegistry @Inject constructor(
             enabled = true,
             needsPermission = !granted,
             detail = when (filter) {
-                NotificationManager.INTERRUPTION_FILTER_PRIORITY -> "Priority"
-                NotificationManager.INTERRUPTION_FILTER_ALARMS -> "Alarms only"
-                NotificationManager.INTERRUPTION_FILTER_NONE -> "Total silence"
+                NotificationManager.INTERRUPTION_FILTER_PRIORITY -> R.string.island_control_dnd_priority
+                NotificationManager.INTERRUPTION_FILTER_ALARMS -> R.string.island_control_dnd_alarms
+                NotificationManager.INTERRUPTION_FILTER_NONE -> R.string.island_control_dnd_silence
                 else -> null
             },
         )
@@ -475,7 +480,7 @@ class ControlsRegistry @Inject constructor(
             max = 255f,
             enabled = true,
             needsPermission = !canWriteSettings(),
-            detail = if (auto) "Auto" else null,
+            detail = if (auto) R.string.island_control_brightness_auto else null,
         )
     }
 
@@ -524,8 +529,8 @@ class ControlsRegistry @Inject constructor(
                 value = if (silent) 0f else ring.toFloat(),
                 max = ringMax.toFloat(),
                 detail = when (am.ringerMode) {
-                    AudioManager.RINGER_MODE_VIBRATE -> "Vibrate"
-                    AudioManager.RINGER_MODE_SILENT -> "Silent"
+                    AudioManager.RINGER_MODE_VIBRATE -> R.string.island_control_ringer_vibrate
+                    AudioManager.RINGER_MODE_SILENT -> R.string.island_control_ringer_silent
                     else -> null
                 },
             )
