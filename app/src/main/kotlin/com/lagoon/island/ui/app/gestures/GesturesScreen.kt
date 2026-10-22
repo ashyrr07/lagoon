@@ -1,5 +1,6 @@
 package com.lagoon.island.ui.app.gestures
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -21,11 +22,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.lagoon.island.R
 import com.lagoon.island.data.GestureAction
 import com.lagoon.island.data.GestureSettings
 import com.lagoon.island.ui.app.SettingsViewModel
@@ -49,25 +52,25 @@ fun GesturesScreen(
 
 /** One pickable gesture: where it happens, what it is, and how to read and write it. */
 private data class GestureSlot(
-    val title: String,
+    @StringRes val title: Int,
     val get: (GestureSettings) -> GestureAction,
     val put: (GestureSettings, GestureAction) -> GestureSettings,
 )
 
 private val IdleSlots = listOf(
-    GestureSlot("Tap", { it.idleTap }) { g, a -> g.copy(idleTap = a) },
-    GestureSlot("Hold", { it.idleLongPress }) { g, a -> g.copy(idleLongPress = a) },
+    GestureSlot(R.string.screens_gesture_tap, { it.idleTap }) { g, a -> g.copy(idleTap = a) },
+    GestureSlot(R.string.screens_gesture_hold, { it.idleLongPress }) { g, a -> g.copy(idleLongPress = a) },
 )
 private val CompactSlots = listOf(
-    GestureSlot("Tap", { it.compactTap }) { g, a -> g.copy(compactTap = a) },
-    GestureSlot("Hold", { it.compactLongPress }) { g, a -> g.copy(compactLongPress = a) },
-    GestureSlot("Swipe left", { it.compactSwipeLeft }) { g, a -> g.copy(compactSwipeLeft = a) },
-    GestureSlot("Swipe right", { it.compactSwipeRight }) { g, a -> g.copy(compactSwipeRight = a) },
-    GestureSlot("Swipe up", { it.compactSwipeUp }) { g, a -> g.copy(compactSwipeUp = a) },
-    GestureSlot("Swipe down", { it.compactSwipeDown }) { g, a -> g.copy(compactSwipeDown = a) },
+    GestureSlot(R.string.screens_gesture_tap, { it.compactTap }) { g, a -> g.copy(compactTap = a) },
+    GestureSlot(R.string.screens_gesture_hold, { it.compactLongPress }) { g, a -> g.copy(compactLongPress = a) },
+    GestureSlot(R.string.screens_gesture_swipe_left, { it.compactSwipeLeft }) { g, a -> g.copy(compactSwipeLeft = a) },
+    GestureSlot(R.string.screens_gesture_swipe_right, { it.compactSwipeRight }) { g, a -> g.copy(compactSwipeRight = a) },
+    GestureSlot(R.string.screens_gesture_swipe_up, { it.compactSwipeUp }) { g, a -> g.copy(compactSwipeUp = a) },
+    GestureSlot(R.string.screens_gesture_swipe_down, { it.compactSwipeDown }) { g, a -> g.copy(compactSwipeDown = a) },
 )
 private val ExpandedSlots = listOf(
-    GestureSlot("Swipe up", { it.expandedSwipeUp }) { g, a -> g.copy(expandedSwipeUp = a) },
+    GestureSlot(R.string.screens_gesture_swipe_up, { it.expandedSwipeUp }) { g, a -> g.copy(expandedSwipeUp = a) },
 )
 
 @Composable
@@ -79,19 +82,19 @@ private fun GesturesContent(
     var editing by remember { mutableStateOf<GestureSlot?>(null) }
 
     ScreenScaffold(
-        title = "Gestures",
-        subtitle = "What a tap, a hold and each swipe do, depending on what the island is showing.",
+        title = stringResource(R.string.screens_gestures_title),
+        subtitle = stringResource(R.string.screens_gestures_subtitle),
         onBack = onBack,
     ) {
-        GestureGroup("Idle pill", IdleSlots, gestures) { editing = it }
-        GestureGroup("Showing something", CompactSlots, gestures) { editing = it }
-        GestureGroup("Expanded", ExpandedSlots, gestures) { editing = it }
-        Note("Tapping outside an expanded island always closes it.")
+        GestureGroup(stringResource(R.string.screens_gestures_group_idle), IdleSlots, gestures) { editing = it }
+        GestureGroup(stringResource(R.string.screens_gestures_group_compact), CompactSlots, gestures) { editing = it }
+        GestureGroup(stringResource(R.string.screens_gestures_group_expanded), ExpandedSlots, gestures) { editing = it }
+        Note(stringResource(R.string.screens_gestures_note))
     }
 
     editing?.let { slot ->
         ActionPickerSheet(
-            title = slot.title,
+            title = stringResource(slot.title),
             selected = slot.get(gestures),
             onSelect = { action ->
                 set { slot.put(it, action) }
@@ -119,9 +122,9 @@ private fun GestureGroup(
                         .padding(horizontal = 20.dp, vertical = 16.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    Text(slot.title, style = MaterialTheme.typography.titleMedium, modifier = Modifier.weight(1f))
+                    Text(stringResource(slot.title), style = MaterialTheme.typography.titleMedium, modifier = Modifier.weight(1f))
                     Text(
-                        slot.get(gestures).label(),
+                        stringResource(slot.get(gestures).labelRes()),
                         style = MaterialTheme.typography.labelLarge,
                         color = MaterialTheme.colorScheme.primary,
                     )
@@ -158,9 +161,9 @@ private fun ActionPickerSheet(
                 ) {
                     RadioButton(selected = action == selected, onClick = null)
                     Column {
-                        Text(action.label(), style = MaterialTheme.typography.titleMedium)
+                        Text(stringResource(action.labelRes()), style = MaterialTheme.typography.titleMedium)
                         Text(
-                            action.detail(),
+                            stringResource(action.detailRes()),
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
@@ -172,32 +175,34 @@ private fun ActionPickerSheet(
     }
 }
 
-fun GestureAction.label(): String = when (this) {
-    GestureAction.None -> "Nothing"
-    GestureAction.Expand -> "Expand"
-    GestureAction.Collapse -> "Collapse"
-    GestureAction.OpenApp -> "Open the app"
-    GestureAction.Dismiss -> "Dismiss"
-    GestureAction.ControlDeck -> "Control deck"
-    GestureAction.NextActivity -> "Next activity"
-    GestureAction.PlayPause -> "Play / pause"
-    GestureAction.NextTrack -> "Next track"
-    GestureAction.PreviousTrack -> "Previous track"
-    GestureAction.Torch -> "Torch"
+@StringRes
+fun GestureAction.labelRes(): Int = when (this) {
+    GestureAction.None -> R.string.screens_action_none
+    GestureAction.Expand -> R.string.screens_action_expand
+    GestureAction.Collapse -> R.string.screens_action_collapse
+    GestureAction.OpenApp -> R.string.screens_action_open_app
+    GestureAction.Dismiss -> R.string.screens_action_dismiss
+    GestureAction.ControlDeck -> R.string.screens_action_control_deck
+    GestureAction.NextActivity -> R.string.screens_action_next_activity
+    GestureAction.PlayPause -> R.string.screens_action_play_pause
+    GestureAction.NextTrack -> R.string.screens_action_next_track
+    GestureAction.PreviousTrack -> R.string.screens_action_previous_track
+    GestureAction.Torch -> R.string.screens_action_torch
 }
 
-private fun GestureAction.detail(): String = when (this) {
-    GestureAction.None -> "The gesture is ignored"
-    GestureAction.Expand -> "Open the full view of what is showing"
-    GestureAction.Collapse -> "Back to the compact pill"
-    GestureAction.OpenApp -> "Jump to the app behind the activity"
-    GestureAction.Dismiss -> "Remove the activity from the island"
-    GestureAction.ControlDeck -> "Tiles, sliders and widgets"
-    GestureAction.NextActivity -> "Cycle to the next thing waiting"
-    GestureAction.PlayPause -> "Toggle playback"
-    GestureAction.NextTrack -> "Skip forward"
-    GestureAction.PreviousTrack -> "Skip back"
-    GestureAction.Torch -> "Toggle the flashlight"
+@StringRes
+private fun GestureAction.detailRes(): Int = when (this) {
+    GestureAction.None -> R.string.screens_action_none_detail
+    GestureAction.Expand -> R.string.screens_action_expand_detail
+    GestureAction.Collapse -> R.string.screens_action_collapse_detail
+    GestureAction.OpenApp -> R.string.screens_action_open_app_detail
+    GestureAction.Dismiss -> R.string.screens_action_dismiss_detail
+    GestureAction.ControlDeck -> R.string.screens_action_control_deck_detail
+    GestureAction.NextActivity -> R.string.screens_action_next_activity_detail
+    GestureAction.PlayPause -> R.string.screens_action_play_pause_detail
+    GestureAction.NextTrack -> R.string.screens_action_next_track_detail
+    GestureAction.PreviousTrack -> R.string.screens_action_previous_track_detail
+    GestureAction.Torch -> R.string.screens_action_torch_detail
 }
 
 @Preview(showBackground = true, heightDp = 1000)

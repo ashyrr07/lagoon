@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_tagline">Une île dynamique pour tous les Android</string>
+    <string name="enhanced_service_label">Mode avancé de Lagoon</string>
+    <string name="enhanced_service_summary">Affiche l\'île au-dessus de la barre d\'état et sur l\'écran de verrouillage ; tuiles capture d\'écran, verrouillage et applis récentes.</string>
+    <string name="enhanced_service_description">Le mode avancé permet à Lagoon d\'afficher son île au-dessus de la barre d\'état et sur l\'écran de verrouillage, pour que toute la pilule réagisse au toucher, et permet aux tuiles de l\'île de faire une capture d\'écran, de verrouiller l\'écran ou d\'ouvrir les applis récentes quand vous les touchez. Il reçoit uniquement le nom de l\'appli au premier plan, pour que l\'île suive vos réglages par appli. Il ne lit, n\'enregistre et n\'actionne jamais rien de ce qui s\'affiche à l\'écran, il ne peut pas effectuer de gestes à votre place et rien ne quitte votre téléphone : Lagoon n\'a pas l\'autorisation d\'accès à Internet. Vous pouvez le désactiver ici à tout moment.</string>
+    <string name="keep_alive_channel">Maintien en activité</string>
+    <string name="keep_alive_channel_description">Notification silencieuse qui maintient Lagoon actif sur les téléphones qui arrêtent les applis en arrière-plan.</string>
+    <string name="keep_alive_notification_title">Lagoon est actif</string>
+    <string name="keep_alive_notification_text">Vous pouvez la désactiver sur l\'écran État.</string>
+</resources>

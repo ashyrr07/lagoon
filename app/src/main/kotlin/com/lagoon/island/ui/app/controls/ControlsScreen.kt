@@ -49,10 +49,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toBitmap
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.lagoon.island.R
 import com.lagoon.island.controls.AppInfo
 
 /**
@@ -73,13 +75,13 @@ fun ControlsScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Control deck") },
+                title = { Text(stringResource(R.string.screens_controls_title)) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.screens_back))
                     }
                 },
-                actions = { TextButton(onClick = viewModel::resetToDefaults) { Text("Reset") } },
+                actions = { TextButton(onClick = viewModel::resetToDefaults) { Text(stringResource(R.string.screens_controls_reset)) } },
             )
         },
     ) { padding ->
@@ -92,7 +94,7 @@ fun ControlsScreen(
             verticalArrangement = Arrangement.spacedBy(20.dp),
         ) {
             Text(
-                "Long-press the island to open the deck. Pick what it shows and in which order.",
+                stringResource(R.string.screens_controls_intro),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
@@ -101,17 +103,21 @@ fun ControlsScreen(
                 val chosen = remember(settings, globals, section) { viewModel.chosen(section, settings) }
                 val remaining = remember(settings, globals, section) { viewModel.remaining(section, settings) }
                 OrderedSection(
-                    title = when (section) {
-                        ControlsSection.Tiles -> "Tiles"
-                        ControlsSection.Sliders -> "Sliders"
-                        ControlsSection.Widgets -> "Widgets"
-                    },
-                    hint = when (section) {
-                        ControlsSection.Tiles ->
-                            if (globals) "Three per row." else "Three per row. Screenshot, Lock and Recents appear with Enhanced mode."
-                        ControlsSection.Sliders -> "Brightness and rotation need the \"Modify system settings\" grant; the slider asks when first used."
-                        ControlsSection.Widgets -> "Next event needs calendar access, granted from the system app settings."
-                    },
+                    title = stringResource(
+                        when (section) {
+                            ControlsSection.Tiles -> R.string.screens_controls_tiles
+                            ControlsSection.Sliders -> R.string.screens_controls_sliders
+                            ControlsSection.Widgets -> R.string.screens_controls_widgets
+                        },
+                    ),
+                    hint = stringResource(
+                        when (section) {
+                            ControlsSection.Tiles ->
+                                if (globals) R.string.screens_controls_tiles_hint else R.string.screens_controls_tiles_hint_enhanced
+                            ControlsSection.Sliders -> R.string.screens_controls_sliders_hint
+                            ControlsSection.Widgets -> R.string.screens_controls_widgets_hint
+                        },
+                    ),
                     chosen = chosen.map { ControlsItem(it, viewModel.labelOf(it)) },
                     remaining = remaining,
                     onMove = { from, to -> viewModel.move(section, from, to) },
@@ -122,9 +128,9 @@ fun ControlsScreen(
 
             Card(Modifier.fillMaxWidth()) {
                 Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    Text("App shortcuts", style = MaterialTheme.typography.titleMedium)
+                    Text(stringResource(R.string.screens_controls_shortcuts), style = MaterialTheme.typography.titleMedium)
                     Text(
-                        "A row of app icons at the bottom of the deck.",
+                        stringResource(R.string.screens_controls_shortcuts_hint),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
@@ -143,7 +149,7 @@ fun ControlsScreen(
                     FilledTonalButton(onClick = { picking = true; viewModel.loadApps() }) {
                         Icon(Icons.Rounded.Add, contentDescription = null)
                         Spacer(Modifier.width(8.dp))
-                        Text("Add app")
+                        Text(stringResource(R.string.screens_controls_add_app))
                     }
                 }
             }
@@ -176,25 +182,25 @@ private fun OrderedSection(
             Text(hint, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
             Spacer(Modifier.height(4.dp))
             if (chosen.isEmpty()) {
-                Text("Nothing shown", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text(stringResource(R.string.screens_controls_nothing_shown), style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
             chosen.forEachIndexed { index, item ->
                 Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                     Text(item.label, style = MaterialTheme.typography.bodyLarge, modifier = Modifier.weight(1f))
                     IconButton(onClick = { onMove(index, index - 1) }, enabled = index > 0) {
-                        Icon(Icons.Rounded.KeyboardArrowUp, contentDescription = "Move up")
+                        Icon(Icons.Rounded.KeyboardArrowUp, contentDescription = stringResource(R.string.screens_controls_move_up))
                     }
                     IconButton(onClick = { onMove(index, index + 1) }, enabled = index < chosen.lastIndex) {
-                        Icon(Icons.Rounded.KeyboardArrowDown, contentDescription = "Move down")
+                        Icon(Icons.Rounded.KeyboardArrowDown, contentDescription = stringResource(R.string.screens_controls_move_down))
                     }
                     IconButton(onClick = { onRemove(item.id) }) {
-                        Icon(Icons.Rounded.Close, contentDescription = "Remove")
+                        Icon(Icons.Rounded.Close, contentDescription = stringResource(R.string.screens_controls_remove))
                     }
                 }
             }
             if (remaining.isNotEmpty()) {
                 HorizontalDivider(Modifier.padding(vertical = 8.dp))
-                Text("Available", style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text(stringResource(R.string.screens_controls_available), style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 FlowRow(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     remaining.forEach { item ->
                         AssistChip(
@@ -233,9 +239,9 @@ private fun ShortcutRow(
         }
         Spacer(Modifier.width(12.dp))
         Text(label, style = MaterialTheme.typography.bodyLarge, modifier = Modifier.weight(1f))
-        IconButton(onClick = onUp, enabled = canUp) { Icon(Icons.Rounded.KeyboardArrowUp, contentDescription = "Move up") }
-        IconButton(onClick = onDown, enabled = canDown) { Icon(Icons.Rounded.KeyboardArrowDown, contentDescription = "Move down") }
-        IconButton(onClick = onRemove) { Icon(Icons.Rounded.Close, contentDescription = "Remove") }
+        IconButton(onClick = onUp, enabled = canUp) { Icon(Icons.Rounded.KeyboardArrowUp, contentDescription = stringResource(R.string.screens_controls_move_up)) }
+        IconButton(onClick = onDown, enabled = canDown) { Icon(Icons.Rounded.KeyboardArrowDown, contentDescription = stringResource(R.string.screens_controls_move_down)) }
+        IconButton(onClick = onRemove) { Icon(Icons.Rounded.Close, contentDescription = stringResource(R.string.screens_controls_remove)) }
     }
 }
 
@@ -252,15 +258,15 @@ private fun AppPickerDialog(
     }
     AlertDialog(
         onDismissRequest = onDismiss,
-        confirmButton = { TextButton(onClick = onDismiss) { Text("Done") } },
-        title = { Text("Add app") },
+        confirmButton = { TextButton(onClick = onDismiss) { Text(stringResource(R.string.screens_controls_done)) } },
+        title = { Text(stringResource(R.string.screens_controls_add_app)) },
         text = {
             Column {
                 OutlinedTextField(
                     value = query,
                     onValueChange = { query = it },
                     singleLine = true,
-                    placeholder = { Text("Search") },
+                    placeholder = { Text(stringResource(R.string.screens_controls_search)) },
                     modifier = Modifier.fillMaxWidth(),
                 )
                 Spacer(Modifier.height(8.dp))
@@ -276,7 +282,7 @@ private fun AppPickerDialog(
                                 supportingContent = { Text(app.packageName, style = MaterialTheme.typography.bodySmall) },
                                 trailingContent = {
                                     IconButton(onClick = { onPick(app.packageName) }) {
-                                        Icon(Icons.Rounded.Add, contentDescription = "Add ${app.label}")
+                                        Icon(Icons.Rounded.Add, contentDescription = stringResource(R.string.screens_controls_add_app_named, app.label))
                                     }
                                 },
                             )

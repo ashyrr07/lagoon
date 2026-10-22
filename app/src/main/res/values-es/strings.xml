@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_tagline">Una isla dinámica para cualquier Android</string>
+    <string name="enhanced_service_label">Modo avanzado de Lagoon</string>
+    <string name="enhanced_service_summary">Muestra la isla sobre la barra de estado y en la pantalla de bloqueo; botones de captura de pantalla, bloqueo y apps recientes.</string>
+    <string name="enhanced_service_description">El modo avanzado permite que Lagoon muestre su isla sobre la barra de estado y en la pantalla de bloqueo, para que toda la píldora responda a los toques, y que los botones de la isla hagan una captura de pantalla, bloqueen la pantalla o abran las apps recientes cuando los tocas. Solo recibe el nombre de la app en primer plano, para que la isla siga tus ajustes por app. Nunca lee, graba ni actúa sobre nada de lo que se muestra en tu pantalla, no puede realizar gestos por ti y nada sale de tu teléfono: Lagoon no tiene permiso de acceso a internet. Puedes desactivarlo aquí en cualquier momento.</string>
+    <string name="keep_alive_channel">Mantener activo</string>
+    <string name="keep_alive_channel_description">Notificación silenciosa que mantiene Lagoon en funcionamiento en teléfonos que detienen las apps en segundo plano.</string>
+    <string name="keep_alive_notification_title">Lagoon está activo</string>
+    <string name="keep_alive_notification_text">Puedes desactivarla en la pantalla Estado.</string>
+</resources>

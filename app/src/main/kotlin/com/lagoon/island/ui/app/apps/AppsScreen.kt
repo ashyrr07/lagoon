@@ -1,5 +1,6 @@
 package com.lagoon.island.ui.app.apps
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -40,22 +41,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toBitmap
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.lagoon.island.R
 import com.lagoon.island.data.AppsRepository
 
-private enum class AppsTab(val title: String, val hint: String) {
-    Allow(
-        "Show in island",
-        "Notifications from these apps appear in the island. With none selected, every app except system apps shows.",
-    ),
-    Hide(
-        "Hide island in",
-        "The island stays out of the way while one of these apps is in front.",
-    ),
+private enum class AppsTab(@StringRes val title: Int, @StringRes val hint: Int) {
+    Allow(R.string.screens_apps_tab_allow, R.string.screens_apps_tab_allow_hint),
+    Hide(R.string.screens_apps_tab_hide, R.string.screens_apps_tab_hide_hint),
 }
 
 /** Per-app lists: the notification allowlist and the "hide island in these apps" blacklist. */
@@ -82,10 +79,10 @@ fun AppsScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Apps") },
+                title = { Text(stringResource(R.string.screens_apps_title)) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.screens_back))
                     }
                 },
             )
@@ -94,11 +91,11 @@ fun AppsScreen(
         Column(Modifier.fillMaxSize().padding(padding)) {
             PrimaryTabRow(selectedTabIndex = tab) {
                 AppsTab.entries.forEachIndexed { index, t ->
-                    Tab(selected = tab == index, onClick = { tab = index }, text = { Text(t.title) })
+                    Tab(selected = tab == index, onClick = { tab = index }, text = { Text(stringResource(t.title)) })
                 }
             }
             Text(
-                current.hint,
+                stringResource(current.hint),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(horizontal = 20.dp, vertical = 12.dp),
@@ -107,11 +104,11 @@ fun AppsScreen(
                 value = query,
                 onValueChange = { query = it },
                 singleLine = true,
-                placeholder = { Text("Search apps") },
+                placeholder = { Text(stringResource(R.string.screens_apps_search)) },
                 leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
                 trailingIcon = {
                     if (query.isNotEmpty()) {
-                        IconButton(onClick = { query = "" }) { Icon(Icons.Default.Clear, contentDescription = "Clear") }
+                        IconButton(onClick = { query = "" }) { Icon(Icons.Default.Clear, contentDescription = stringResource(R.string.screens_clear)) }
                     }
                 },
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp),
@@ -121,7 +118,7 @@ fun AppsScreen(
                     CircularProgressIndicator()
                 }
                 filtered.isEmpty() -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Text("No apps match", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text(stringResource(R.string.screens_apps_no_match), color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
                 else -> LazyColumn(contentPadding = PaddingValues(vertical = 8.dp)) {
                     items(filtered, key = { it.packageName }) { app ->

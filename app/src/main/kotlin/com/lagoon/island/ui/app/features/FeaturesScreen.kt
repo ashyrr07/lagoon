@@ -2,6 +2,7 @@ package com.lagoon.island.ui.app.features
 
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -29,10 +30,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.lagoon.island.R
 import com.lagoon.island.data.FeatureSettings
 import kotlin.math.roundToInt
 
@@ -58,10 +61,10 @@ fun FeaturesScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Features") },
+                title = { Text(stringResource(R.string.screens_features_title)) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.screens_back))
                     }
                 },
             )
@@ -75,63 +78,63 @@ fun FeaturesScreen(
                 .padding(horizontal = 20.dp, vertical = 8.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            SectionTitle("Media and notifications")
-            FeatureRow("Now playing", "Album art, title and controls for whatever is playing.", features.media) { set { f -> f.copy(media = it) } }
-            FeatureRow("Notifications", "Show notifications from the apps you pick, with reply and actions.", features.notifications) { set { f -> f.copy(notifications = it) } }
+            SectionTitle(stringResource(R.string.screens_features_section_media))
+            FeatureRow(stringResource(R.string.screens_features_media), stringResource(R.string.screens_features_media_detail), features.media) { set { f -> f.copy(media = it) } }
+            FeatureRow(stringResource(R.string.screens_features_notifications), stringResource(R.string.screens_features_notifications_detail), features.notifications) { set { f -> f.copy(notifications = it) } }
             FeatureRow(
-                "Clear the system notification",
-                "After the island showed a notification, remove it from the shade.",
+                stringResource(R.string.screens_features_dismiss_system),
+                stringResource(R.string.screens_features_dismiss_system_detail),
                 features.dismissSystemNotification,
                 enabled = features.notifications,
             ) { set { f -> f.copy(dismissSystemNotification = it) } }
-            LabeledSlider("Notification stays for", features.notificationSeconds, 2..20, "s") { set { f -> f.copy(notificationSeconds = it) } }
+            LabeledSlider(R.string.screens_features_notification_seconds, features.notificationSeconds, 2..20) { set { f -> f.copy(notificationSeconds = it) } }
 
-            SectionTitle("Calls and timers")
+            SectionTitle(stringResource(R.string.screens_features_section_calls))
             FeatureRow(
-                "Calls",
-                "Caller, answer, decline and hang up, mirrored from your dialer's notification. No call log or contacts.",
+                stringResource(R.string.screens_features_calls),
+                stringResource(R.string.screens_features_calls_detail),
                 features.calls,
             ) { set { f -> f.copy(calls = it) } }
             PermissionRow(
-                "Phone state",
-                "Optional: lets the island notice ringing and answered calls even before the dialer posts its notification.",
+                stringResource(R.string.screens_features_phone_state),
+                stringResource(R.string.screens_features_phone_state_detail),
                 granted = permissions.phoneState,
             ) { requestPermissions.launch(FeaturesViewModel.PHONE_PERMISSIONS) }
-            FeatureRow("Timers and stopwatch", "Any Clock app's running timer, with its pause and stop buttons.", features.timers) { set { f -> f.copy(timers = it) } }
-            FeatureRow("Alarms", "A ringing alarm with snooze and dismiss; the next alarm for the deck widget.", features.alarms) { set { f -> f.copy(alarms = it) } }
+            FeatureRow(stringResource(R.string.screens_features_timers), stringResource(R.string.screens_features_timers_detail), features.timers) { set { f -> f.copy(timers = it) } }
+            FeatureRow(stringResource(R.string.screens_features_alarms), stringResource(R.string.screens_features_alarms_detail), features.alarms) { set { f -> f.copy(alarms = it) } }
 
-            SectionTitle("Power and devices")
-            FeatureRow("Charging", "Plug-in alert with level and wattage, plus a note when the battery is full.", features.charging) { set { f -> f.copy(charging = it) } }
-            FeatureRow("Low battery", "One alert per charge at 15 %.", features.lowBattery) { set { f -> f.copy(lowBattery = it) } }
+            SectionTitle(stringResource(R.string.screens_features_section_power))
+            FeatureRow(stringResource(R.string.screens_features_charging), stringResource(R.string.screens_features_charging_detail), features.charging) { set { f -> f.copy(charging = it) } }
+            FeatureRow(stringResource(R.string.screens_features_low_battery), stringResource(R.string.screens_features_low_battery_detail), features.lowBattery) { set { f -> f.copy(lowBattery = it) } }
             FeatureRow(
-                "Bluetooth",
-                "Connected and disconnected devices, with earbud and case battery when the device reports it.",
+                stringResource(R.string.screens_features_bluetooth),
+                stringResource(R.string.screens_features_bluetooth_detail),
                 features.bluetooth,
             ) { set { f -> f.copy(bluetooth = it) } }
             PermissionRow(
-                "Nearby devices",
-                "Needed for device names and battery. The scan is short, filtered to earbuds, and never used for location.",
+                stringResource(R.string.screens_features_nearby),
+                stringResource(R.string.screens_features_nearby_detail),
                 granted = permissions.bluetooth,
             ) { requestPermissions.launch(FeaturesViewModel.BLUETOOTH_PERMISSIONS) }
 
-            SectionTitle("On the go")
-            FeatureRow("Navigation", "Next turn, distance and ETA from Google Maps or Waze.", features.navigation) { set { f -> f.copy(navigation = it) } }
+            SectionTitle(stringResource(R.string.screens_features_section_on_the_go))
+            FeatureRow(stringResource(R.string.screens_features_navigation), stringResource(R.string.screens_features_navigation_detail), features.navigation) { set { f -> f.copy(navigation = it) } }
             FeatureRow(
-                "Live Updates",
-                "Progress activities such as deliveries, rides and downloads (Android 16 Live Updates and classic progress bars).",
+                stringResource(R.string.screens_features_live_updates),
+                stringResource(R.string.screens_features_live_updates_detail),
                 features.liveUpdates,
             ) { set { f -> f.copy(liveUpdates = it) } }
 
-            SectionTitle("System")
-            FeatureRow("Ring, vibrate, silent", "A short alert when the ringer mode or Do Not Disturb changes.", features.ringerMode) { set { f -> f.copy(ringerMode = it) } }
-            FeatureRow("Flashlight", "Shows while the torch is on, with a button to turn it off.", features.torch) { set { f -> f.copy(torch = it) } }
-            FeatureRow("Screen recording", "Shows while the system is recording the screen, with its stop button.", features.screenRecording) { set { f -> f.copy(screenRecording = it) } }
-            FeatureRow("No internet", "A quiet indicator while the phone has no working connection.", features.noInternet) { set { f -> f.copy(noInternet = it) } }
-            LabeledSlider("System alerts hold the island for", features.alertSeconds, 1..10, "s") { set { f -> f.copy(alertSeconds = it) } }
+            SectionTitle(stringResource(R.string.screens_features_section_system))
+            FeatureRow(stringResource(R.string.screens_features_ringer), stringResource(R.string.screens_features_ringer_detail), features.ringerMode) { set { f -> f.copy(ringerMode = it) } }
+            FeatureRow(stringResource(R.string.screens_features_torch), stringResource(R.string.screens_features_torch_detail), features.torch) { set { f -> f.copy(torch = it) } }
+            FeatureRow(stringResource(R.string.screens_features_screen_recording), stringResource(R.string.screens_features_screen_recording_detail), features.screenRecording) { set { f -> f.copy(screenRecording = it) } }
+            FeatureRow(stringResource(R.string.screens_features_no_internet), stringResource(R.string.screens_features_no_internet_detail), features.noInternet) { set { f -> f.copy(noInternet = it) } }
+            LabeledSlider(R.string.screens_features_alert_seconds, features.alertSeconds, 1..10) { set { f -> f.copy(alertSeconds = it) } }
 
             Spacer(Modifier.padding(4.dp))
             Text(
-                "Everything stays on this phone: Lagoon has no internet permission.",
+                stringResource(R.string.screens_features_privacy),
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
@@ -177,18 +180,19 @@ private fun PermissionRow(title: String, body: String, granted: Boolean, onGrant
             }
             Spacer(Modifier.width(12.dp))
             if (granted) {
-                Text("Granted", color = MaterialTheme.colorScheme.primary, style = MaterialTheme.typography.labelLarge)
+                Text(stringResource(R.string.screens_features_granted), color = MaterialTheme.colorScheme.primary, style = MaterialTheme.typography.labelLarge)
             } else {
-                TextButton(onClick = onGrant) { Text("Grant") }
+                TextButton(onClick = onGrant) { Text(stringResource(R.string.screens_features_grant)) }
             }
         }
     }
 }
 
+/** [label] is a format string that takes the current [value] as its only argument. */
 @Composable
-private fun LabeledSlider(label: String, value: Int, range: IntRange, unit: String, onChange: (Int) -> Unit) {
+private fun LabeledSlider(@StringRes label: Int, value: Int, range: IntRange, onChange: (Int) -> Unit) {
     Column {
-        Text("$label $value$unit", style = MaterialTheme.typography.bodyMedium)
+        Text(stringResource(label, value), style = MaterialTheme.typography.bodyMedium)
         Slider(
             value = value.toFloat(),
             onValueChange = { onChange(it.roundToInt().coerceIn(range)) },
