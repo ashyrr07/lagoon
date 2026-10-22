@@ -169,7 +169,7 @@
     <string name="screens_enhanced_warning">Android will warn that the service can \"view and control your screen\". That is the generic accessibility warning; Lagoon\'s service is configured so that it cannot do either.</string>
     <string name="screens_enhanced_open_settings">Open Accessibility settings</string>
     <string name="screens_enhanced_turn_on">Turn on in Accessibility settings</string>
-    <string name="screens_enhanced_choose_in_list">In the list, choose \"%1$s\" and switch it on. Come back here to check the status.</string>
+    <string name="screens_enhanced_choose_in_list">Switch on \"%1$s\" on the page that opens. If Android shows a list instead, it is the highlighted entry at the top. Come back here to check the status.</string>
     <string name="screens_enhanced_lock_screen">Show on lock screen</string>
     <string name="screens_enhanced_lock_screen_detail">Keep the island visible while the phone is locked. Only possible in Enhanced mode.</string>
     <string name="screens_enhanced_status_connected">On and connected</string>

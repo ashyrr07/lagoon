@@ -156,7 +156,7 @@
     <string name="screens_enhanced_warning">Android vous avertira que le service peut « afficher et contrôler l\'écran ». C\'est l\'avertissement générique de l\'accessibilité ; le service de Lagoon est configuré pour ne pouvoir faire ni l\'un ni l\'autre.</string>
     <string name="screens_enhanced_open_settings">Ouvrir les paramètres d\'accessibilité</string>
     <string name="screens_enhanced_turn_on">Activer dans les paramètres d\'accessibilité</string>
-    <string name="screens_enhanced_choose_in_list">Dans la liste, choisissez « %1$s » et activez-le. Revenez ensuite ici pour vérifier l\'état.</string>
+    <string name="screens_enhanced_choose_in_list">Activez « %1$s » sur la page qui s\'ouvre. Si Android affiche plutôt une liste, c\'est l\'entrée en surbrillance en haut. Revenez ensuite ici pour vérifier l\'état.</string>
     <string name="screens_enhanced_lock_screen">Afficher sur l\'écran de verrouillage</string>
     <string name="screens_enhanced_lock_screen_detail">Garder l\'île visible quand le téléphone est verrouillé. Possible uniquement en mode avancé.</string>
     <string name="screens_enhanced_status_connected">Activé et connecté</string>

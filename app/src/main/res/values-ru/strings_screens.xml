@@ -156,7 +156,7 @@
     <string name="screens_enhanced_warning">Android предупредит, что сервис может «просматривать экран и управлять им». Это стандартное предупреждение для специальных возможностей; сервис Lagoon настроен так, что не может делать ни того, ни другого.</string>
     <string name="screens_enhanced_open_settings">Открыть настройки специальных возможностей</string>
     <string name="screens_enhanced_turn_on">Включить в настройках специальных возможностей</string>
-    <string name="screens_enhanced_choose_in_list">Выберите в списке «%1$s» и включите его. Затем вернитесь сюда, чтобы проверить статус.</string>
+    <string name="screens_enhanced_choose_in_list">Включите «%1$s» на открывшейся странице. Если Android покажет список, это выделенный пункт вверху. Затем вернитесь сюда, чтобы проверить статус.</string>
     <string name="screens_enhanced_lock_screen">Показывать на экране блокировки</string>
     <string name="screens_enhanced_lock_screen_detail">Остров остаётся виден, когда телефон заблокирован. Доступно только в расширенном режиме.</string>
     <string name="screens_enhanced_status_connected">Включён и подключён</string>

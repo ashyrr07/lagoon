@@ -156,7 +156,7 @@
     <string name="screens_enhanced_warning">Android warnt, dass der Dienst „den Bildschirm aufrufen und steuern“ kann. Das ist die allgemeine Warnung für Bedienungshilfen; der Dienst von Lagoon ist so konfiguriert, dass er keins von beidem kann.</string>
     <string name="screens_enhanced_open_settings">Einstellungen für Bedienungshilfen öffnen</string>
     <string name="screens_enhanced_turn_on">In den Bedienungshilfen einschalten</string>
-    <string name="screens_enhanced_choose_in_list">Wähle in der Liste „%1$s“ und schalte ihn ein. Komm dann hierher zurück, um den Status zu prüfen.</string>
+    <string name="screens_enhanced_choose_in_list">Schalte „%1$s“ auf der Seite ein, die sich öffnet. Zeigt Android stattdessen eine Liste, ist es der hervorgehobene Eintrag oben. Komm dann hierher zurück, um den Status zu prüfen.</string>
     <string name="screens_enhanced_lock_screen">Auf dem Sperrbildschirm zeigen</string>
     <string name="screens_enhanced_lock_screen_detail">Die Insel bleibt sichtbar, während das Telefon gesperrt ist. Nur im Erweiterten Modus möglich.</string>
     <string name="screens_enhanced_status_connected">An und verbunden</string>
