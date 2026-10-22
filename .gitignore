@@ -12,6 +12,8 @@ build/
 # Signing (never commit)
 *.jks
 *.keystore
+*.jks.base64
+*.pepk
 keystore.properties
 
 # Captures / outputs
@@ -21,3 +23,16 @@ captures/
 
 # Claude Code agent worktrees
 .claude/
+# Android Studio "Build > Generate Signed Bundle / APK" output folders and release staging
+app/release/
+app/foss/
+app/play/
+dist/
+
+# Fastlane: metadata/ is committed (F-Droid and Play read it); tool output is not.
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/README.md
+fastlane/screenshots/
+fastlane/test_output/
+fastlane/.env*
