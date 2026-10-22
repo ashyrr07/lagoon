@@ -26,7 +26,6 @@ class AccessibilityOverlayHost(service: AccessibilityService) : OverlayHost {
     override fun update(view: View, params: WindowManager.LayoutParams) = windowManager.updateViewLayout(view, params)
 
     override fun detach(view: View) {
-        if (!view.isAttachedToWindow) return
         // When the service is being unbound the system may already have torn the window down.
         runCatching { windowManager.removeViewImmediate(view) }
             .onFailure { Log.w(TAG, "Island window already gone", it) }

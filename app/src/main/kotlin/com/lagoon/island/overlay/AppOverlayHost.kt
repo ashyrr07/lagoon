@@ -23,6 +23,6 @@ class AppOverlayHost(appContext: Context) : OverlayHost {
     override fun attach(view: View, params: WindowManager.LayoutParams) = windowManager.addView(view, params)
     override fun update(view: View, params: WindowManager.LayoutParams) = windowManager.updateViewLayout(view, params)
     override fun detach(view: View) {
-        if (view.isAttachedToWindow) windowManager.removeViewImmediate(view)
+        runCatching { windowManager.removeViewImmediate(view) }
     }
 }

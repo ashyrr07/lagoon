@@ -43,7 +43,12 @@ class IslandWindow(
     var rect: PxRect = PxRect(0, 0, 0, 0)
         private set
 
-    val isShowing: Boolean get() = view.isAttachedToWindow
+    /**
+     * Tracked by us rather than read from View.isAttachedToWindow: the view only becomes attached
+     * on the first traversal after addView, so the system flag lags behind by one frame.
+     */
+    var isShowing: Boolean = false
+        private set
 
     fun setContent(content: @Composable () -> Unit) {
         view.content = content
@@ -56,12 +61,13 @@ class IslandWindow(
         params.y = newRect.top
         params.width = newRect.width.coerceAtLeast(1)
         params.height = newRect.height.coerceAtLeast(1)
-        if (view.isAttachedToWindow) {
+        if (isShowing) {
             host.update(view, params)
         } else {
             owner.resume()
             try {
                 host.attach(view, params)
+                isShowing = true
             } catch (e: WindowManager.BadTokenException) {
                 Log.w(TAG, "Cannot attach island window (permission missing?)", e)
                 owner.pause()
@@ -79,12 +85,13 @@ class IslandWindow(
             } else {
                 WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING
             }
-            if (view.isAttachedToWindow) host.update(view, params)
+            if (isShowing) host.update(view, params)
         }
     }
 
     fun hide() {
-        if (view.isAttachedToWindow) host.detach(view)
+        if (isShowing) host.detach(view)
+        isShowing = false
         owner.pause()
     }
 
@@ -95,8 +102,9 @@ class IslandWindow(
      */
     fun rehost(newHost: OverlayHost) {
         if (newHost === host) return
-        val wasShowing = view.isAttachedToWindow
+        val wasShowing = isShowing
         if (wasShowing) host.detach(view)
+        isShowing = false
         host = newHost
         params.type = newHost.windowType
         // WindowManager stamps its own token onto the params on addView; clear the old host's so the
