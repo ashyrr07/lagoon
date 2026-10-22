@@ -5,6 +5,9 @@ import kotlinx.serialization.Serializable
 /**
  * Every user preference, in one serializable value. Stored as JSON through DataStore so that
  * export/import is the same file, and new fields only need a default to migrate.
+ *
+ * Each area lives in its own file (FeatureSettings.kt, GestureSettings.kt, ...) so that work on
+ * different areas does not collide.
  */
 @Serializable
 data class IslandSettings(
@@ -15,6 +18,11 @@ data class IslandSettings(
     val calibration: Calibration = Calibration(),
     val appearance: Appearance = Appearance(),
     val visibility: Visibility = Visibility(),
+    val features: FeatureSettings = FeatureSettings(),
+    val gestures: GestureSettings = GestureSettings(),
+    val controls: ControlSettings = ControlSettings(),
+    val enhanced: EnhancedSettings = EnhancedSettings(),
+    val keepAlive: KeepAliveSettings = KeepAliveSettings(),
 )
 
 /** Adjustments on top of the detected cutout, in dp. */
@@ -22,13 +30,18 @@ data class IslandSettings(
 data class Calibration(
     val offsetX: Float = 0f,
     val offsetY: Float = 0f,
-    /** Extra width beyond the cutout on each side; null = automatic. */
+    /** Ring thickness around the cutout; null = automatic. */
     val padX: Float? = null,
     val padY: Float? = null,
+    /** Idle pill width in dp; null = automatic (at least [IslandGeometryDefaults.IDLE_MIN_WIDTH_DP]). */
+    val idleWidth: Float? = null,
+    /**
+     * Standard mode only: extend the idle pill below the status bar so it can be tapped
+     * (SystemUI owns touches inside the status bar). Off by default: looks cleaner.
+     */
+    val touchBand: Boolean = false,
     /** When the system reports no cutout, where to put the pill. */
     val placement: Placement = Placement.Center,
-    /** Smaller "hug the camera" idle pill that is not tappable in Standard mode. */
-    val hugCamera: Boolean = false,
 )
 
 @Serializable
@@ -42,6 +55,9 @@ data class Appearance(
     val reduceMotion: Boolean = false,
     val haptics: Boolean = true,
     val idleMode: IdleMode = IdleMode.Always,
+    val cornerSmoothing: Float = 0.6f,
+    /** Seconds an expanded view stays open without interaction. */
+    val expandedTimeoutSec: Int = 6,
 )
 
 @Serializable

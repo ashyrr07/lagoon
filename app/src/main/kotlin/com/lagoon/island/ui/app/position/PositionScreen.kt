@@ -30,7 +30,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.lagoon.island.cutout.IslandGeometry
+import com.lagoon.island.cutout.IslandGeometryDefaults
 import com.lagoon.island.data.Calibration
 import com.lagoon.island.data.Placement
 import com.lagoon.island.ui.app.SettingsViewModel
@@ -79,29 +79,29 @@ fun PositionScreen(
             LabeledSlider("Horizontal offset", cal.offsetX, -60f..60f, " dp") { set { c -> c.copy(offsetX = it) } }
             LabeledSlider("Vertical offset", cal.offsetY, -30f..30f, " dp") { set { c -> c.copy(offsetY = it) } }
             LabeledSlider(
-                "Side padding",
-                cal.padX ?: IslandGeometry.PAD_X_DP,
-                0f..40f,
+                "Width",
+                cal.idleWidth ?: IslandGeometryDefaults.IDLE_MIN_WIDTH_DP,
+                40f..220f,
                 " dp",
-            ) { set { c -> c.copy(padX = it) } }
+            ) { set { c -> c.copy(idleWidth = it) } }
             LabeledSlider(
-                "Top and bottom padding",
-                cal.padY ?: IslandGeometry.PAD_Y_DP,
+                "Ring thickness",
+                cal.padY ?: IslandGeometryDefaults.PAD_Y_DP,
                 0f..24f,
                 " dp",
-            ) { set { c -> c.copy(padY = it) } }
+            ) { set { c -> c.copy(padY = it, padX = it) } }
 
             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                 Column(Modifier.weight(1f)) {
-                    Text("Hug the camera", style = MaterialTheme.typography.titleMedium)
+                    Text("Touch band", style = MaterialTheme.typography.titleMedium)
                     Text(
-                        "Tight ring around the cutout. Looks closest to iPhone, but the idle pill is not tappable " +
-                            "without Enhanced mode.",
+                        "Extends the idle pill a little below the status bar so you can tap it in Standard mode. " +
+                            "Not needed with Enhanced mode.",
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
-                Switch(checked = cal.hugCamera, onCheckedChange = { set { c -> c.copy(hugCamera = it) } })
+                Switch(checked = cal.touchBand, onCheckedChange = { set { c -> c.copy(touchBand = it) } })
             }
 
             if (island.cutout?.cutout == null) {

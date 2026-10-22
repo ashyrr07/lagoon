@@ -8,7 +8,7 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class IslandGeometryTest {
-    // Pixel-like phone at density 2: 24 dp hole centred in a 36 dp status bar.
+    // Pixel-like phone at density 2: 24 dp hole centred in a 36 dp status bar, centred horizontally.
     private val hole = PxRect(left = 516, top = 12, right = 564, bottom = 60)
     private val pixel = CutoutInfo(
         cutout = hole,
@@ -21,32 +21,39 @@ class IslandGeometryTest {
     )
 
     @Test
-    fun `standard pill wraps the hole and hangs below the status bar`() {
+    fun `idle pill hugs the hole vertically and is a wide pill centred on it`() {
         val frame = IslandGeometry.idleFrame(pixel, Calibration())
-        assertEquals(516 - 28, frame.pill.left)
-        assertEquals(564 + 28, frame.pill.right)
-        assertEquals(0, frame.pill.top)
-        assertEquals(72 + 20, frame.pill.bottom)
-        assertEquals(frame.pill.height / 2f, frame.cornerRadius, 0f)
+        assertEquals(PxRect(540 - 96, 0, 540 + 96, 72), frame.pill)
+        assertEquals(36f, frame.cornerRadius, 0f)
         assertEquals(hole, frame.camera)
+        assertEquals(72, frame.statusBarBottom)
     }
 
     @Test
-    fun `hug camera keeps a tight 6dp ring`() {
-        val frame = IslandGeometry.idleFrame(pixel, Calibration(hugCamera = true))
-        assertEquals(PxRect(516 - 12, 0, 564 + 12, 60 + 12), frame.pill)
+    fun `touch band extends below the status bar`() {
+        val frame = IslandGeometry.idleFrame(pixel, Calibration(touchBand = true))
+        assertEquals(72 + 20, frame.pill.bottom)
     }
 
     @Test
-    fun `offsets move pill and camera together`() {
-        val frame = IslandGeometry.idleFrame(pixel, Calibration(offsetX = 5f, offsetY = 2f))
-        assertEquals(516 - 28 + 10, frame.pill.left)
+    fun `a corner hole grows the pill toward the centre`() {
+        val corner = pixel.copy(cutout = PxRect(24, 12, 72, 60))
+        val frame = IslandGeometry.idleFrame(corner, Calibration())
+        assertEquals(24, frame.pill.left)
+        assertEquals(24 + 192, frame.pill.right)
+    }
+
+    @Test
+    fun `custom idle width and offsets apply`() {
+        val frame = IslandGeometry.idleFrame(pixel, Calibration(idleWidth = 60f, offsetX = 5f, offsetY = 2f))
+        assertEquals(120, frame.pill.width)
+        assertEquals(540 + 10, frame.pill.centerX)
         assertEquals(hole.offset(10, 4), frame.camera)
     }
 
     @Test
     fun `pill never leaves the screen`() {
-        val frame = IslandGeometry.idleFrame(pixel, Calibration(offsetX = -400f, offsetY = -50f))
+        val frame = IslandGeometry.idleFrame(pixel, Calibration(offsetX = -900f, offsetY = -50f))
         assertEquals(0, frame.pill.left)
         assertEquals(0, frame.pill.top)
     }

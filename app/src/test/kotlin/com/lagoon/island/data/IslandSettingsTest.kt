@@ -8,7 +8,7 @@ class IslandSettingsTest {
     fun `settings survive a json round trip`() {
         val original = IslandSettings(
             islandEnabled = false,
-            calibration = Calibration(offsetX = 3.5f, placement = Placement.Left, hugCamera = true),
+            calibration = Calibration(offsetX = 3.5f, placement = Placement.Left, touchBand = true),
             appearance = Appearance(tint = Tint.AlbumArt, scale = 1.2f),
             visibility = Visibility(hiddenInApps = setOf("com.example.game")),
         )
