@@ -163,4 +163,7 @@
         <item quantity="many">Optimizada. El servicio se desconectó %1$d veces</item>
         <item quantity="other">Optimizada. El servicio se desconectó %1$d veces</item>
     </plurals>
+    <string name="setup_enhanced_title">Toca la isla entera</string>
+    <string name="setup_enhanced_body">Recomendado. Android se reserva la barra de estado, así que sin esto solo responde el borde inferior de la isla y la segunda burbuja no se puede tocar. El modo avanzado coloca la isla sobre la barra de estado, como en iPhone, y la hace más fina alrededor de la cámara.</string>
+    <string name="setup_enhanced_badge">Recomendado</string>
 </resources>

@@ -64,6 +64,7 @@ import com.lagoon.island.ui.app.components.StatusRow
 import com.lagoon.island.ui.app.health.CheckId
 import com.lagoon.island.ui.app.health.OemGuideGroup
 import com.lagoon.island.ui.app.health.openAppInfo
+import com.lagoon.island.ui.app.enhanced.EnhancedDisclosure
 import com.lagoon.island.ui.app.health.openSystemScreen
 import com.lagoon.island.ui.app.health.setupChecks
 import com.lagoon.island.ui.app.position.PositionControls
@@ -71,7 +72,7 @@ import com.lagoon.island.ui.theme.LagoonPreviewTheme
 import com.lagoon.island.util.Oem
 import com.lagoon.island.util.OemInfo
 
-enum class Step { Welcome, Overlay, Notifications, KeepAlive, Calibrate, Style, Done }
+enum class Step { Welcome, Overlay, Notifications, Enhanced, KeepAlive, Calibrate, Style, Done }
 
 @Composable
 fun OnboardingScreen(
@@ -111,8 +112,9 @@ private fun OnboardingContent(
     initialStep: Step = Step.Welcome,
 ) {
     val context = LocalContext.current
-    val steps = Step.entries
-    var index by rememberSaveable { mutableIntStateOf(initialStep.ordinal) }
+    // Enhanced mode is recommended wherever this build has it (FOSS); the Play build skips the step.
+    val steps = Step.entries.filter { it != Step.Enhanced || com.lagoon.island.BuildConfig.ENHANCED_MODE_AVAILABLE }
+    var index by rememberSaveable { mutableIntStateOf(steps.indexOf(initialStep).coerceAtLeast(0)) }
     val step = steps[index]
     fun next() { if (index < steps.lastIndex) index++ else onFinish() }
     BackHandler(enabled = index > 0) { index-- }
@@ -126,6 +128,7 @@ private fun OnboardingContent(
             if (permissions.notificationAccess) stringResource(R.string.setup_action_continue) to ::next
             else stringResource(R.string.setup_action_open_notification_access) to
                 { openSystemScreen(context, CheckId.NotificationAccess) }
+        Step.Enhanced -> stringResource(R.string.setup_action_continue) to ::next
         Step.KeepAlive -> stringResource(R.string.setup_action_continue) to ::next
         Step.Calibrate -> stringResource(R.string.setup_action_looks_right) to ::next
         Step.Style -> stringResource(R.string.style_action) to ::next
@@ -176,6 +179,7 @@ private fun OnboardingContent(
                     Step.Welcome -> WelcomeStep()
                     Step.Overlay -> OverlayStep(settings, permissions)
                     Step.Notifications -> NotificationsStep(permissions)
+                    Step.Enhanced -> EnhancedStep()
                     Step.KeepAlive -> KeepAliveStep(permissions.oem)
                     Step.Calibrate -> CalibrateStep(settings, island, setCalibration)
                     Step.Style -> StyleStep(settings, setAppearance)
@@ -350,6 +354,23 @@ private fun ColumnScope.NotificationsStep(permissions: Permissions) {
             )
         }
     }
+}
+
+@Composable
+private fun ColumnScope.EnhancedStep(viewModel: com.lagoon.island.ui.app.enhanced.EnhancedViewModel = androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel()) {
+    val settings by viewModel.settings.collectAsStateWithLifecycle()
+    val status by viewModel.status.collectAsStateWithLifecycle()
+    LifecycleResumeEffect(Unit) {
+        viewModel.refresh()
+        onPauseOrDispose { }
+    }
+    Text(
+        stringResource(R.string.setup_enhanced_badge).uppercase(),
+        style = MaterialTheme.typography.labelLarge,
+        color = MaterialTheme.colorScheme.primary,
+    )
+    Title(stringResource(R.string.setup_enhanced_title), stringResource(R.string.setup_enhanced_body))
+    EnhancedDisclosure(settings, status, viewModel, showLockScreenToggle = false)
 }
 
 @Composable

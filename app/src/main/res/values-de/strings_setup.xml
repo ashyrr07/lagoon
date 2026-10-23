@@ -160,4 +160,7 @@
         <item quantity="one">Optimiert. Der Dienst wurde %1$d-mal getrennt</item>
         <item quantity="other">Optimiert. Der Dienst wurde %1$d-mal getrennt</item>
     </plurals>
+    <string name="setup_enhanced_title">Die ganze Insel antippen</string>
+    <string name="setup_enhanced_body">Empfohlen. Android behält die Statusleiste für sich, deshalb reagiert ohne diesen Modus nur der untere Rand der Insel, und die zweite Blase lässt sich gar nicht antippen. Der Erweiterte Modus legt die Insel über die Statusleiste, wie beim iPhone, und macht sie um die Kamera schlanker.</string>
+    <string name="setup_enhanced_badge">Empfohlen</string>
 </resources>

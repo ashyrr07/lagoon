@@ -52,6 +52,12 @@ class FrameMath(
     private val screenWidth: Int,
     private val density: Float,
     private val scale: Float = 1f,
+    /**
+     * Enhanced mode: the island window sits above the status bar and receives taps there, so the
+     * compact island can stay as slim as the idle one around the camera (like iOS) instead of
+     * reaching below the status bar for a tappable strip.
+     */
+    private val statusBarTappable: Boolean = false,
 ) {
     private fun dp(v: Float): Float = v * density * scale
 
@@ -70,7 +76,11 @@ class FrameMath(
 
 
     /** Compact pill height: at least the idle pill, and reaching 14 dp below the status bar. */
-    val compactHeight: Float = max(idleRect.bottom, idle.statusBarBottom + dp(COMPACT_BAND_DP)) - idleRect.top
+    val compactHeight: Float = if (statusBarTappable) {
+        idleRect.height
+    } else {
+        max(idleRect.bottom, idle.statusBarBottom + dp(COMPACT_BAND_DP)) - idleRect.top
+    }
 
 
     /**

@@ -174,4 +174,14 @@ class FrameMathTest {
         val hole = FrameMath(tall, 1248, 2.625f).cameraHole
         assertEquals(Rect(589f, 34f, 659f, 104f), hole)
     }
+
+    @Test
+    fun `Enhanced mode keeps the compact island as slim as the idle one`() {
+        val enhanced = FrameMath(idle, screenWidth = 1080, density = 2f, statusBarTappable = true)
+        val spec = enhanced.compact(ContentMeasure(leadingWidth = 40, trailingWidth = 60), hasSecondary = true)
+        assertEquals(72f, spec.pill.height, 0f)
+        assertEquals(72f, spec.bubble!!.height, 0f)
+        // Standard mode still reaches 14 dp below the status bar.
+        assertEquals(72f + 28f, math.compact(ContentMeasure(), hasSecondary = false).pill.height, 0f)
+    }
 }

@@ -166,4 +166,7 @@
         <item quantity="many">Оптимизируется. Сервис отключался %1$d раз</item>
         <item quantity="other">Оптимизируется. Сервис отключался %1$d раза</item>
     </plurals>
+    <string name="setup_enhanced_title">Нажатия по всему острову</string>
+    <string name="setup_enhanced_body">Рекомендуется. Android оставляет строку состояния за собой, поэтому без этого на нажатия реагирует только нижний край острова, а второй пузырёк не нажимается совсем. Расширенный режим ставит остров поверх строки состояния, как на iPhone, и делает его тоньше вокруг камеры.</string>
+    <string name="setup_enhanced_badge">Рекомендуется</string>
 </resources>

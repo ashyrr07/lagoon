@@ -3,6 +3,8 @@ package com.lagoon.island.ui.app.enhanced
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import com.lagoon.island.data.EnhancedSettings
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -77,80 +79,94 @@ fun EnhancedScreen(
                 .padding(horizontal = 20.dp, vertical = 8.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            Text(
-                stringResource(R.string.screens_enhanced_intro),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
+            EnhancedDisclosure(settings, status, viewModel)
+        }
+    }
+}
 
-            if (!status.available) {
-                NotAvailableCard()
-            } else {
-                StatusCard(status)
+/**
+ * The Play-compliant prominent disclosure plus the turn-on flow (consent first, then the system
+ * screen). Shared by the Enhanced screen and the setup step, so both show the same text.
+ */
+@Composable
+fun ColumnScope.EnhancedDisclosure(
+    settings: EnhancedSettings,
+    status: EnhancedStatus,
+    viewModel: EnhancedViewModel,
+    showLockScreenToggle: Boolean = true,
+) {
+    Text(
+        stringResource(R.string.screens_enhanced_intro),
+        style = MaterialTheme.typography.bodyMedium,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+    )
+
+    if (!status.available) {
+        NotAvailableCard()
+    } else {
+        StatusCard(status)
+    }
+
+    Section(
+        title = stringResource(R.string.screens_enhanced_unlocks_title),
+        items = listOf(
+            stringResource(R.string.screens_enhanced_unlocks_taps),
+            stringResource(R.string.screens_enhanced_unlocks_lock_screen),
+            stringResource(R.string.screens_enhanced_unlocks_tiles),
+            stringResource(R.string.screens_enhanced_unlocks_app_detection),
+        ),
+    )
+
+    Section(
+        title = stringResource(R.string.screens_enhanced_never_title),
+        items = listOf(
+            stringResource(R.string.screens_enhanced_never_reads),
+            stringResource(R.string.screens_enhanced_never_gestures),
+            stringResource(R.string.screens_enhanced_never_app_name),
+            stringResource(R.string.screens_enhanced_never_data),
+        ),
+    )
+
+    Text(
+        stringResource(R.string.screens_enhanced_warning),
+        style = MaterialTheme.typography.bodySmall,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+    )
+
+    if (status.available) {
+        ConsentRow(
+            checked = settings.consented,
+            onCheckedChange = viewModel::setConsented,
+        )
+
+        if (settings.consented) {
+            if (status.sideloaded && !status.enabledInSettings) {
+                RestrictedSettingsCard(onOpenAppInfo = viewModel::openAppInfo)
             }
-
-            Section(
-                title = stringResource(R.string.screens_enhanced_unlocks_title),
-                items = listOf(
-                    stringResource(R.string.screens_enhanced_unlocks_taps),
-                    stringResource(R.string.screens_enhanced_unlocks_lock_screen),
-                    stringResource(R.string.screens_enhanced_unlocks_tiles),
-                    stringResource(R.string.screens_enhanced_unlocks_app_detection),
-                ),
-            )
-
-            Section(
-                title = stringResource(R.string.screens_enhanced_never_title),
-                items = listOf(
-                    stringResource(R.string.screens_enhanced_never_reads),
-                    stringResource(R.string.screens_enhanced_never_gestures),
-                    stringResource(R.string.screens_enhanced_never_app_name),
-                    stringResource(R.string.screens_enhanced_never_data),
-                ),
-            )
-
+            Button(onClick = viewModel::openAccessibilitySettings, modifier = Modifier.fillMaxWidth()) {
+                Text(
+                    stringResource(
+                        if (status.enabledInSettings) R.string.screens_enhanced_open_settings else R.string.screens_enhanced_turn_on,
+                    ),
+                )
+            }
             Text(
-                stringResource(R.string.screens_enhanced_warning),
+                stringResource(
+                    R.string.screens_enhanced_choose_in_list,
+                    stringResource(R.string.enhanced_service_label),
+                ),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
-
-            if (status.available) {
-                ConsentRow(
-                    checked = settings.consented,
-                    onCheckedChange = viewModel::setConsented,
-                )
-
-                if (settings.consented) {
-                    if (status.sideloaded && !status.enabledInSettings) {
-                        RestrictedSettingsCard(onOpenAppInfo = viewModel::openAppInfo)
-                    }
-                    Button(onClick = viewModel::openAccessibilitySettings, modifier = Modifier.fillMaxWidth()) {
-                        Text(
-                            stringResource(
-                                if (status.enabledInSettings) R.string.screens_enhanced_open_settings else R.string.screens_enhanced_turn_on,
-                            ),
-                        )
-                    }
-                    Text(
-                        stringResource(
-                            R.string.screens_enhanced_choose_in_list,
-                            stringResource(R.string.enhanced_service_label),
-                        ),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                }
-
-                ToggleRow(
-                    title = stringResource(R.string.screens_enhanced_lock_screen),
-                    body = stringResource(R.string.screens_enhanced_lock_screen_detail),
-                    checked = settings.showOnLockScreen,
-                    enabled = settings.consented,
-                    onCheckedChange = viewModel::setShowOnLockScreen,
-                )
-            }
         }
+
+        if (showLockScreenToggle) ToggleRow(
+            title = stringResource(R.string.screens_enhanced_lock_screen),
+            body = stringResource(R.string.screens_enhanced_lock_screen_detail),
+            checked = settings.showOnLockScreen,
+            enabled = settings.consented,
+            onCheckedChange = viewModel::setShowOnLockScreen,
+        )
     }
 }
 

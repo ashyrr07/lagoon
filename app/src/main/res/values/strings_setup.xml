@@ -160,4 +160,7 @@
         <item quantity="one">Optimised. The service was disconnected %1$d×</item>
         <item quantity="other">Optimised. The service was disconnected %1$d×</item>
     </plurals>
+    <string name="setup_enhanced_title">Make the whole island tappable</string>
+    <string name="setup_enhanced_body">Recommended. Android keeps the status bar for itself, so without this only the lower edge of the island responds to taps, and the second bubble can\'t be tapped at all. Enhanced mode lets the island sit above the status bar, like the island on iPhone, and makes it slimmer around the camera.</string>
+    <string name="setup_enhanced_badge">Recommended</string>
 </resources>

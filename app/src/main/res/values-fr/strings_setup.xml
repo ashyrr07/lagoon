@@ -163,4 +163,7 @@
         <item quantity="many">Optimisée. Le service a été déconnecté %1$d fois</item>
         <item quantity="other">Optimisée. Le service a été déconnecté %1$d fois</item>
     </plurals>
+    <string name="setup_enhanced_title">Toute l\'île devient touchable</string>
+    <string name="setup_enhanced_body">Recommandé. Android garde la barre d\'état pour lui : sans ce mode, seul le bas de l\'île réagit aux appuis, et la deuxième bulle ne réagit pas du tout. Le mode avancé place l\'île au-dessus de la barre d\'état, comme sur iPhone, et l\'affine autour de la caméra.</string>
+    <string name="setup_enhanced_badge">Recommandé</string>
 </resources>
