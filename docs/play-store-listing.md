@@ -128,7 +128,7 @@ First public release.
 | Ads | No, the app contains no ads |
 | App access | All functionality is available without special access (no login) |
 | Content rating | Utility; no violence, sexuality, language, controlled substances, gambling or user-generated content shared with others. Expected rating: Everyone / PEGI 3 |
-| Target audience | 13 and over (not designed for children) |
+| Target audience | 18 and over only (keeps Lagoon out of the Families programme, which forbids notification-listener and accessibility use) |
 | News app | No |
 | Data safety | No data collected and no data shared. Lagoon has no internet permission; notification content is processed on the device only and never stored or transmitted |
 | Foreground service | Not used in 0.1.0 (no `FOREGROUND_SERVICE` permission) |
