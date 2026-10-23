@@ -25,24 +25,25 @@ Everything Play Console asks for on **Grow > Store presence > Main store listing
 |---|---|---|
 | App icon | 512 × 512 PNG | `images/icon.png` |
 | Feature graphic | 1024 × 500 PNG | `images/featureGraphic.png` |
-| Phone screenshots | 1080 × 2160 PNG, 7 images | `images/phoneScreenshots/` |
+| Phone screenshots | 1080 × 1920 PNG, 8 images | `images/phoneScreenshots/` |
 | Tablet / foldable screenshot | 2076 × 2152 PNG | `images/tenInchScreenshots/` |
 
 <img src="../fastlane/metadata/android/en-US/images/icon.png" width="128" alt="App icon">
 
 ### Phone screenshots, in upload order
 
-Suggested caption for each screenshot (Play doesn't show captions, but they work as overlay text if you later add a device frame).
+Captured on a Galaxy Z Fold cover screen from the in-app Demo screen; the headline is part of each image.
 
 | # | Screenshot | Caption |
 |---|---|---|
-| 1 | <img src="../fastlane/metadata/android/en-US/images/phoneScreenshots/01_media-expanded.png" width="180"> | Your music, around the camera |
-| 2 | <img src="../fastlane/metadata/android/en-US/images/phoneScreenshots/02_split.png" width="180"> | Two things at once: timer and music |
-| 3 | <img src="../fastlane/metadata/android/en-US/images/phoneScreenshots/03_message.png" width="180"> | Read and reply without leaving your app |
-| 4 | <img src="../fastlane/metadata/android/en-US/images/phoneScreenshots/04_deck.png" width="180"> | Quick controls one tap away |
-| 5 | <img src="../fastlane/metadata/android/en-US/images/phoneScreenshots/05_charging.png" width="180"> | Charging power at a glance |
-| 6 | <img src="../fastlane/metadata/android/en-US/images/phoneScreenshots/06_home.png" width="180"> | Simple setup, honest permissions |
-| 7 | <img src="../fastlane/metadata/android/en-US/images/phoneScreenshots/07_earbuds.png" width="180"> | Earbuds battery when they connect |
+| 1 | <img src="../fastlane/metadata/android/en-US/images/phoneScreenshots/01_music.png" width="180"> | Your music, around the camera |
+| 2 | <img src="../fastlane/metadata/android/en-US/images/phoneScreenshots/02_split.png" width="180"> | Two things at once |
+| 3 | <img src="../fastlane/metadata/android/en-US/images/phoneScreenshots/03_message.png" width="180"> | Read and reply right there |
+| 4 | <img src="../fastlane/metadata/android/en-US/images/phoneScreenshots/04_deck.png" width="180"> | Quick controls, one tap |
+| 5 | <img src="../fastlane/metadata/android/en-US/images/phoneScreenshots/05_charging.png" width="180"> | Charging at a glance |
+| 6 | <img src="../fastlane/metadata/android/en-US/images/phoneScreenshots/06_earbuds.png" width="180"> | Earbuds, left and right |
+| 7 | <img src="../fastlane/metadata/android/en-US/images/phoneScreenshots/07_navigation.png" width="180"> | Directions on the island |
+| 8 | <img src="../fastlane/metadata/android/en-US/images/phoneScreenshots/08_private.png" width="180"> | Private by design |
 
 ### Foldable / tablet screenshot
 

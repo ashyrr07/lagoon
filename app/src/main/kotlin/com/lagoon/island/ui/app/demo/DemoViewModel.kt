@@ -188,9 +188,9 @@ class DemoViewModel @Inject constructor(
                 source = Source.Demo,
                 priority = Priority.Notification,
                 content = ActivityContent.Notification(
-                    key = "demo:whatsapp",
-                    packageName = "com.whatsapp",
-                    appName = "WhatsApp",
+                    key = "demo:messages",
+                    packageName = "com.lagoon.island",
+                    appName = "Messages",
                     appIcon = IconSource.Res(R.drawable.ic_launcher_foreground),
                     title = "Ada · Weekend dinner group",
                     text = res.getString(R.string.island_demo_message_text),
