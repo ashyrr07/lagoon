@@ -15,7 +15,7 @@ object MediaRules {
     const val ACTION_SEEK = "seek"
 
     /** Keep a stopped session in the island this long before removing it. Paused sessions stay. */
-    const val STOPPED_GRACE_MS = 60_000L
+    const val STOPPED_GRACE_MS = 3_000L
 
     /** Longest edge of the album art bitmap we keep in memory. */
     const val ART_MAX_PX = 256

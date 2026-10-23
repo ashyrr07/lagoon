@@ -207,7 +207,14 @@ class MediaSource @Inject constructor(
         }
         loadArt(id, metadata)
 
-        if (MediaRules.isStopped(stateCode)) scheduleRemoval(id) else { stopJob?.cancel(); stopJob = null }
+        // A stopped player (STOPPED, ERROR, or NONE as left behind by an app that was closed but
+        // kept its session) must not be re-posted: that kept the island on a dead track forever.
+        if (MediaRules.isStopped(stateCode)) {
+            scheduleRemoval(id)
+            return
+        }
+        stopJob?.cancel()
+        stopJob = null
 
         val playing = MediaRules.isPlaying(stateCode)
         val sampledAt = state?.lastPositionUpdateTime?.takeIf { it > 0 }
