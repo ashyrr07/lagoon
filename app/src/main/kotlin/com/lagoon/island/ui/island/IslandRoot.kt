@@ -17,6 +17,8 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.unit.Density
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberUpdatedState
@@ -215,7 +217,13 @@ fun IslandRoot(state: IslandUiState) {
                     when (s.kind) {
                         FrameKind.Idle -> Unit
                         FrameKind.Compact, FrameKind.Alert -> s.primary?.let { activity ->
-                            CompactLayout(math, s, scopeFor(activity, s.kind), report, windowOrigin)
+                            // Size also scales what is inside the compact island (text, icons, art),
+                            // otherwise Small and Large looked the same once content appeared.
+                            CompositionLocalProvider(
+                                LocalDensity provides Density(density.density * appearance.scale, density.fontScale),
+                            ) {
+                                CompactLayout(math, s, scopeFor(activity, s.kind), report, windowOrigin)
+                            }
                         }
                         FrameKind.Expanded -> s.primary?.let { activity ->
                             ExpandedLayout(math, s.kind, report, windowOrigin) { ExpandedContent(scopeFor(activity, s.kind)) }

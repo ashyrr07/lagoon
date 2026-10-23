@@ -34,6 +34,8 @@ object IslandGeometryDefaults {
  */
 object IslandGeometry {
     const val MIN_ROUNDNESS = 0.35f
+    const val RING_SIZE_GAIN = 3f
+    const val WIDTH_SIZE_GAIN = 2f
 
     /** Smallest width of 600 dp or more: an unfolded foldable or a tablet. */
     fun isLargeScreen(info: CutoutInfo): Boolean =
@@ -62,9 +64,13 @@ object IslandGeometry {
         // ignored and the island sits at the top centre (or the user's placement) instead.
         val cutout = info.cutout?.takeUnless { isLargeScreen(info) && isOffCentre(it, info.screenWidth) }
         val camera = cutout ?: virtualCamera(info, calibration, ::dp)
-        val padX = dp((calibration.padX ?: IslandGeometryDefaults.PAD_X_DP) * scale)
-        val padY = dp((calibration.padY ?: IslandGeometryDefaults.PAD_Y_DP) * scale)
-        val minWidth = dp((calibration.idleWidth ?: IslandGeometryDefaults.IDLE_MIN_WIDTH_DP) * scale)
+        // Size is amplified for the ring and width: scaling a 6 dp ring by 0.85 or 1.2 was barely
+        // visible. Small (0.85) gives about half the ring and 70% width, Large (1.2) 1.6x and 1.4x.
+        val ringFactor = (1f + (scale - 1f) * RING_SIZE_GAIN).coerceAtLeast(0.3f)
+        val widthFactor = (1f + (scale - 1f) * WIDTH_SIZE_GAIN).coerceAtLeast(0.5f)
+        val padX = dp((calibration.padX ?: IslandGeometryDefaults.PAD_X_DP) * ringFactor)
+        val padY = dp((calibration.padY ?: IslandGeometryDefaults.PAD_Y_DP) * ringFactor)
+        val minWidth = dp((calibration.idleWidth ?: IslandGeometryDefaults.IDLE_MIN_WIDTH_DP) * widthFactor)
         val margin = dp(IslandGeometryDefaults.EDGE_MARGIN_DP)
 
         val top = (camera.top - padY).coerceAtLeast(0)

@@ -111,4 +111,17 @@ class IslandGeometryTest {
         val frame = IslandGeometry.idleFrame(corner, Calibration())
         assertEquals(PxRect(24, 12, 72, 60), frame.camera)
     }
+
+    @Test
+    fun `small medium and large differ clearly`() {
+        val small = IslandGeometry.idleFrame(pixel, Calibration(touchBand = false), scale = 0.85f)
+        val medium = IslandGeometry.idleFrame(pixel, Calibration(touchBand = false), scale = 1f)
+        val large = IslandGeometry.idleFrame(pixel, Calibration(touchBand = false), scale = 1.2f)
+        // Width: at least 20% apart between steps; height: visibly taller each step.
+        assertTrue(medium.pill.width >= small.pill.width * 1.2f)
+        assertTrue(large.pill.width >= medium.pill.width * 1.2f)
+        // The hole sits near the top edge, so height can only grow downward.
+        assertTrue(large.pill.height - medium.pill.height >= 6)
+        assertTrue(medium.pill.height - small.pill.height >= 6)
+    }
 }
