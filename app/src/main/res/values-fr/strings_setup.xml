@@ -80,7 +80,7 @@
     <string name="setup_home_status_finish_setup">Terminez la configuration ci-dessous pour l\'activer</string>
     <string name="setup_home_status_off">Désactivée</string>
     <string name="setup_home_status_showing">Affichée autour de la caméra</string>
-    <string name="setup_home_status_hidden">Masquée pour l\'instant (paysage ou plein écran)</string>
+    <string name="setup_home_status_hidden">Masquée tant que le téléphone est à l\'horizontale</string>
     <string name="setup_home_status_waiting">En attente de la connexion du service par Android</string>
     <string name="setup_home_all_good">Tout est en ordre</string>
     <string name="setup_health_subtitle">Tout ce dont Lagoon a besoin pour rester à l\'écran, et que faire quand un téléphone s\'y oppose.</string>
@@ -166,4 +166,5 @@
     <string name="setup_enhanced_title">Toute l\'île devient touchable</string>
     <string name="setup_enhanced_body">Recommandé. Android garde la barre d\'état pour lui : sans ce mode, seul le bas de l\'île réagit aux appuis, et la deuxième bulle ne réagit pas du tout. Le mode avancé place l\'île au-dessus de la barre d\'état, comme sur iPhone, et l\'affine autour de la caméra.</string>
     <string name="setup_enhanced_badge">Recommandé</string>
+    <string name="setup_home_status_ready">Prête. Elle apparaît quand il se passe quelque chose</string>
 </resources>

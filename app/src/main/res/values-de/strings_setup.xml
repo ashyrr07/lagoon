@@ -80,7 +80,7 @@
     <string name="setup_home_status_finish_setup">Schließe unten die Einrichtung ab, um sie einzuschalten</string>
     <string name="setup_home_status_off">Aus</string>
     <string name="setup_home_status_showing">Wird um deine Kamera angezeigt</string>
-    <string name="setup_home_status_hidden">Gerade ausgeblendet (Querformat oder Vollbild)</string>
+    <string name="setup_home_status_hidden">Ausgeblendet, solange das Telefon quer liegt</string>
     <string name="setup_home_status_waiting">Warte darauf, dass Android den Dienst verbindet</string>
     <string name="setup_home_all_good">Alles in Ordnung</string>
     <string name="setup_health_subtitle">Alles, was Lagoon braucht, um auf dem Bildschirm zu bleiben, und was zu tun ist, wenn ein Telefon sich wehrt.</string>
@@ -163,4 +163,5 @@
     <string name="setup_enhanced_title">Die ganze Insel antippen</string>
     <string name="setup_enhanced_body">Empfohlen. Android behält die Statusleiste für sich, deshalb reagiert ohne diesen Modus nur der untere Rand der Insel, und die zweite Blase lässt sich gar nicht antippen. Der Erweiterte Modus legt die Insel über die Statusleiste, wie beim iPhone, und macht sie um die Kamera schlanker.</string>
     <string name="setup_enhanced_badge">Empfohlen</string>
+    <string name="setup_home_status_ready">Bereit. Erscheint, wenn etwas passiert</string>
 </resources>

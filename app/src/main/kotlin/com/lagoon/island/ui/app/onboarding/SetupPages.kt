@@ -117,7 +117,6 @@ internal fun ColumnScope.SetupChecklistPage(
             title = stringResource(R.string.onb_enhanced),
             detail = stringResource(R.string.onb_enhanced_detail),
             done = enhancedStatus.connected || enhancedStatus.enabledInSettings,
-            badge = stringResource(R.string.onb_recommended),
             onClick = { showEnhanced = true },
         )
     }

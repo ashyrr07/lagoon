@@ -239,7 +239,10 @@ private fun Hero(
         !permissions.allGranted -> stringResource(R.string.setup_home_status_finish_setup)
         !settings.islandEnabled -> stringResource(R.string.setup_home_status_off)
         island.showing -> stringResource(R.string.setup_home_status_showing)
-        island.listenerBound -> stringResource(R.string.setup_home_status_hidden)
+        // Not on screen right now: sideways phone, or simply resting until something happens.
+        island.listenerBound && island.cutout?.isPortrait == false && settings.visibility.hideInLandscape ->
+            stringResource(R.string.setup_home_status_hidden)
+        island.listenerBound -> stringResource(R.string.setup_home_status_ready)
         else -> stringResource(R.string.setup_home_status_waiting)
     }
     Column(

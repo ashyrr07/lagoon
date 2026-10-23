@@ -83,6 +83,8 @@ fun OnboardingScreen(
     val settings by viewModel.settings.collectAsStateWithLifecycle()
     val permissions by viewModel.permissions.collectAsStateWithLifecycle()
     val island by viewModel.islandState.collectAsStateWithLifecycle()
+    val enhanced: com.lagoon.island.ui.app.enhanced.EnhancedViewModel = hiltViewModel()
+    val enhancedStatus by enhanced.status.collectAsStateWithLifecycle()
 
     LifecycleResumeEffect(Unit) {
         viewModel.refreshPermissions()
@@ -95,6 +97,8 @@ fun OnboardingScreen(
         island = island,
         setCalibration = { transform -> viewModel.update { it.copy(calibration = transform(it.calibration)) } },
         setAppearance = { transform -> viewModel.update { it.copy(appearance = transform(it.appearance)) } },
+        enhancedReady = !com.lagoon.island.BuildConfig.ENHANCED_MODE_AVAILABLE ||
+            enhancedStatus.connected || enhancedStatus.enabledInSettings,
         onFinish = {
             viewModel.finishOnboarding()
             onDone()
@@ -111,6 +115,7 @@ private fun OnboardingContent(
     onFinish: () -> Unit,
     setAppearance: ((com.lagoon.island.data.Appearance) -> com.lagoon.island.data.Appearance) -> Unit = {},
     initialStep: Step = Step.Setup,
+    enhancedReady: Boolean = true,
 ) {
     val context = LocalContext.current
     val steps = Step.entries
@@ -119,8 +124,10 @@ private fun OnboardingContent(
     fun next() { if (index < steps.lastIndex) index++ else onFinish() }
     BackHandler(enabled = index > 0) { index-- }
 
+    // Every row on the checklist is required (Enhanced mode too, where the build has it).
+    val setupComplete = permissions.readyForIsland() && enhancedReady
     val primary: Pair<String, () -> Unit> = when (step) {
-        Step.Setup -> stringResource(if (permissions.readyForIsland()) R.string.onb_continue else R.string.onb_later) to ::next
+        Step.Setup -> stringResource(if (setupComplete) R.string.onb_continue else R.string.onb_finish_checks) to ::next
         Step.Style -> stringResource(R.string.style_action) to ::next
         Step.Apps -> stringResource(R.string.onb_finish) to onFinish
     }
@@ -136,7 +143,7 @@ private fun OnboardingContent(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Progress(count = steps.size, current = index, modifier = Modifier.weight(1f))
-            if (step != Step.Apps) {
+            if (step == Step.Style) {
                 TextButton(onClick = onFinish) { Text(stringResource(R.string.setup_action_skip)) }
             } else {
                 Spacer(Modifier.height(48.dp))
@@ -180,7 +187,7 @@ private fun OnboardingContent(
                 .padding(top = 12.dp, bottom = 16.dp)
                 .windowInsetsPadding(WindowInsets.navigationBars),
         ) {
-            PrimaryButton(primary.first, onClick = primary.second)
+            PrimaryButton(primary.first, onClick = primary.second, enabled = step != Step.Setup || setupComplete)
         }
     }
 }

@@ -22,4 +22,5 @@
     <string name="onb_finish">Готово</string>
     <string name="onb_enhanced_sheet_title">Нажатия по всему острову</string>
     <string name="onb_enhanced_done">Расширенный режим включён</string>
+    <string name="onb_finish_checks">Включите все три, чтобы продолжить</string>
 </resources>

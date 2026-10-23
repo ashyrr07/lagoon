@@ -22,4 +22,5 @@
     <string name="onb_finish">Fertig</string>
     <string name="onb_enhanced_sheet_title">Die ganze Insel antippen</string>
     <string name="onb_enhanced_done">Erweiterter Modus ist an</string>
+    <string name="onb_finish_checks">Schalte alle drei ein, um fortzufahren</string>
 </resources>

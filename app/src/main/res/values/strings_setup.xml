@@ -80,7 +80,7 @@
     <string name="setup_home_status_finish_setup">Finish the setup below to turn it on</string>
     <string name="setup_home_status_off">Off</string>
     <string name="setup_home_status_showing">Showing around your camera</string>
-    <string name="setup_home_status_hidden">Hidden for now (landscape or full-screen)</string>
+    <string name="setup_home_status_hidden">Hidden while the phone is sideways</string>
     <string name="setup_home_status_waiting">Waiting for Android to connect the service</string>
     <string name="setup_home_all_good">All good</string>
     <string name="setup_health_subtitle">Everything Lagoon needs to stay on screen, and what to do when a phone fights it.</string>
@@ -163,4 +163,5 @@
     <string name="setup_enhanced_title">Make the whole island tappable</string>
     <string name="setup_enhanced_body">Recommended. Android keeps the status bar for itself, so without this only the lower edge of the island responds to taps, and the second bubble can\'t be tapped at all. Enhanced mode lets the island sit above the status bar, like the island on iPhone, and makes it slimmer around the camera.</string>
     <string name="setup_enhanced_badge">Recommended</string>
+    <string name="setup_home_status_ready">Ready. It appears when something happens</string>
 </resources>

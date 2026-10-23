@@ -22,4 +22,5 @@
     <string name="onb_finish">Listo</string>
     <string name="onb_enhanced_sheet_title">Toca la isla entera</string>
     <string name="onb_enhanced_done">El modo avanzado está activado</string>
+    <string name="onb_finish_checks">Activa los tres para continuar</string>
 </resources>

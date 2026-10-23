@@ -80,7 +80,7 @@
     <string name="setup_home_status_finish_setup">Completa la configuración de abajo para activarla</string>
     <string name="setup_home_status_off">Desactivada</string>
     <string name="setup_home_status_showing">Visible alrededor de la cámara</string>
-    <string name="setup_home_status_hidden">Oculta por ahora (horizontal o pantalla completa)</string>
+    <string name="setup_home_status_hidden">Oculta mientras el teléfono está en horizontal</string>
     <string name="setup_home_status_waiting">Esperando a que Android conecte el servicio</string>
     <string name="setup_home_all_good">Todo bien</string>
     <string name="setup_health_subtitle">Todo lo que Lagoon necesita para seguir en pantalla y qué hacer cuando un teléfono se resiste.</string>
@@ -166,4 +166,5 @@
     <string name="setup_enhanced_title">Toca la isla entera</string>
     <string name="setup_enhanced_body">Recomendado. Android se reserva la barra de estado, así que sin esto solo responde el borde inferior de la isla y la segunda burbuja no se puede tocar. El modo avanzado coloca la isla sobre la barra de estado, como en iPhone, y la hace más fina alrededor de la cámara.</string>
     <string name="setup_enhanced_badge">Recomendado</string>
+    <string name="setup_home_status_ready">Lista. Aparece cuando pasa algo</string>
 </resources>

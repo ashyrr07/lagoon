@@ -22,4 +22,5 @@
     <string name="onb_finish">Terminé</string>
     <string name="onb_enhanced_sheet_title">Toute l\'île devient touchable</string>
     <string name="onb_enhanced_done">Le mode avancé est activé</string>
+    <string name="onb_finish_checks">Activez les trois pour continuer</string>
 </resources>
