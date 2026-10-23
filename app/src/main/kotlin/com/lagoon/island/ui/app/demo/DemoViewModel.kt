@@ -103,6 +103,7 @@ class DemoViewModel @Inject constructor(
                 content = ActivityContent.Call("Ada Lovelace", res.getString(R.string.island_demo_call_detail), avatar, ActivityContent.Call.State.Ringing, now),
                 startedAt = now,
                 alertMs = 30_000L,
+                ttlMs = 30_000L,
                 actions = listOf(
                     IslandAction("answer", res.getString(R.string.island_call_answer)) { activeCall(res) },
                     IslandAction("decline", res.getString(R.string.island_call_decline)) { registry.remove(ID_CALL) },
@@ -120,6 +121,7 @@ class DemoViewModel @Inject constructor(
                 priority = Priority.Call,
                 content = ActivityContent.Call("Ada Lovelace", res.getString(R.string.island_demo_call_detail), avatar, ActivityContent.Call.State.Active, now),
                 startedAt = now,
+                ttlMs = 60_000L,
                 actions = listOf(IslandAction("hang_up", res.getString(R.string.island_call_hang_up)) { registry.remove(ID_CALL) }),
             ),
         )
@@ -259,9 +261,9 @@ class DemoViewModel @Inject constructor(
         registry.removeWhere { it.source == Source.Demo }
     }
 
+    /** Leaving the Try it screen takes every demo activity off the island, so none get stuck. */
     override fun onCleared() {
-        progressJob?.cancel()
-        mediaJob?.cancel()
+        clearAll()
     }
 
     companion object {
