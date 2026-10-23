@@ -173,7 +173,9 @@ class FrameMath(
         }
 
         val pill = Rect(left, top, right, bottom)
-        val bubble = if (hasSecondary) bubbleFor(pill, idleRect.height) else null
+        // As tall as the pill (like iOS), so the bubble reaches the same tappable band below the
+        // status bar; an idle-height circle sat almost entirely inside the status bar.
+        val bubble = if (hasSecondary) bubbleFor(pill, pill.height) else null
         return FrameSpec(
             kind = kind,
             pill = pill,
@@ -184,7 +186,7 @@ class FrameMath(
         )
     }
 
-    /** A circle of idle height, 8 dp to the trailing side of the pill, or leading if that is off-screen. */
+    /** A circle of [diameter], 8 dp to the trailing side of the pill, or leading if that is off-screen. */
     private fun bubbleFor(pill: Rect, diameter: Float): Rect {
         val gap = dp(BUBBLE_GAP_DP)
         val centerY = pill.top + pill.height / 2f

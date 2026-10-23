@@ -76,13 +76,17 @@ class FrameMathTest {
     }
 
     @Test
-    fun `split bubble is an idle-height circle 8dp to the trailing side`() {
+    fun `split bubble is a pill-height circle 8dp to the trailing side`() {
         val spec = math.compact(ContentMeasure(leadingWidth = 40, trailingWidth = 40), hasSecondary = true)
         val bubble = spec.bubble
         assertNotNull(bubble)
         bubble!!
-        assertEquals(72f, bubble.width, 0f)
-        assertEquals(72f, bubble.height, 0f)
+        // As tall as the compact pill, so its lower edge reaches the same tappable band below the
+        // status bar (Standard mode cannot receive taps inside the status bar).
+        assertEquals(spec.pill.height, bubble.height, 0f)
+        assertEquals(spec.pill.height, bubble.width, 0f)
+        assertEquals(spec.pill.bottom, bubble.bottom, 0f)
+        assertTrue(bubble.bottom > 72f)
         assertEquals(spec.pill.right + 16f, bubble.left, 0f)
         assertEquals(spec.pill.center.y, bubble.center.y, 0f)
         assertEquals(bubble.right, spec.bounds.right, 0f)
