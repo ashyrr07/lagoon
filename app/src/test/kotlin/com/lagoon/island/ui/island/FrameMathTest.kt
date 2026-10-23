@@ -76,9 +76,8 @@ class FrameMathTest {
     }
 
     @Test
-    fun `split bubble is a pill-height circle 8dp to the trailing side in Enhanced mode`() {
-        val enhanced = FrameMath(idle, screenWidth = 1080, density = 2f, statusBarTappable = true)
-        val spec = enhanced.compact(ContentMeasure(leadingWidth = 40, trailingWidth = 40), hasSecondary = true)
+    fun `split bubble is a pill-height circle 8dp to the trailing side`() {
+        val spec = math.compact(ContentMeasure(leadingWidth = 40, trailingWidth = 40), hasSecondary = true)
         val bubble = spec.bubble
         assertNotNull(bubble)
         bubble!!
@@ -174,17 +173,5 @@ class FrameMathTest {
         val tall = IdleFrame(pill = PxRect(498, 0, 750, 120), camera = PxRect(589, 0, 659, 104), cornerRadius = 60f, statusBarBottom = 110)
         val hole = FrameMath(tall, 1248, 2.625f).cameraHole
         assertEquals(Rect(589f, 34f, 659f, 104f), hole)
-    }
-
-    @Test
-    fun `split bubble sits fully below the status bar in Standard mode`() {
-        // Galaxy Z Fold cover screen: status bar 110 px, idle pill inside it.
-        val fold = IdleFrame(pill = PxRect(556, 0, 693, 104), camera = PxRect(589, 0, 659, 104), cornerRadius = 52f, statusBarBottom = 110)
-        val spec = FrameMath(fold, 1248, 2.625f).compact(ContentMeasure(leadingWidth = 60, trailingWidth = 120), hasSecondary = true)
-        val bubble = spec.bubble!!
-        assertTrue("bubble top ${bubble.top} must be below the status bar", bubble.top >= 110f)
-        assertEquals(40f * 2.625f, bubble.height, 0.01f)
-        assertTrue(bubble.left > spec.pill.right)
-        assertEquals(bubble.bottom, spec.bounds.bottom, 0f)
     }
 }

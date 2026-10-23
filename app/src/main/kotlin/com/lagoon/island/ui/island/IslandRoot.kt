@@ -77,9 +77,8 @@ fun IslandRoot(state: IslandUiState) {
     val density = LocalDensity.current
     val appearance = state.settings.appearance
     val screenWidth = state.cutout?.screenWidth ?: maxOf(state.windowRect.right, idle.pill.right + idle.pill.left)
-    val statusBarTappable = state.hostKind == com.lagoon.island.overlay.OverlayHost.Kind.Accessibility
-    val math = remember(idle, screenWidth, density.density, appearance.scale, statusBarTappable) {
-        FrameMath(idle, screenWidth, density.density, appearance.scale, statusBarTappable)
+    val math = remember(idle, screenWidth, density.density, appearance.scale) {
+        FrameMath(idle, screenWidth, density.density, appearance.scale)
     }
     val frame = remember { IslandFrameState(math.idle()) }
     val slot = remember(presentation) { ContentSlot.of(presentation) }
