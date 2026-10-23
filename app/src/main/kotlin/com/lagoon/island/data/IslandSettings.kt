@@ -58,12 +58,14 @@ enum class Placement { Left, Center, Right }
 
 @Serializable
 data class Appearance(
-    val tint: Tint = Tint.Black,
+    /** Follows the wallpaper (Material You) by default. */
+    val tint: Tint = Tint.MaterialYou,
     val customColor: Long = 0xFF000000,
     val scale: Float = 1f,
     val reduceMotion: Boolean = false,
     val haptics: Boolean = true,
-    val idleMode: IdleMode = IdleMode.Always,
+    /** Hidden until something happens (a notification, music, a call...), then it drops in. */
+    val idleMode: IdleMode = IdleMode.OnlyWithActivity,
     val cornerSmoothing: Float = 0.6f,
     /** Corner radius as a fraction of half the pill height: 1 = full pill, 0.35 = rounded rectangle. */
     val roundness: Float = 1f,
