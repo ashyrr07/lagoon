@@ -177,11 +177,15 @@ fun IslandRoot(state: IslandUiState) {
                 .graphicsLayer {
                     // Drop-in: from a small capsule tucked above the camera down to full size. Pivot
                     // on the top centre so it grows down out of the screen edge, not out of thin air.
+                    // The spring overshoots past 1 on landing; that overshoot becomes a short vertical
+                    // squash, so the island never grows past its final size (its window is exactly
+                    // that size and would clip it).
                     val d = frame.drop.value
-                    val rise = (1f - d).coerceAtLeast(0f)
-                    translationY = -rise * math.compactHeight * 0.9f + (d - 1f).coerceAtLeast(0f) * math.compactHeight * 0.25f
-                    scaleX = 0.55f + 0.45f * d
-                    scaleY = 0.4f + 0.6f * d
+                    val p = d.coerceAtMost(1f)
+                    val squash = (d - 1f).coerceAtLeast(0f)
+                    translationY = -(1f - p) * math.compactHeight * 0.9f
+                    scaleX = 0.55f + 0.45f * p
+                    scaleY = (0.4f + 0.6f * p - 0.6f * squash).coerceAtLeast(0.7f)
                     alpha = (d * 2.5f).coerceIn(0f, 1f)
                     transformOrigin = TransformOrigin(pivot().pivotFractionX, 0f)
                 }
