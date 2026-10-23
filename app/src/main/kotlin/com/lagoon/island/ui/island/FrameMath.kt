@@ -52,6 +52,11 @@ class FrameMath(
     private val screenWidth: Int,
     private val density: Float,
     private val scale: Float = 1f,
+    /**
+     * True in Enhanced mode, where the island window sits above the status bar and receives taps
+     * there. In Standard mode Android gives every tap inside the status bar to the system.
+     */
+    private val statusBarTappable: Boolean = false,
 ) {
     private fun dp(v: Float): Float = v * density * scale
 
@@ -173,9 +178,7 @@ class FrameMath(
         }
 
         val pill = Rect(left, top, right, bottom)
-        // As tall as the pill (like iOS), so the bubble reaches the same tappable band below the
-        // status bar; an idle-height circle sat almost entirely inside the status bar.
-        val bubble = if (hasSecondary) bubbleFor(pill, pill.height) else null
+        val bubble = if (hasSecondary) bubbleFor(pill) else null
         return FrameSpec(
             kind = kind,
             pill = pill,
@@ -186,13 +189,23 @@ class FrameMath(
         )
     }
 
-    /** A circle of [diameter], 8 dp to the trailing side of the pill, or leading if that is off-screen. */
-    private fun bubbleFor(pill: Rect, diameter: Float): Rect {
+    /**
+     * The detached bubble for a second activity, 8 dp to the trailing side of the pill (leading if
+     * that is off-screen).
+     *
+     * Enhanced mode: as tall as the pill and level with it, like iOS. Standard mode: people tap a
+     * bubble in its middle, and when that middle is inside the status bar the system takes the tap
+     * (recorded on a Galaxy Z Fold: every tap at the bubble's centre went to the status bar). So
+     * there the bubble sits just below the status bar, where all of it is tappable; unlike the main
+     * pill it does not need to wrap the camera.
+     */
+    private fun bubbleFor(pill: Rect): Rect {
         val gap = dp(BUBBLE_GAP_DP)
-        val centerY = pill.top + pill.height / 2f
+        val diameter = if (statusBarTappable) pill.height else dp(STANDARD_BUBBLE_DP)
+        val top = if (statusBarTappable) pill.top else idle.statusBarBottom + dp(BUBBLE_DROP_DP)
         val trailingLeft = pill.right + gap
         val left = if (trailingLeft + diameter <= screenWidth - margin) trailingLeft else pill.left - gap - diameter
-        return Rect(left, centerY - diameter / 2f, left + diameter, centerY + diameter / 2f)
+        return Rect(left, top, left + diameter, top + diameter)
     }
 
     /**
@@ -225,6 +238,8 @@ class FrameMath(
         const val SLOT_GAP_DP = 8f
         const val MAX_SLOT_DP = 130f
         const val BUBBLE_GAP_DP = 8f
+        const val STANDARD_BUBBLE_DP = 40f
+        const val BUBBLE_DROP_DP = 4f
         const val CONTENT_TOP_GAP_DP = 8f
         const val CARD_INSET_DP = 16f
         const val CARD_BOTTOM_PAD_DP = 16f
