@@ -72,7 +72,8 @@ import com.lagoon.island.ui.theme.LagoonPreviewTheme
 import com.lagoon.island.util.Oem
 import com.lagoon.island.util.OemInfo
 
-enum class Step { Welcome, Overlay, Notifications, Enhanced, KeepAlive, Calibrate, Style, Done }
+/** First run: one light checklist, then the look, then the apps. Everything else lives in settings. */
+enum class Step { Setup, Style, Apps }
 
 @Composable
 fun OnboardingScreen(
@@ -109,30 +110,19 @@ private fun OnboardingContent(
     setCalibration: ((Calibration) -> Calibration) -> Unit,
     onFinish: () -> Unit,
     setAppearance: ((com.lagoon.island.data.Appearance) -> com.lagoon.island.data.Appearance) -> Unit = {},
-    initialStep: Step = Step.Welcome,
+    initialStep: Step = Step.Setup,
 ) {
     val context = LocalContext.current
-    // Enhanced mode is recommended wherever this build has it (FOSS); the Play build skips the step.
-    val steps = Step.entries.filter { it != Step.Enhanced || com.lagoon.island.BuildConfig.ENHANCED_MODE_AVAILABLE }
+    val steps = Step.entries
     var index by rememberSaveable { mutableIntStateOf(steps.indexOf(initialStep).coerceAtLeast(0)) }
     val step = steps[index]
     fun next() { if (index < steps.lastIndex) index++ else onFinish() }
     BackHandler(enabled = index > 0) { index-- }
 
     val primary: Pair<String, () -> Unit> = when (step) {
-        Step.Welcome -> stringResource(R.string.setup_action_set_it_up) to ::next
-        Step.Overlay ->
-            if (permissions.overlay) stringResource(R.string.setup_action_continue) to ::next
-            else stringResource(R.string.setup_action_allow_overlay) to { openSystemScreen(context, CheckId.Overlay) }
-        Step.Notifications ->
-            if (permissions.notificationAccess) stringResource(R.string.setup_action_continue) to ::next
-            else stringResource(R.string.setup_action_open_notification_access) to
-                { openSystemScreen(context, CheckId.NotificationAccess) }
-        Step.Enhanced -> stringResource(R.string.setup_action_continue) to ::next
-        Step.KeepAlive -> stringResource(R.string.setup_action_continue) to ::next
-        Step.Calibrate -> stringResource(R.string.setup_action_looks_right) to ::next
+        Step.Setup -> stringResource(if (permissions.readyForIsland()) R.string.onb_continue else R.string.onb_later) to ::next
         Step.Style -> stringResource(R.string.style_action) to ::next
-        Step.Done -> stringResource(R.string.setup_action_open_lagoon) to onFinish
+        Step.Apps -> stringResource(R.string.onb_finish) to onFinish
     }
 
     Column(
@@ -146,7 +136,7 @@ private fun OnboardingContent(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Progress(count = steps.size, current = index, modifier = Modifier.weight(1f))
-            if (step != Step.Done) {
+            if (step != Step.Apps) {
                 TextButton(onClick = onFinish) { Text(stringResource(R.string.setup_action_skip)) }
             } else {
                 Spacer(Modifier.height(48.dp))
@@ -176,14 +166,9 @@ private fun OnboardingContent(
                 verticalArrangement = Arrangement.spacedBy(20.dp),
             ) {
                 when (target) {
-                    Step.Welcome -> WelcomeStep()
-                    Step.Overlay -> OverlayStep(settings, permissions)
-                    Step.Notifications -> NotificationsStep(permissions)
-                    Step.Enhanced -> EnhancedStep()
-                    Step.KeepAlive -> KeepAliveStep(permissions.oem)
-                    Step.Calibrate -> CalibrateStep(settings, island, setCalibration)
+                    Step.Setup -> SetupChecklistPage(permissions)
                     Step.Style -> StyleStep(settings, setAppearance)
-                    Step.Done -> DoneStep(settings, permissions, island)
+                    Step.Apps -> AppsPage()
                 }
             }
         }
@@ -217,244 +202,5 @@ private fun Progress(count: Int, current: Int, modifier: Modifier = Modifier) {
                     ),
             )
         }
-    }
-}
-
-@Composable
-private fun ColumnScope.Title(text: String, body: String) {
-    Text(text, style = MaterialTheme.typography.displaySmall, modifier = Modifier.padding(top = 8.dp))
-    Text(body, style = MaterialTheme.typography.bodyLarge, color = MaterialTheme.colorScheme.onSurfaceVariant)
-}
-
-@Composable
-private fun ColumnScope.WelcomeStep() {
-    Image(
-        painterResource(R.drawable.ic_lagoon_mark),
-        contentDescription = null,
-        modifier = Modifier.padding(top = 24.dp).size(96.dp).clip(RoundedCornerShape(26.dp)),
-    )
-    Title(
-        stringResource(R.string.setup_welcome_title),
-        stringResource(R.string.setup_welcome_body),
-    )
-    SettingGroup(null) {
-        row {
-            StatusRow(
-                stringResource(R.string.setup_welcome_free_title),
-                stringResource(R.string.setup_welcome_free_detail),
-                Health.Ok,
-            )
-        }
-        row {
-            StatusRow(
-                stringResource(R.string.setup_open_source),
-                stringResource(R.string.setup_welcome_open_source_detail),
-                Health.Ok,
-            )
-        }
-        row {
-            StatusRow(
-                stringResource(R.string.setup_welcome_no_internet_title),
-                stringResource(R.string.setup_welcome_no_internet_detail),
-                Health.Ok,
-            )
-        }
-    }
-}
-
-@Composable
-private fun ColumnScope.OverlayStep(settings: IslandSettings, permissions: Permissions) {
-    IslandPreview(settings, inhaleOnAppear = true)
-    Title(
-        stringResource(R.string.setup_overlay_title),
-        stringResource(R.string.setup_overlay_body),
-    )
-    SettingGroup(null) {
-        row {
-            StatusRow(
-                stringResource(R.string.setup_permission_overlay),
-                if (permissions.overlay) {
-                    stringResource(R.string.setup_status_allowed)
-                } else {
-                    stringResource(R.string.setup_overlay_pending)
-                },
-                if (permissions.overlay) Health.Ok else Health.Attention,
-            )
-        }
-    }
-}
-
-@Composable
-private fun ColumnScope.NotificationsStep(permissions: Permissions) {
-    Title(
-        stringResource(R.string.setup_permission_notification_access),
-        stringResource(R.string.setup_notifications_body),
-    )
-    // Prominent disclosure, before the system screen (Play policy and plain honesty).
-    SettingGroup(stringResource(R.string.setup_notifications_disclosure)) {
-        row {
-            ContentRow {
-                Text(stringResource(R.string.setup_notifications_reads_title), style = MaterialTheme.typography.titleMedium)
-                Text(
-                    stringResource(R.string.setup_notifications_reads_body),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-            }
-        }
-        row {
-            ContentRow {
-                Text(stringResource(R.string.setup_notifications_keeps_title), style = MaterialTheme.typography.titleMedium)
-                Text(
-                    stringResource(R.string.setup_notifications_keeps_body),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-            }
-        }
-        row {
-            ContentRow {
-                Text(stringResource(R.string.setup_notifications_sends_title), style = MaterialTheme.typography.titleMedium)
-                Text(
-                    stringResource(R.string.setup_notifications_sends_body),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-            }
-        }
-    }
-    if (permissions.sideloaded && Build.VERSION.SDK_INT >= 33) {
-        val context = LocalContext.current
-        SettingGroup(stringResource(R.string.setup_sideload_title)) {
-            row {
-                ContentRow {
-                    Text(
-                        stringResource(R.string.setup_sideload_intro),
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                    Text(stringResource(R.string.setup_sideload_step1), style = MaterialTheme.typography.bodyMedium)
-                    Text(stringResource(R.string.setup_sideload_step2), style = MaterialTheme.typography.bodyMedium)
-                    Text(stringResource(R.string.setup_sideload_step3), style = MaterialTheme.typography.bodyMedium)
-                    TextButton(onClick = { openAppInfo(context) }) { Text(stringResource(R.string.setup_action_open_app_info)) }
-                }
-            }
-        }
-    }
-    SettingGroup(null) {
-        row {
-            StatusRow(
-                stringResource(R.string.setup_permission_notification_access),
-                if (permissions.notificationAccess) {
-                    stringResource(R.string.setup_status_granted)
-                } else {
-                    stringResource(R.string.setup_notifications_pending)
-                },
-                if (permissions.notificationAccess) Health.Ok else Health.Attention,
-            )
-        }
-    }
-}
-
-@Composable
-private fun ColumnScope.EnhancedStep(viewModel: com.lagoon.island.ui.app.enhanced.EnhancedViewModel = androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel()) {
-    val settings by viewModel.settings.collectAsStateWithLifecycle()
-    val status by viewModel.status.collectAsStateWithLifecycle()
-    LifecycleResumeEffect(Unit) {
-        viewModel.refresh()
-        onPauseOrDispose { }
-    }
-    Text(
-        stringResource(R.string.setup_enhanced_badge).uppercase(),
-        style = MaterialTheme.typography.labelLarge,
-        color = MaterialTheme.colorScheme.primary,
-    )
-    Title(stringResource(R.string.setup_enhanced_title), stringResource(R.string.setup_enhanced_body))
-    EnhancedDisclosure(settings, status, viewModel, showLockScreenToggle = false)
-}
-
-@Composable
-private fun ColumnScope.KeepAliveStep(oem: Oem) {
-    Title(
-        stringResource(R.string.setup_keepalive_title),
-        if (oem == Oem.Other) {
-            stringResource(R.string.setup_keepalive_body_stock)
-        } else {
-            stringResource(R.string.setup_keepalive_body_oem, oem.brandName)
-        },
-    )
-    OemGuideGroup(OemInfo.guide(oem))
-    Note(stringResource(R.string.setup_keepalive_note))
-}
-
-@Composable
-private fun ColumnScope.CalibrateStep(
-    settings: IslandSettings,
-    island: IslandController.State,
-    set: ((Calibration) -> Calibration) -> Unit,
-) {
-    IslandPreview(settings)
-    Title(
-        stringResource(R.string.setup_calibrate_title),
-        stringResource(R.string.setup_calibrate_body),
-    )
-    PositionControls(settings, island.cutout, set)
-}
-
-@Composable
-private fun ColumnScope.DoneStep(settings: IslandSettings, permissions: Permissions, island: IslandController.State) {
-    IslandPreview(settings, inhaleOnAppear = true)
-    val checks = setupChecks(permissions, island, settings)
-    val ready = permissions.allGranted
-    Title(
-        if (ready) stringResource(R.string.setup_done_title_ready) else stringResource(R.string.setup_done_title_almost),
-        if (ready) {
-            stringResource(R.string.setup_done_body_ready)
-        } else {
-            stringResource(R.string.setup_done_body_almost)
-        },
-    )
-    SettingGroup(stringResource(R.string.setup_health_checklist)) {
-        checks.forEach { check ->
-            row { StatusRow(check.title, check.detail, check.health) }
-        }
-    }
-}
-
-@Preview(showBackground = true, heightDp = 900)
-@Composable
-private fun OnboardingWelcomePreview() {
-    LagoonPreviewTheme {
-        OnboardingContent(IslandSettings(), Permissions(), IslandController.State(), {}, {})
-    }
-}
-
-@Preview(showBackground = true, heightDp = 1400)
-@Composable
-private fun OnboardingNotificationsPreview() {
-    LagoonPreviewTheme {
-        OnboardingContent(
-            IslandSettings(),
-            Permissions(overlay = true, sideloaded = true),
-            IslandController.State(),
-            {},
-            {},
-            initialStep = Step.Notifications,
-        )
-    }
-}
-
-@Preview(showBackground = true, heightDp = 1000)
-@Composable
-private fun OnboardingKeepAlivePreview() {
-    LagoonPreviewTheme {
-        OnboardingContent(
-            IslandSettings(),
-            Permissions(overlay = true, notificationAccess = true, oem = Oem.Xiaomi),
-            IslandController.State(),
-            {},
-            {},
-            initialStep = Step.KeepAlive,
-        )
     }
 }

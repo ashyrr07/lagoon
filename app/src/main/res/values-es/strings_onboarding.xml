@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="onb_title">Configura Lagoon</string>
+    <string name="onb_subtitle">Tres interruptores y listo. Toca cada uno.</string>
+    <string name="onb_overlay">Mostrar sobre otras apps</string>
+    <string name="onb_overlay_detail">Permite que la isla aparezca sobre la pantalla.</string>
+    <string name="onb_notif">Acceso a notificaciones</string>
+    <string name="onb_notif_detail">Permite que la isla muestre música, llamadas y las notificaciones que elijas.</string>
+    <string name="onb_enhanced">Toca la isla entera</string>
+    <string name="onb_enhanced_detail">Los toques funcionan en toda la isla, también sobre la barra de estado.</string>
+    <string name="onb_recommended">Recomendado</string>
+    <string name="onb_restricted">¿Interruptor gris? Android lo bloquea en apps instaladas fuera de una tienda hasta que lo permitas.</string>
+    <string name="onb_restricted_action">Permitir en Info de la app</string>
+    <string name="onb_privacy_title">Tus datos se quedan aquí</string>
+    <string name="onb_privacy_body">Lagoon no tiene permiso de internet. Nada de lo que ve sale de tu teléfono.</string>
+    <string name="onb_continue">Continuar</string>
+    <string name="onb_later">Más tarde</string>
+    <string name="onb_apps_title">¿Qué apps aparecen en la isla?</string>
+    <string name="onb_apps_body">Elige las apps cuyas notificaciones salen en la isla. La música, las llamadas, los temporizadores y la carga siempre aparecen.</string>
+    <string name="onb_apps_all">Todas las apps</string>
+    <string name="onb_apps_all_detail">Mostrar notificaciones de todas las apps</string>
+    <string name="onb_finish">Listo</string>
+    <string name="onb_enhanced_sheet_title">Toca la isla entera</string>
+    <string name="onb_enhanced_done">El modo avanzado está activado</string>
+</resources>

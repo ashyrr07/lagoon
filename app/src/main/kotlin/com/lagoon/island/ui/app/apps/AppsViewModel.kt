@@ -35,6 +35,18 @@ class AppsViewModel @Inject constructor(
         }
     }
 
+    /** Switch one app on or off where an empty allowlist means "all apps" (see [Allowlist]). */
+    fun setShown(packageName: String, show: Boolean, allApps: Set<String>) = viewModelScope.launch {
+        repository.update { s ->
+            s.copy(features = s.features.copy(notificationApps = Allowlist.toggle(s.features.notificationApps, allApps, packageName, show)))
+        }
+    }
+
+    /** Show notifications from every app again. */
+    fun showAllApps() = viewModelScope.launch {
+        repository.update { s -> s.copy(features = s.features.copy(notificationApps = emptySet())) }
+    }
+
     /** Island blacklist (`visibility.hiddenInApps`). */
     fun setIslandHidden(packageName: String, hidden: Boolean) = viewModelScope.launch {
         repository.update { s ->

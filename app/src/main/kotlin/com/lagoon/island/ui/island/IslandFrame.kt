@@ -59,6 +59,11 @@ class IslandFrameState(initial: FrameSpec) {
     val inhale = Animatable(1f)
     /** Uniform pulse for alerts. */
     val pulse = Animatable(1f)
+    /**
+     * Drop-in progress for an arrival on a resting island: 0 = tucked small above the camera,
+     * 1 = in place. The spring overshoots past 1, which reads as a soft landing bounce.
+     */
+    val drop = Animatable(1f)
 
     var target: FrameSpec by mutableStateOf(initial)
     var reduceMotion: Boolean by mutableStateOf(false)
@@ -108,6 +113,13 @@ class IslandFrameState(initial: FrameSpec) {
         inhale.snapTo(1f)
         inhale.animateTo(1.04f, tween(90, easing = FastOutSlowInEasing))
         inhale.animateTo(1f, spring(0.55f, 420f))
+    }
+
+    /** The island falls in from the top edge and lands with a bounce; no-op with reduced motion. */
+    suspend fun playDrop() {
+        if (reduceMotion) return
+        drop.snapTo(0f)
+        drop.animateTo(1f, spring(dampingRatio = 0.55f, stiffness = 260f))
     }
 
     suspend fun playPulse() {

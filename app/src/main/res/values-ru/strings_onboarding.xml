@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="onb_title">Настройка Lagoon</string>
+    <string name="onb_subtitle">Три переключателя, и готово. Нажмите на каждый.</string>
+    <string name="onb_overlay">Поверх других приложений</string>
+    <string name="onb_overlay_detail">Позволяет острову появляться поверх экрана.</string>
+    <string name="onb_notif">Доступ к уведомлениям</string>
+    <string name="onb_notif_detail">Позволяет острову показывать музыку, звонки и выбранные уведомления.</string>
+    <string name="onb_enhanced">Нажатия по всему острову</string>
+    <string name="onb_enhanced_detail">Нажатия работают на всём острове, включая часть над строкой состояния.</string>
+    <string name="onb_recommended">Рекомендуется</string>
+    <string name="onb_restricted">Переключатель серый? Android блокирует его у приложений не из магазина, пока вы не разрешите.</string>
+    <string name="onb_restricted_action">Разрешить в «О приложении»</string>
+    <string name="onb_privacy_title">Ваши данные остаются здесь</string>
+    <string name="onb_privacy_body">У Lagoon нет доступа в интернет. Ничего из того, что он видит, не покидает телефон.</string>
+    <string name="onb_continue">Продолжить</string>
+    <string name="onb_later">Позже</string>
+    <string name="onb_apps_title">Какие приложения показывать на острове?</string>
+    <string name="onb_apps_body">Выберите приложения, чьи уведомления всплывают на острове. Музыка, звонки, таймеры и зарядка показываются всегда.</string>
+    <string name="onb_apps_all">Все приложения</string>
+    <string name="onb_apps_all_detail">Показывать уведомления всех приложений</string>
+    <string name="onb_finish">Готово</string>
+    <string name="onb_enhanced_sheet_title">Нажатия по всему острову</string>
+    <string name="onb_enhanced_done">Расширенный режим включён</string>
+</resources>

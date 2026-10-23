@@ -17,6 +17,8 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
@@ -97,7 +99,17 @@ fun IslandRoot(state: IslandUiState) {
             frame.animateTo(target, state.onRequestWindow, state.onFrameSettled)
         }
     }
-    LaunchedEffect(slot.primary?.id) { if (slot.primary != null) frame.playInhale() }
+    // A notification arriving on a resting island drops in from the top; a new activity replacing
+    // one already shown just "breathes" so the island doesn't jump around while in use.
+    var lastPrimaryId by remember { mutableStateOf<String?>(null) }
+    LaunchedEffect(slot.primary?.id) {
+        val id = slot.primary?.id
+        val wasResting = lastPrimaryId == null
+        lastPrimaryId = id
+        if (id != null) {
+            if (wasResting) frame.playDrop() else frame.playInhale()
+        }
+    }
     LaunchedEffect(slot.kind, slot.primary?.updatedAt) { if (slot.kind == FrameKind.Alert) frame.playPulse() }
 
     val view = LocalView.current
@@ -162,6 +174,17 @@ fun IslandRoot(state: IslandUiState) {
         Box(
             Modifier
                 .fillMaxSize()
+                .graphicsLayer {
+                    // Drop-in: from a small capsule tucked above the camera down to full size. Pivot
+                    // on the top centre so it grows down out of the screen edge, not out of thin air.
+                    val d = frame.drop.value
+                    val rise = (1f - d).coerceAtLeast(0f)
+                    translationY = -rise * math.compactHeight * 0.9f + (d - 1f).coerceAtLeast(0f) * math.compactHeight * 0.25f
+                    scaleX = 0.55f + 0.45f * d
+                    scaleY = 0.4f + 0.6f * d
+                    alpha = (d * 2.5f).coerceIn(0f, 1f)
+                    transformOrigin = TransformOrigin(pivot().pivotFractionX, 0f)
+                }
                 .graphicsLayer {
                     scaleX = frame.inhale.value * frame.pulse.value
                     scaleY = frame.pulse.value

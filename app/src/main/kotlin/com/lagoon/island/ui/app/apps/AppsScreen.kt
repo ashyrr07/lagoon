@@ -140,7 +140,7 @@ fun AppsScreen(
 }
 
 @Composable
-private fun AppRow(app: AppsRepository.AppInfo, checked: Boolean, onCheckedChange: (Boolean) -> Unit) {
+internal fun AppRow(app: AppsRepository.AppInfo, checked: Boolean, onCheckedChange: (Boolean) -> Unit) {
     val sizePx = with(LocalDensity.current) { 40.dp.roundToPx() }
     val icon = remember(app.icon, sizePx) { app.icon.toBitmap(sizePx, sizePx).asImageBitmap() }
     Row(

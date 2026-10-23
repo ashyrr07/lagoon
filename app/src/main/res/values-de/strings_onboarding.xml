@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="onb_title">Lagoon einrichten</string>
+    <string name="onb_subtitle">Drei Schalter, und du bist fertig. Tippe auf jeden.</string>
+    <string name="onb_overlay">Über anderen Apps einblenden</string>
+    <string name="onb_overlay_detail">Damit die Insel über deinem Bildschirm erscheinen kann.</string>
+    <string name="onb_notif">Zugriff auf Benachrichtigungen</string>
+    <string name="onb_notif_detail">Damit die Insel Musik, Anrufe und die gewählten Benachrichtigungen zeigt.</string>
+    <string name="onb_enhanced">Die ganze Insel antippen</string>
+    <string name="onb_enhanced_detail">Tippen funktioniert auf der ganzen Insel, auch über der Statusleiste.</string>
+    <string name="onb_recommended">Empfohlen</string>
+    <string name="onb_restricted">Schalter ausgegraut? Android sperrt ihn bei Apps außerhalb eines Stores, bis du es erlaubst.</string>
+    <string name="onb_restricted_action">In App-Info erlauben</string>
+    <string name="onb_privacy_title">Deine Daten bleiben hier</string>
+    <string name="onb_privacy_body">Lagoon hat keine Internetberechtigung. Nichts, was es sieht, verlässt dein Telefon.</string>
+    <string name="onb_continue">Weiter</string>
+    <string name="onb_later">Später</string>
+    <string name="onb_apps_title">Welche Apps zeigt die Insel?</string>
+    <string name="onb_apps_body">Wähle die Apps, deren Benachrichtigungen auf der Insel erscheinen. Musik, Anrufe, Timer und Laden erscheinen immer.</string>
+    <string name="onb_apps_all">Alle Apps</string>
+    <string name="onb_apps_all_detail">Benachrichtigungen aller Apps zeigen</string>
+    <string name="onb_finish">Fertig</string>
+    <string name="onb_enhanced_sheet_title">Die ganze Insel antippen</string>
+    <string name="onb_enhanced_done">Erweiterter Modus ist an</string>
+</resources>

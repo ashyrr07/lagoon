@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="onb_title">Set up Lagoon</string>
+    <string name="onb_subtitle">Three switches and you\'re done. Tap each one.</string>
+    <string name="onb_overlay">Display over other apps</string>
+    <string name="onb_overlay_detail">Lets the island appear on top of your screen.</string>
+    <string name="onb_notif">Notification access</string>
+    <string name="onb_notif_detail">Lets the island show music, calls and the notifications you choose.</string>
+    <string name="onb_enhanced">Tap anywhere on the island</string>
+    <string name="onb_enhanced_detail">Lets taps work on the whole island, including over the status bar.</string>
+    <string name="onb_recommended">Recommended</string>
+    <string name="onb_restricted">Switch greyed out? Android blocks it for apps installed outside a store until you allow it.</string>
+    <string name="onb_restricted_action">Allow in App info</string>
+    <string name="onb_privacy_title">Your data stays here</string>
+    <string name="onb_privacy_body">Lagoon has no internet permission. Nothing it sees ever leaves your phone.</string>
+    <string name="onb_continue">Continue</string>
+    <string name="onb_later">Later</string>
+    <string name="onb_apps_title">Which apps show on the island?</string>
+    <string name="onb_apps_body">Pick the apps whose notifications pop up on the island. Music, calls, timers and charging always show.</string>
+    <string name="onb_apps_all">All apps</string>
+    <string name="onb_apps_all_detail">Show notifications from every app</string>
+    <string name="onb_finish">Done</string>
+    <string name="onb_enhanced_sheet_title">Tap anywhere on the island</string>
+    <string name="onb_enhanced_done">Enhanced mode is on</string>
+</resources>

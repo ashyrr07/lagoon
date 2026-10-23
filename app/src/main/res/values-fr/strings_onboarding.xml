@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="onb_title">Configurer Lagoon</string>
+    <string name="onb_subtitle">Trois interrupteurs et c\'est fini. Touchez chacun.</string>
+    <string name="onb_overlay">Superposition sur d\'autres applis</string>
+    <string name="onb_overlay_detail">Permet à l\'île de s\'afficher par-dessus l\'écran.</string>
+    <string name="onb_notif">Accès aux notifications</string>
+    <string name="onb_notif_detail">Permet à l\'île d\'afficher la musique, les appels et les notifications choisies.</string>
+    <string name="onb_enhanced">Toute l\'île devient touchable</string>
+    <string name="onb_enhanced_detail">Les appuis fonctionnent sur toute l\'île, y compris au-dessus de la barre d\'état.</string>
+    <string name="onb_recommended">Recommandé</string>
+    <string name="onb_restricted">Interrupteur grisé ? Android le bloque pour les applis installées hors d\'une boutique tant que vous ne l\'autorisez pas.</string>
+    <string name="onb_restricted_action">Autoriser dans Infos sur l\'appli</string>
+    <string name="onb_privacy_title">Vos données restent ici</string>
+    <string name="onb_privacy_body">Lagoon n\'a pas accès à Internet. Rien de ce qu\'il voit ne quitte votre téléphone.</string>
+    <string name="onb_continue">Continuer</string>
+    <string name="onb_later">Plus tard</string>
+    <string name="onb_apps_title">Quelles applis s\'affichent sur l\'île ?</string>
+    <string name="onb_apps_body">Choisissez les applis dont les notifications apparaissent sur l\'île. Musique, appels, minuteurs et recharge s\'affichent toujours.</string>
+    <string name="onb_apps_all">Toutes les applis</string>
+    <string name="onb_apps_all_detail">Afficher les notifications de toutes les applis</string>
+    <string name="onb_finish">Terminé</string>
+    <string name="onb_enhanced_sheet_title">Toute l\'île devient touchable</string>
+    <string name="onb_enhanced_done">Le mode avancé est activé</string>
+</resources>
