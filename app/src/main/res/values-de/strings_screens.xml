@@ -142,7 +142,7 @@
     <string name="screens_controls_done">Fertig</string>
     <string name="screens_controls_search">Suchen</string>
     <string name="screens_enhanced_title">Erweiterter Modus</string>
-    <string name="screens_enhanced_intro">Optional. Lagoon funktioniert auch ohne ihn vollständig. Der Erweiterte Modus nutzt einen Bedienungshilfendienst aus genau einem Grund: Ein Bedienungshilfen-Fenster ist das einzige, das Android über der Statusleiste und dem Sperrbildschirm anzeigt.</string>
+    <string name="screens_enhanced_intro">Lagoon braucht ihn, um die Einrichtung abzuschließen. Der Erweiterte Modus nutzt einen Bedienungshilfendienst aus genau einem Grund: Ein Bedienungshilfen-Fenster ist das einzige, das Android über der Statusleiste und dem Sperrbildschirm anzeigt.</string>
     <string name="screens_enhanced_unlocks_title">Was er ermöglicht</string>
     <string name="screens_enhanced_unlocks_taps">Tippen überall auf der Pille, auch auf dem Teil in der Statusleiste, sodass die Insel eng an der Kamera anliegen und trotzdem antippbar sein kann.</string>
     <string name="screens_enhanced_unlocks_lock_screen">Die Insel auf dem Sperrbildschirm (kannst du unten ausschalten).</string>

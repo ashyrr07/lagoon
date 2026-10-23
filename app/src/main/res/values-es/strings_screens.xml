@@ -142,7 +142,7 @@
     <string name="screens_controls_done">Listo</string>
     <string name="screens_controls_search">Buscar</string>
     <string name="screens_enhanced_title">Modo avanzado</string>
-    <string name="screens_enhanced_intro">Opcional. Lagoon funciona por completo sin él. El modo avanzado usa un servicio de accesibilidad por un único motivo: una ventana de accesibilidad es la única que Android dibuja sobre la barra de estado y la pantalla de bloqueo.</string>
+    <string name="screens_enhanced_intro">Lagoon lo necesita para completar la configuración. El modo avanzado usa un servicio de accesibilidad por un único motivo: una ventana de accesibilidad es la única que Android dibuja sobre la barra de estado y la pantalla de bloqueo.</string>
     <string name="screens_enhanced_unlocks_title">Qué desbloquea</string>
     <string name="screens_enhanced_unlocks_taps">Toques en cualquier parte de la píldora, incluida la parte dentro de la barra de estado, para que la isla pueda ceñirse a la cámara y seguir respondiendo a los toques.</string>
     <string name="screens_enhanced_unlocks_lock_screen">La isla en la pantalla de bloqueo (puedes desactivarlo abajo).</string>

@@ -142,7 +142,7 @@
     <string name="screens_controls_done">OK</string>
     <string name="screens_controls_search">Rechercher</string>
     <string name="screens_enhanced_title">Mode avancé</string>
-    <string name="screens_enhanced_intro">Facultatif. Lagoon fonctionne entièrement sans lui. Le mode avancé utilise un service d\'accessibilité pour une seule raison : une fenêtre d\'accessibilité est le seul type de fenêtre qu\'Android affiche au-dessus de la barre d\'état et de l\'écran de verrouillage.</string>
+    <string name="screens_enhanced_intro">Lagoon en a besoin pour terminer la configuration. Le mode avancé utilise un service d\'accessibilité pour une seule raison : une fenêtre d\'accessibilité est le seul type de fenêtre qu\'Android affiche au-dessus de la barre d\'état et de l\'écran de verrouillage.</string>
     <string name="screens_enhanced_unlocks_title">Ce qu\'il permet</string>
     <string name="screens_enhanced_unlocks_taps">Toucher n\'importe où sur la pilule, y compris la partie située dans la barre d\'état, pour que l\'île épouse la caméra tout en restant tactile.</string>
     <string name="screens_enhanced_unlocks_lock_screen">L\'île sur l\'écran de verrouillage (désactivable ci-dessous).</string>

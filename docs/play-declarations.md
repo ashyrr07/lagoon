@@ -149,7 +149,7 @@ Manifest property (added with the service in M6; the value must match this decla
 
 ---
 
-## 10. Accessibility service declaration (`play` flavor, only when Enhanced mode is added)
+## 10. Accessibility service declaration (`play` flavor)
 
 Play Console > App content > **Accessibility API usage** (the "AccessibilityService API"
 declaration). Submit this only with a bundle that actually declares the service.
@@ -162,16 +162,17 @@ keep it under ~1000 characters):
 
 > Lagoon draws a "Dynamic Island" overlay around the camera cutout. Android draws the
 > status bar above ordinary app overlays, so in the default mode the island cannot receive
-> taps inside the status-bar strip and cannot appear on the lock screen. The optional
-> "Enhanced mode" uses an AccessibilityService solely to (1) host the same overlay as a
+> taps inside the status-bar strip and cannot appear on the lock screen. "Enhanced mode"
+> uses an AccessibilityService solely to (1) host the same overlay as a
 > TYPE_ACCESSIBILITY_OVERLAY window so the whole pill is tappable and visible on the lock
 > screen, (2) perform the global actions screenshot, lock screen and recents from the
 > island's control deck when the user adds those tiles, and (3) receive
 > TYPE_WINDOW_STATE_CHANGED events to learn the foreground app's package name for the
 > user's per-app visibility rules. The service declares canRetrieveWindowContent="false"
 > and does not request flagRetrieveInteractiveWindows: it cannot read screen content. It is
-> off by default, enabled only after an in-app prominent disclosure with explicit consent,
-> and the app is fully functional without it.
+> enabled only after an in-app prominent disclosure with explicit consent. Setup asks for
+> it because without it the island sits under the status bar, where most of it cannot be
+> tapped; the user can turn the service off at any time in Accessibility settings.
 
 **Why the functionality cannot be achieved with other APIs:**
 
@@ -192,8 +193,8 @@ Accessibility settings button is enabled and the text must be visible in the vid
 > - detect which app is in the foreground (package name only) for your per-app rules.
 >
 > It does **not** read, record or send what is on your screen. Lagoon has no internet
-> access. This service is not an accessibility tool and Enhanced mode is optional:
-> everything else works without it.
+> access. This service is not an accessibility tool. You can turn it off at any time in
+> Accessibility settings.
 >
 > [x] I understand and want to enable Enhanced mode
 >
@@ -202,10 +203,10 @@ Accessibility settings button is enabled and the text must be visible in the vid
 **Video script** (upload as an unlisted YouTube link; 60 to 90 seconds, screen recording,
 no cuts between the disclosure and the system settings screen):
 
-1. Open Lagoon. Show the Home screen with the island working in Standard mode (play music
-   from the Demo screen so the island animates). This proves the app works without the service.
-2. Go to Settings > Enhanced mode. Hold on the disclosure text for 5 seconds so it is
-   readable in the video.
+1. Install fresh and open Lagoon. Grant "Display over other apps" and Notification access
+   from the setup checklist.
+2. Tap the Enhanced mode row. Hold on the disclosure text for 5 seconds so it is readable
+   in the video.
 3. Tick the consent checkbox; the "Open Accessibility settings" button becomes enabled.
 4. Tap it. The system Accessibility settings open on Lagoon's entry. Show the system
    description string (it references the same purposes). Turn the service on and confirm the
@@ -213,8 +214,8 @@ no cuts between the disclosure and the system settings screen):
 5. Return to Lagoon. Show the island now responds to a tap on its status-bar part and
    appears on the lock screen (lock the phone, wake it).
 6. Open the control deck, tap the Screenshot tile: the system screenshot animation plays.
-7. Go back to Settings > Accessibility, turn Lagoon off. Show the island still works in
-   Standard mode.
+7. Go back to Settings > Accessibility, turn Lagoon off. Show the island falls back to the
+   ordinary overlay below the status bar.
 
 Accessibility service config these claims rely on (`res/xml/accessibility_service_config.xml`,
 added in M7):

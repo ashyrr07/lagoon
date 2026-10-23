@@ -155,7 +155,7 @@
 
     <!-- Enhanced mode disclosure -->
     <string name="screens_enhanced_title">Enhanced mode</string>
-    <string name="screens_enhanced_intro">Optional. Lagoon works fully without it. Enhanced mode uses an accessibility service for one reason: an accessibility window is the only kind Android draws above the status bar and the lock screen.</string>
+    <string name="screens_enhanced_intro">Lagoon needs it to finish setup. Enhanced mode uses an accessibility service for one reason: an accessibility window is the only kind Android draws above the status bar and the lock screen.</string>
     <string name="screens_enhanced_unlocks_title">What it unlocks</string>
     <string name="screens_enhanced_unlocks_taps">Taps anywhere on the pill, including the part inside the status bar, so the island can hug the camera and still be tappable.</string>
     <string name="screens_enhanced_unlocks_lock_screen">The island on the lock screen (you can turn this off below).</string>

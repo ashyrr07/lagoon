@@ -142,7 +142,7 @@
     <string name="screens_controls_done">Готово</string>
     <string name="screens_controls_search">Поиск</string>
     <string name="screens_enhanced_title">Расширенный режим</string>
-    <string name="screens_enhanced_intro">Необязательно. Lagoon полностью работает и без него. Расширенный режим использует сервис специальных возможностей только по одной причине: окно специальных возможностей — единственный тип окна, который Android показывает поверх строки состояния и экрана блокировки.</string>
+    <string name="screens_enhanced_intro">Lagoon нужен этот сервис, чтобы завершить настройку. Расширенный режим использует сервис специальных возможностей только по одной причине: окно специальных возможностей — единственный тип окна, который Android показывает поверх строки состояния и экрана блокировки.</string>
     <string name="screens_enhanced_unlocks_title">Что он даёт</string>
     <string name="screens_enhanced_unlocks_taps">Нажатия по всей капсуле, включая часть внутри строки состояния, — остров может плотно облегать камеру и при этом реагировать на нажатия.</string>
     <string name="screens_enhanced_unlocks_lock_screen">Остров на экране блокировки (это можно отключить ниже).</string>

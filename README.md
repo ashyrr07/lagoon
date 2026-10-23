@@ -12,8 +12,8 @@ notifications you choose) with quick controls one long-press away.
 - **Free forever.** No ads, no subscriptions, no accounts, no "pro" tier.
 - **No network.** Lagoon has no `INTERNET` permission. CI fails if one ever appears in the merged manifest.
 - **Any brand.** The cutout is read from the system and can be calibrated by hand: hole, corner hole or notch.
-- **Play-safe by default.** Standard mode needs only "Display over other apps" and Notification access.
-- **Enhanced mode is optional** and uses an accessibility service that never reads screen content.
+- **Three permissions at setup:** "Display over other apps", Notification access and Enhanced mode.
+- **Enhanced mode** uses an accessibility service that never reads screen content.
 
 > Status: under active development, not yet released. The sections below say what works
 > today and what is planned. Nothing is on the Play Store or F-Droid yet.
@@ -58,7 +58,7 @@ a plugin API for third-party apps, Wear OS.
 Android draws the status bar *above* every app overlay, so a normal overlay cannot receive
 taps inside the status-bar strip. Lagoon handles that with two modes.
 
-| | Standard (default) | Enhanced (optional, off by default) |
+| | Standard (fallback) | Enhanced (set up on first launch) |
 |---|---|---|
 | Permissions | Display over other apps, Notification access | Standard + an accessibility service |
 | Island hosted by | `IslandNotificationListener` (system-bound) | `IslandAccessibilityService` |
@@ -69,7 +69,7 @@ taps inside the status-bar strip. Lagoon handles that with two modes.
 | Reads screen content | No | **No.** `canRetrieveWindowContent=false`; only window-state change events (package name) are consumed. |
 | Availability | `play` and `foss` flavors | `foss` flavor now; `play` once the Play accessibility declaration is approved |
 
-Everything works in Standard mode. Enhanced mode only adds the items in its column.
+If the accessibility service is turned off later, the island falls back to Standard mode and keeps everything except the items in the Enhanced column.
 
 ## Permissions, explained
 
@@ -117,7 +117,7 @@ headless machine set `ANDROID_HOME` instead.
 | Flavor | For | Differences |
 |---|---|---|
 | `foss` | GitHub Releases and F-Droid | Declares the Enhanced-mode accessibility service (`src/foss/AndroidManifest.xml`), `ENHANCED_MODE_AVAILABLE = true` |
-| `play` | Google Play | No accessibility service until the Play declaration is approved, `ENHANCED_MODE_AVAILABLE = false` |
+| `play` | Google Play | Same as `foss`: declares the accessibility service (`src/play/AndroidManifest.xml`), `ENHANCED_MODE_AVAILABLE = true` |
 
 Both flavors share all code and neither has network access. Debug builds use the
 `com.lagoon.island.debug` application id so they can be installed next to a release build.

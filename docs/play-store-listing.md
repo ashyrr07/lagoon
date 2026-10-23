@@ -70,7 +70,7 @@ Lagoon
 
 ### Full description (4000 characters max)
 
-English (2,675 characters). The Russian version (2,844 characters) is in `fastlane/metadata/android/ru/full_description.txt`. For German, French and Spanish, Play shows the English text until you add translations.
+English (2,641 characters). The Russian version (2,836 characters) is in `fastlane/metadata/android/ru/full_description.txt`. For German, French and Spanish, Play shows the English text until you add translations.
 
 ```
 Lagoon turns the camera cutout on your phone into a Dynamic Island: a small black pill that wraps the camera and shows what matters right now, then gets out of the way.
@@ -100,13 +100,13 @@ Private by design
 Lagoon has no INTERNET permission. It cannot send anything anywhere: no analytics, no crash reporting, no accounts, no ads. Notification access is used only to show your notifications and media on the island. The source code is public under the GPL-3.0 licence.
 
 Two modes
-• Standard mode needs only "Display over other apps" and Notification access. It is the default and uses no accessibility service.
-• Enhanced mode is optional and off by default. It uses an accessibility service so the whole island is tappable, including the part over the status bar, the island can appear on the lock screen, and the control deck can take screenshots, lock the screen or open recents. The service never reads screen content. You can turn it off at any time in Accessibility settings.
+• Setup asks for "Display over other apps", Notification access and Enhanced mode.
+• Enhanced mode is switched on during setup, after a clear explanation and your consent. It uses an accessibility service so the whole island is tappable, including the part over the status bar, the island can appear on the lock screen, and the control deck can take screenshots, lock the screen or open recents. The service never reads screen content. You can turn it off at any time in Accessibility settings.
 
 Lagoon is free, has no paid tier and never will. If something does not work on your phone, open an issue on GitHub with your device model and Android version.
 ```
 
-> The Play build (`play` flavor) does not include Enhanced mode yet. Keep the "Two modes" paragraph only after the accessibility declaration is approved and Enhanced mode is added to the Play build; until then, delete that paragraph from the Play listing and keep it for GitHub and F-Droid.
+> The Play build (`play` flavor) includes Enhanced mode and setup requires it, so file the accessibility declaration (section 10 of `docs/play-declarations.md`) with the first release.
 
 ### Release notes for version 0.1.0 (500 characters max)
 
@@ -132,7 +132,7 @@ First public release.
 | News app | No |
 | Data safety | No data collected and no data shared. Lagoon has no internet permission; notification content is processed on the device only and never stored or transmitted |
 | Foreground service | Not used in 0.1.0 (no `FOREGROUND_SERVICE` permission) |
-| Accessibility API | Not in the Play build for 0.1.0. When Enhanced mode is added later, use section 10 of `docs/play-declarations.md` |
+| Accessibility API | Declared in the Play build; required at setup. Paste section 10 of `docs/play-declarations.md` and attach the video |
 
 Full paste-ready text for each declaration, including the notification-listener explanation for reviewers, is in [docs/play-declarations.md](play-declarations.md).
 

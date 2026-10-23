@@ -48,7 +48,7 @@ android {
     productFlavors {
         create("play") {
             dimension = "distribution"
-            buildConfigField("boolean", "ENHANCED_MODE_AVAILABLE", "false")
+            buildConfigField("boolean", "ENHANCED_MODE_AVAILABLE", "true")
         }
         create("foss") {
             dimension = "distribution"
