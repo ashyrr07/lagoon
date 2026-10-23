@@ -229,7 +229,7 @@ class IslandController @Inject constructor(
         engine.setVisible(true)
         _state.value = _state.value.copy(cutout = cutout, frame = frame)
         onPresentation(engine.presentation.value)
-        Log.d(TAG, "Island frame=${frame.pill} cutout=${cutout.cutout} shape=${cutout.shape} screen=${cutout.screenWidth}x${cutout.screenHeight} rot=${cutout.rotation} density=${cutout.density}")
+        Log.d(TAG, "Island frame=${frame.pill} cutout=${cutout.cutout} shape=${cutout.shape} statusBar=${cutout.statusBarHeight} screen=${cutout.screenWidth}x${cutout.screenHeight} rot=${cutout.rotation} density=${cutout.density}")
     }
 
     private fun onPresentation(presentation: IslandPresentation) {
@@ -250,7 +250,7 @@ class IslandController @Inject constructor(
     private fun growWindow(needed: PxRect) {
         val window = window ?: return
         val cutout = uiState.cutout ?: return
-        val pad = (WindowGeometry.SHADOW_PAD_DP * cutout.density).toInt()
+        val pad = shadowPad(cutout.density)
         val target = WindowGeometry.windowRect(needed, pad, cutout.screenWidth)
         val current = window.rect
         val union = if (window.isShowing) {
@@ -267,8 +267,18 @@ class IslandController @Inject constructor(
     /** Shrink the window to exactly the settled frame plus shadow padding. */
     private fun fitWindow(frame: PxRect) {
         val cutout = uiState.cutout ?: return
-        val pad = (WindowGeometry.SHADOW_PAD_DP * cutout.density).toInt()
-        show(WindowGeometry.windowRect(frame, pad, cutout.screenWidth))
+        show(WindowGeometry.windowRect(frame, shadowPad(cutout.density), cutout.screenWidth))
+    }
+
+    /**
+     * Room for the card's shadow, only while a card is open. The idle and compact pills draw no
+     * shadow, and any padding there is an invisible strip that swallows taps meant for the app
+     * underneath (for example the top bar of a chat app right below the island).
+     */
+    private fun shadowPad(density: Float): Int = when (uiState.presentation) {
+        is IslandPresentation.Expanded, IslandPresentation.ControlDeck ->
+            (WindowGeometry.SHADOW_PAD_DP * density).toInt()
+        else -> 0
     }
 
     private fun show(rect: PxRect) {

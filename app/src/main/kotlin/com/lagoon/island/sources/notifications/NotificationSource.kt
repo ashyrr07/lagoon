@@ -29,6 +29,8 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -52,6 +54,10 @@ class NotificationSource @Inject constructor(
 ) : IslandSource {
 
     private var features = FeatureSettings()
+    private var scope: CoroutineScope? = null
+
+    /** Pending delayed cancels, so a newer post of the same key restarts the wait. */
+    private val pendingCancels = HashMap<String, Job>()
 
     /** Keys we cancelled ourselves; the Removed event that follows must not kill the pill. */
     private val selfCancelled = HashSet<String>()
@@ -64,6 +70,7 @@ class NotificationSource @Inject constructor(
     private data class Signature(val title: String, val text: String, val actions: Int, val messages: Int)
 
     override fun start(scope: CoroutineScope) {
+        this.scope = scope
         scope.launch {
             settingsRepository.settings.map { it.features }.distinctUntilChanged().collect { f ->
                 features = f
@@ -81,6 +88,9 @@ class NotificationSource @Inject constructor(
     }
 
     override fun stop() {
+        pendingCancels.values.forEach { it.cancel() }
+        pendingCancels.clear()
+        scope = null
         registry.removeWhere { it.source == Source.Notification }
         selfCancelled.clear()
         shown.clear()
@@ -147,11 +157,27 @@ class NotificationSource @Inject constructor(
                 onTap = { open(sbn) },
             ),
         )
-        if (features.dismissSystemNotification) cancel(key)
+        if (features.dismissSystemNotification) cancelAfterAlert(key)
+    }
+
+    /**
+     * Android stops a notification's sound and vibration the moment it is cancelled, so removing
+     * it right after it was posted silenced every alert. Wait until the alert has played (and the
+     * island has shown it) before taking the system notification away.
+     */
+    private fun cancelAfterAlert(key: String) {
+        val s = scope ?: return
+        pendingCancels.remove(key)?.cancel()
+        pendingCancels[key] = s.launch {
+            delay(NotificationRules.ALERT_GRACE_MS)
+            pendingCancels.remove(key)
+            cancel(key)
+        }
     }
 
     private fun onRemoved(sbn: StatusBarNotification, reason: Int) {
         val key = sbn.key
+        pendingCancels.remove(key)?.cancel()
         if (reason == NotificationListenerService.REASON_LISTENER_CANCEL && selfCancelled.remove(key)) return
         selfCancelled.remove(key)
         shown.remove(key)

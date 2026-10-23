@@ -42,6 +42,9 @@ object NotificationRules {
 
     const val SHELL_PACKAGE = "com.android.shell"
 
+    /** How long a notification's own sound and vibration get before Lagoon may cancel it. */
+    const val ALERT_GRACE_MS = 6_000L
+
     /** Packages that post plumbing notifications nobody wants mirrored (SystemUI, Settings, ...). */
     fun isSystemPackage(packageName: String): Boolean =
         packageName == "android" ||
