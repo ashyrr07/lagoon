@@ -2,7 +2,6 @@ package com.lagoon.island.service
 
 import android.content.ComponentCallbacks
 import android.content.Context
-import android.content.Intent
 import android.content.res.Configuration
 import android.os.Build
 import android.provider.Settings
@@ -22,11 +21,9 @@ import com.lagoon.island.sources.SourceManager
 import com.lagoon.island.sources.media.MediaSource
 import com.lagoon.island.controls.ControlsRegistry
 import com.lagoon.island.sources.system.ScreenStateSource
-import com.lagoon.island.ui.app.MainActivity
 import com.lagoon.island.ui.island.IslandRoot
 import com.lagoon.island.ui.island.IslandUiState
 import com.lagoon.island.ui.island.WindowGeometry
-import com.lagoon.island.util.IntentLauncher
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -50,7 +47,6 @@ import kotlinx.coroutines.launch
 class IslandController @Inject constructor(
     @ApplicationContext private val context: Context,
     private val settingsRepository: SettingsRepository,
-    private val launcher: IntentLauncher,
     private val engine: IslandEngine,
     private val sourceManager: SourceManager,
     private val mediaSource: MediaSource,
@@ -114,9 +110,6 @@ class IslandController @Inject constructor(
         }
         engine.mediaCommand = mediaSource::command
         engine.toggleTorch = { controlsRegistry.torch.perform(null) }
-        engine.openApp = { activity ->
-            activity.onTap?.invoke() ?: launcher.launch(Intent(context, MainActivity::class.java))
-        }
     }
 
     fun onListenerConnected() {

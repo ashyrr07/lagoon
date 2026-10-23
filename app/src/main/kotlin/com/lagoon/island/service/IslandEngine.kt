@@ -44,7 +44,6 @@ class IslandEngine @Inject constructor(
     private var scope: CoroutineScope? = null
 
     /** Hooks for actions the engine cannot perform itself. Set by the controller. */
-    var openApp: (IslandActivity) -> Unit = {}
     var mediaCommand: (IslandActivity, GestureAction) -> Unit = { _, _ -> }
     var toggleTorch: () -> Unit = {}
 
@@ -178,7 +177,10 @@ class IslandEngine @Inject constructor(
             GestureAction.None -> Unit
             GestureAction.Expand -> activity?.let { expand(it.id) } ?: openControlDeck()
             GestureAction.Collapse -> collapse()
-            GestureAction.OpenApp -> activity?.let { a -> a.onTap?.invoke() ?: openApp(a) }
+            // Open the app the activity came from. System events (charging, earbuds, ringer) have
+            // no app: show their details instead of opening Lagoon's own settings screen, which
+            // used to put Lagoon back on top of recents with whatever screen it was last left on.
+            GestureAction.OpenApp -> activity?.let { a -> a.onTap?.invoke() ?: expand(a.id) }
             GestureAction.Dismiss -> activity?.let { dismiss(it) }
             GestureAction.ControlDeck -> openControlDeck()
             GestureAction.NextActivity -> nextActivity()
