@@ -107,6 +107,7 @@ internal fun Notification.string(key: String): String? = extras?.getCharSequence
 internal val Notification.title: String? get() = string(Notification.EXTRA_TITLE)
 internal val Notification.text: String? get() = string(Notification.EXTRA_TEXT)
 internal val Notification.subText: String? get() = string(Notification.EXTRA_SUB_TEXT)
+internal val Notification.bigText: String? get() = string(Notification.EXTRA_BIG_TEXT)
 internal val Notification.showsChronometer: Boolean get() = extras?.getBoolean(Notification.EXTRA_SHOW_CHRONOMETER) == true
 internal val Notification.chronometerCountsDown: Boolean get() = extras?.getBoolean(Notification.EXTRA_CHRONOMETER_COUNT_DOWN) == true
 internal val Notification.template: String? get() = extras?.getString(Notification.EXTRA_TEMPLATE)

@@ -6,6 +6,7 @@ import android.os.Build
 import android.service.notification.StatusBarNotification
 import com.lagoon.island.data.SettingsRepository
 import com.lagoon.island.engine.ActivityContent
+import com.lagoon.island.engine.IconSource
 import com.lagoon.island.engine.ActivityRegistry
 import com.lagoon.island.engine.IslandActivity
 import com.lagoon.island.engine.Priority
@@ -73,6 +74,9 @@ class LiveUpdateSource @Inject constructor(
         }
         val n = sbn.notification
         val snapshot = snapshot(n)
+        // Promoted without progress = a status notification: show its app and one key value.
+        val hasProgress = styleSnapshot(n, null) != null || hasProgressExtras(n)
+        val critical = snapshot?.shortCriticalText
         val now = System.currentTimeMillis()
         val existing = registry[id]
         tracked += id
@@ -83,9 +87,15 @@ class LiveUpdateSource @Inject constructor(
                 priority = Priority.Progress,
                 content = ActivityContent.Progress(
                     title = n.title ?: sbn.packageName,
-                    text = snapshot?.shortCriticalText ?: n.text ?: n.subText,
+                    text = if (hasProgress) critical ?: n.text ?: n.subText else n.bigText ?: n.text ?: n.subText,
                     progress = snapshot?.fraction,
-                    icon = n.largeIconSource() ?: n.smallIconSource(),
+                    icon = if (hasProgress) {
+                        n.largeIconSource() ?: n.smallIconSource()
+                    } else {
+                        n.largeIconSource() ?: appIconSource(sbn.packageName) ?: n.smallIconSource()
+                    },
+                    showsBar = hasProgress,
+                    glance = if (hasProgress) null else critical ?: StatusGlance.pick(n.title),
                 ),
                 startedAt = existing?.startedAt ?: now,
                 updatedAt = now,
@@ -133,6 +143,12 @@ class LiveUpdateSource @Inject constructor(
         val max = if (segmentsTotal > 0) segmentsTotal else style.progressMax
         return ProgressSnapshot(style.progress, max, style.isProgressIndeterminate, critical)
     }
+
+    /** The app's launcher icon, which identifies a status notification better than its tiny status-bar glyph. */
+    private fun appIconSource(packageName: String): IconSource? = runCatching {
+        val info = context.packageManager.getApplicationInfo(packageName, 0)
+        if (info.icon == 0) null else IconSource.Platform(android.graphics.drawable.Icon.createWithResource(packageName, info.icon))
+    }.getOrNull()
 
     companion object {
         private val EXCLUDED_PACKAGES = setOf("com.android.systemui")

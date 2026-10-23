@@ -11,6 +11,13 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Downloading
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import com.lagoon.island.sources.system.StatusGlance
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.draw.clip
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
@@ -54,11 +61,35 @@ fun ThinProgressBar(progress: Float?, color: Color, modifier: Modifier = Modifie
 
 @Composable
 fun ProgressCompactLeading(scope: ContentScope, p: ActivityContent.Progress) {
+    if (!p.showsBar) {
+        // Status notification: the app's own icon, round, so it reads as "this app is running".
+        Box(Modifier.size(24.dp).clip(CircleShape)) {
+            IslandIcon(p.icon, fallback = Icons.Rounded.Downloading, size = 24.dp)
+        }
+        return
+    }
     IslandIcon(p.icon, fallback = Icons.Rounded.Downloading, size = 22.dp, tint = if (p.icon == null) scope.accent else null)
+}
+
+/** Green for a gain, red for a loss, white otherwise. */
+private fun glanceColor(glance: String?): Color = when (StatusGlance.tone(glance)) {
+    StatusGlance.Tone.Positive -> Accent.charging
+    StatusGlance.Tone.Negative -> Accent.danger
+    StatusGlance.Tone.Neutral -> Color.White
 }
 
 @Composable
 fun ProgressCompactTrailing(scope: ContentScope, p: ActivityContent.Progress) {
+    if (!p.showsBar) {
+        Text(
+            p.glance ?: p.title,
+            style = IslandType.compact.copy(color = glanceColor(p.glance), fontWeight = FontWeight.SemiBold),
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier.widthIn(max = 110.dp),
+        )
+        return
+    }
     Column(Modifier.width(72.dp), verticalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(4.dp)) {
         Text(p.title, style = IslandType.compact, maxLines = 1, overflow = TextOverflow.Ellipsis)
         ThinProgressBar(p.progress, scope.accent, Modifier.fillMaxWidth(), scope.reduceMotion)
@@ -73,15 +104,17 @@ fun ProgressExpanded(scope: ContentScope, p: ActivityContent.Progress) {
             Spacer(Modifier.width(14.dp))
             Column(Modifier.weight(1f)) {
                 Text(p.title, style = IslandType.title, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                p.text?.let { Text(it, style = IslandType.bodyDim, maxLines = 2, overflow = TextOverflow.Ellipsis) }
+                p.text?.let { Text(it, style = IslandType.bodyDim, maxLines = if (p.showsBar) 2 else 4, overflow = TextOverflow.Ellipsis) }
             }
             p.progress?.let {
                 Spacer(Modifier.width(12.dp))
                 Text(percentText((it * 100).toInt()), style = IslandType.body)
             }
         }
-        Spacer(Modifier.height(12.dp))
-        ThinProgressBar(p.progress, scope.accent, Modifier.fillMaxWidth(), scope.reduceMotion)
+        if (p.showsBar) {
+            Spacer(Modifier.height(12.dp))
+            ThinProgressBar(p.progress, scope.accent, Modifier.fillMaxWidth(), scope.reduceMotion)
+        }
         if (scope.activity.actions.isNotEmpty()) {
             Spacer(Modifier.height(12.dp))
             ActionRow(scope, scope.activity.actions)

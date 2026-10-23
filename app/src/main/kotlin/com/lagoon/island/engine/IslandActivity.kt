@@ -80,6 +80,13 @@ sealed interface ActivityContent {
         /** 0..1, or null while indeterminate. */
         val progress: Float?,
         val icon: IconSource?,
+        /**
+         * False for status notifications (always-on, no real progress, e.g. a trading bot's
+         * running P&L): no bar is drawn and [glance] is shown instead.
+         */
+        val showsBar: Boolean = true,
+        /** The one short value for the compact island, e.g. "−$21.37". */
+        val glance: String? = null,
     ) : ActivityContent
 
     data class Charging(
