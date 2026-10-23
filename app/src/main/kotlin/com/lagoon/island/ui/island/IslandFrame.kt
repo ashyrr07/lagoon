@@ -1,5 +1,7 @@
 package com.lagoon.island.ui.island
 
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.NonCancellable
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.FiniteAnimationSpec
@@ -118,8 +120,14 @@ class IslandFrameState(initial: FrameSpec) {
     /** The island falls in from the top edge and lands with a bounce; no-op with reduced motion. */
     suspend fun playDrop() {
         if (reduceMotion) return
-        drop.snapTo(0f)
-        drop.animateTo(1f, spring(dampingRatio = 0.55f, stiffness = 260f))
+        try {
+            drop.snapTo(0f)
+            drop.animateTo(1f, spring(dampingRatio = 0.55f, stiffness = 260f))
+        } finally {
+            // An arrival interrupted mid-drop (another update, a presentation change) must never
+            // leave the island invisible: the drop starts fully transparent above the screen edge.
+            withContext(NonCancellable) { drop.snapTo(1f) }
+        }
     }
 
     suspend fun playPulse() {
